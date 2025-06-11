@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: page_head}"></head>
+
+<body>
+  <!--========== HEADER ==========-->
+  <header th:replace="~{layout :: page_header}"></header>
+
+  <!--========== NAV ==========-->
+  <div th:replace="~{layout :: page_navbar}"></div>
+
+  <!--========== CONTENTS ==========-->
+  <main>
+    <section class="home-section">
+      <div class="content-header">
+        <h1>Xin chào, Nguyễn Văn A</h1>
+      </div>
+      <div class="dashboard-container">
+
+        <div class="dashboard-card service">
+          <h3 class="mb-4">Gói dịch vụ của bạn gần đây</h3>
+
+          <div class="package">
+            <div class="package-content d-flex align-items-center">
+              <i class='bx bxs-user in-use'></i>
+              <div class="ms-3">
+                <h4 class="package-title advanced mb-3">Nâng cao<span class="expiry">(đang sử dụng)</span></h4>
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <p class="m-0">Trạng thái:</p>
+                    <p class="m-0">Thời hạn:</p>
+                  </div>
+                  <div class="ms-3">
+                    <p class="m-0 text-success"><i class='bx bx-check-circle me-2'></i>Đã kích hoạt</p>
+                    <p class="m-0 text-danger"><i class='bx bx-time-five me-2'></i>90 ngày</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="package">
+            <div class="package-content d-flex align-items-center">
+              <i class='bx bxs-user expired'></i>
+              <div class="ms-3">
+                <h4 class="package-title extend mb-3">Mở rộng<span class="expiry">(hết hạn 3 ngày trước)</span></h4>
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <p class="m-0">Trạng thái:</p>
+                    <p class="m-0">Thời hạn:</p>
+                  </div>
+                  <div class="ms-3">
+                    <p class="m-0 text-success"><i class='bx bx-check-circle me-2'></i>Đã kích hoạt</p>
+                    <p class="m-0 text-danger"><i class='bx bx-time-five me-2'></i>Hết hạn</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a href="#" class="view-more">Xem thêm</a>
+        </div>
+
+        <div class="dashboard-card balance">
+          <h3 class="mb-4">Số dư tài khoản của bạn</h3>
+          <div class="d-flex justify-content-between">
+            <p>Số dư:</p>
+            <div class="d-flex gap-2">
+              <i class="fa-solid fa-eye"></i>
+              <p>************</p>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <button class="btn dashboard-btn recharge-btn">Nạp tiền</button>
+        </div>
+
+        <div class="dashboard-card history">
+          <h3>Lịch sử gần đây</h3>
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <p class="text-center">Bạn không có lịch sử nào gần đây</p>
+          <button class="btn dashboard-btn detailed-btn red">Xem chi tiết</button>
+        </div>
+
+        <div class="dashboard-card notification">
+          <h3>Thông báo gần đây</h3>
+          <i class="fa-solid fa-bell"></i>
+          <p class="text-center">Bạn không có thông báo nào gần đây</p>
+          <button class="btn dashboard-btn detailed-btn yellow">Xem chi tiết</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  
+</body>
+
+</html>

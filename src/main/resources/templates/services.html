@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: page_head}"></head>
+
+<body>
+  <!--========== HEADER ==========-->
+  <header th:replace="~{layout :: page_header}"></header>
+
+  <!--========== NAV ==========-->
+  <div th:replace="~{layout :: page_navbar}"></div>
+  
+  <!--========== CONTENTS ==========-->
+  <main>
+    <section class="services-section">
+      <div class="content-header">
+        <h1>Gói dịch vụ chưa mua</h1>
+        <button class="btn-nap-tien">Nạp tiền</button>
+      </div>
+
+      <table class="service-table">
+        <thead>
+          <tr>
+            <th>Tên gói</th>
+            <th>Mô tả</th>
+            <th>Giá</th>
+            <th>Phương thức thanh toán</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Gói nâng cao</td>
+            <td>Gói nâng cao với toàn bộ tính năng</td>
+            <td>499.000 VNĐ</td>
+            <td class="actions">
+              <button class="btn-action btn-buy">
+                <i class='bx bx-dollar-circle'></i>
+              </button>
+              <button class="btn-action btn-vnpay">
+                <img src="/image/vnpay.png" alt="" style="max-width: 22px;">
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>Gói cơ bản</td>
+            <td>Gói cơ bản với tính năng giới hạn</td>
+            <td>99.000 VNĐ</td>
+            <td class="actions">
+              <button class="btn-action btn-buy">
+                <i class='bx bx-dollar-circle'></i>
+              </button>
+              <button class="btn-action btn-vnpay">
+                <img src="/image/vnpay.png" alt="" style="max-width: 22px;">
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>Gói mở rộng</td>
+            <td>Gói mở rộng với tính năng bổ sung</td>
+            <td>299.000 VNĐ</td>
+            <td class="actions">
+              <button class="btn-action btn-buy">
+                <i class='bx bx-dollar-circle'></i>
+              </button>
+              <button class="btn-action btn-vnpay">
+                <img src="/image/vnpay.png" alt="" style="max-width: 22px;">
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+</body>
+
+</html>

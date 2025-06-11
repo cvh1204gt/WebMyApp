@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: page_head}"></head>
+
+<body>
+  <!--========== HEADER ==========-->
+  <header th:replace="~{layout :: page_header}"></header>
+
+  <!--========== NAV ==========-->
+  <div th:replace="~{layout :: page_navbar}"></div>
+
+  <!--========== CONTENTS ==========-->
+  <main>
+    <section class="profile-section mt-5">
+      <div class="dashboard-container">
+        <!-- Card thông tin người dùng -->
+        <div class="profile-card left d-flex flex-column align-items-center">
+          <div class="profile-content d-flex flex-column align-items-center">
+            <div class="profile-img">
+              <img src="/image/profile.png" alt="Avatar" />
+            </div>
+            <div class="text-center mt-3">
+              <h4 class="fw-bold">Nguyễn Văn A</h4>
+              <p class="fst-italic">nguyenvana@gmail.com</p>
+              <p class="role">Admin</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form thông tin cá nhân -->
+        <div class="profile-card right">
+          <h3 class="mb-3">Thông tin cá nhân</h3>
+          <form>
+            <div class="row mb-3">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Tên đăng nhập<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" placeholder="Tên đăng nhập" value="nguyenvana123"/>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Mật khẩu<span class="text-danger">*</span></label>
+                <div class="position-relative">
+                  <input type="password" class="form-control" value="123456789" disabled/>
+                  <i class="fa-regular fa-eye form"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Họ và tên<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" value="Nguyễn Văn A"/>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Mật khẩu mới<span class="text-danger">*</span></label>
+                <div class="position-relative">
+                  <input type="password" class="form-control" placeholder="Nhập mật khẩu mới..."/>
+                  <i class="fa-regular fa-eye form"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3 position-relative">
+              <label class="form-label">Ngày sinh<span class="text-danger">*</span></label>
+              <input class="form-control" type="date" value="1998-01-01" required/>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Email<span class="text-danger">*</span></label>
+              <input class="form-control" type="email" disabled value="nguyenvana@gmail.com" required />
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Số điện thoại<span class="text-danger">*</span></label>
+              <input class="form-control" type="text" value="0123456789" required />
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label class="form-label">Địa chỉ<span class="text-danger">*</span></label>
+              <input class="form-control" type="text" placeholder="Nhập địa chỉ..."/>
+            </div>
+
+            <button type="submit" class="btn update-profile-btn">Cập nhật</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</body>
+
+</html>
