@@ -9,31 +9,35 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/", "/register", "/register/**", "/login", "/css/**", "/js/**", "/image/**").permitAll()
-            .requestMatchers("/home", "/service/**").hasAnyRole("ADMIN", "CLIENT")
-            .requestMatchers("/profile").hasRole("ADMIN")
-            .anyRequest().authenticated())
-        .formLogin(form -> form
-            .loginPage("/login")
-            .usernameParameter("email")
-            .passwordParameter("password")
-            .defaultSuccessUrl("/home", true))
-        .logout(config -> config.logoutSuccessUrl("/"))
-        .build();
-  }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/register", "/register/**", "/login", "/verify-otp", "/verify-otp/**", 
+                               "/resend-otp", "/css/**", "/js/**", "/image/**").permitAll()
+                .requestMatchers("/home", "/service/**", "/services", "/account_management", "/lichsugiaodich").hasAnyRole("ADMIN", "CLIENT")
+                .requestMatchers("/profile").hasRole("ADMIN")
+                .anyRequest().authenticated())
+            .formLogin(form -> form
+                .loginPage("/login")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .defaultSuccessUrl("/home", true)
+                .failureUrl("/login?error=true"))
+            .logout(config -> config
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID"))
+            .build();
+    }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

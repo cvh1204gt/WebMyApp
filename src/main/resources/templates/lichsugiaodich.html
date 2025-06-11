@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: page_head}"></head>
+
+<body>
+  <!--========== HEADER ==========-->
+  <header th:replace="~{layout :: page_header}"></header>
+
+  <!--========== NAV ==========-->
+  <div th:replace="~{layout :: page_navbar}"></div>
+
+  <!--========== CONTENTS ==========-->
+  <main>
+    <section class="giaodich-section">
+      <h1 class="py-4">Quản lý giao dịch</h1>
+
+      <table class="giaodich-table">
+        <thead>
+          <tr>
+            <th>Mã giao dịch</th>
+            <th>Người dùng</th>
+            <th>Số tiền</th>
+            <th>Loại giao dịch</th>
+            <th>Trạng thái</th>
+            <th>Ngày giao dịch</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Mã giao dịch">01234</td>
+            <td data-label="Người dùng">Nguyễn Văn A</td>
+            <td data-label="Số tiền">499.999 VNĐ</td>
+            <td data-label="Loại giao dịch">Nạp tiền</td>
+            <td data-label="Trạng thái">Thành công</td>
+            <td data-label="Ngày tạo">14/5/2025</td>
+          </tr>
+          <tr>
+            <td data-label="Mã giao dịch">01234</td>
+            <td data-label="Người dùng">Nguyễn Văn A</td>
+            <td data-label="Số tiền">499.999 VNĐ</td>
+            <td data-label="Loại giao dịch">Nạp tiền</td>
+            <td data-label="Trạng thái">Thành công</td>
+            <td data-label="Ngày tạo">14/5/2025</td>
+          </tr>
+          <tr>
+            <td data-label="Mã giao dịch">01234</td>
+            <td data-label="Người dùng">Nguyễn Văn A</td>
+            <td data-label="Số tiền">499.999 VNĐ</td>
+            <td data-label="Loại giao dịch">Nạp tiền</td>
+            <td data-label="Trạng thái">Thành công</td>
+            <td data-label="Ngày tạo">14/5/2025</td>
+          </tr>
+          <tr>
+            <td data-label="Mã giao dịch">01234</td>
+            <td data-label="Người dùng">Nguyễn Văn A</td>
+            <td data-label="Số tiền">499.999 VNĐ</td>
+            <td data-label="Loại giao dịch">Nạp tiền</td>
+            <td data-label="Trạng thái">Thành công</td>
+            <td data-label="Ngày tạo">14/5/2025</td>
+          </tr>
+          <tr>
+            <td data-label="Mã giao dịch">01234</td>
+            <td data-label="Người dùng">Nguyễn Văn A</td>
+            <td data-label="Số tiền">499.999 VNĐ</td>
+            <td data-label="Loại giao dịch">Nạp tiền</td>
+            <td data-label="Trạng thái">Thành công</td>
+            <td data-label="Ngày tạo">14/5/2025</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination mt-3 d-flex justify-content-center gap-2">
+        <button class="pagination-btn">Trước</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="pagination-btn">Sau</button>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

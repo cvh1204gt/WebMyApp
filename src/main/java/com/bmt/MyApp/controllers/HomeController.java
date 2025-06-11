@@ -27,4 +27,14 @@ public class HomeController {
   public String services() {
     return "services";
   }
+
+  @GetMapping("/account_management")
+  public String accountManagement() {
+    return "account_management";
+  }
+
+  @GetMapping("/lichsugiaodich")
+  public String lichSuGiaoDich() {
+    return "lichsugiaodich";
+  }
 }

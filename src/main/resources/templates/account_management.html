@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: page_head}"></head>
+
+<body>
+  <!--========== HEADER ==========-->
+  <header th:replace="~{layout :: page_header}"></header>
+
+  <!--========== NAV ==========-->
+  <div th:replace="~{layout :: page_navbar}"></div>
+
+  <!--========== CONTENTS ==========-->
+  <main>
+    <section class="management-section">
+      <h1 class="py-4">Quản lý tài khoản</h1>
+      <div class="content-header">
+        <div class="d-flex gap-3">
+          <input type="search" class="form-control search-input" placeholder="Tìm kiếm theo tên, email..."
+            aria-label="Search">
+          <button class="btn btn-primary search-btn">Tìm kiếm</button>
+          <button class="btn delete-btn">Xóa bộ lọc</button>
+        </div>
+        <button class="btn-add-user">Thêm người dùng</button>
+      </div>
+
+      <table class="management-table">
+        <thead>
+          <tr>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>SĐT</th>
+            <th>Vai trò</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Họ tên">Nguyễn Văn A</td>
+            <td data-label="Email">nguyenvana@gmail.com</td>
+            <td data-label="SĐT">0123456789</td>
+            <td data-label="Vai trò">Admin</td>
+            <td data-label="Ngày tạo">5/9/2025</td>
+            <td data-label="Hành động" class="d-flex flex-column gap-1">
+              <button class="btn-delete-user">Xóa</button>
+              <button class="btn-edit-user">Sửa</button>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Họ tên">Nguyễn Văn A</td>
+            <td data-label="Email">nguyenvana@gmail.com</td>
+            <td data-label="SĐT">0123456789</td>
+            <td data-label="Vai trò">Admin</td>
+            <td data-label="Ngày tạo">5/9/2025</td>
+            <td data-label="Hành động" class="d-flex flex-column gap-1">
+              <button class="btn-delete-user">Xóa</button>
+              <button class="btn-edit-user">Sửa</button>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Họ tên">Nguyễn Văn A</td>
+            <td data-label="Email">nguyenvana@gmail.com</td>
+            <td data-label="SĐT">0123456789</td>
+            <td data-label="Vai trò">Admin</td>
+            <td data-label="Ngày tạo">5/9/2025</td>
+            <td data-label="Hành động" class="d-flex flex-column gap-1">
+              <button class="btn-delete-user">Xóa</button>
+              <button class="btn-edit-user">Sửa</button>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Họ tên">Nguyễn Văn A</td>
+            <td data-label="Email">nguyenvana@gmail.com</td>
+            <td data-label="SĐT">0123456789</td>
+            <td data-label="Vai trò">Admin</td>
+            <td data-label="Ngày tạo">5/9/2025</td>
+            <td data-label="Hành động" class="d-flex flex-column gap-1">
+              <button class="btn-delete-user">Xóa</button>
+              <button class="btn-edit-user">Sửa</button>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Họ tên">Nguyễn Văn A</td>
+            <td data-label="Email">nguyenvana@gmail.com</td>
+            <td data-label="SĐT">0123456789</td>
+            <td data-label="Vai trò">Admin</td>
+            <td data-label="Ngày tạo">5/9/2025</td>
+            <td data-label="Hành động" class="d-flex flex-column gap-1">
+              <button class="btn-delete-user">Xóa</button>
+              <button class="btn-edit-user">Sửa</button>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Họ tên">Nguyễn Văn A</td>
+            <td data-label="Email">nguyenvana@gmail.com</td>
+            <td data-label="SĐT">0123456789</td>
+            <td data-label="Vai trò">Admin</td>
+            <td data-label="Ngày tạo">5/9/2025</td>
+            <td data-label="Hành động" class="d-flex flex-column gap-1">
+              <button class="btn-delete-user">Xóa</button>
+              <button class="btn-edit-user">Sửa</button>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Họ tên">Nguyễn Văn A</td>
+            <td data-label="Email">nguyenvana@gmail.com</td>
+            <td data-label="SĐT">0123456789</td>
+            <td data-label="Vai trò">Admin</td>
+            <td data-label="Ngày tạo">5/9/2025</td>
+            <td data-label="Hành động" class="d-flex flex-column gap-1">
+              <button class="btn-delete-user">Xóa</button>
+              <button class="btn-edit-user">Sửa</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination mt-3 d-flex justify-content-center gap-2">
+        <button class="pagination-btn">Trước</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="pagination-btn">Sau</button>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

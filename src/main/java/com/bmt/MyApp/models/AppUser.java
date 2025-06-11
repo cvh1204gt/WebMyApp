@@ -1,12 +1,6 @@
 package com.bmt.MyApp.models;
 
-// import java.time.LocalDateTime;
-// import java.util.Collection;
 import java.util.Date;
-// import java.util.List;
-
-// import org.springframework.security.core.GrantedAuthority;
-// import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,97 +13,119 @@ import jakarta.persistence.Table;
 @Table(name = "users")
 public class AppUser {
 
-  // THUOC TINH
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    
+    private String fullName;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
-  private String fullName;
+    @Column(unique = true, nullable = false)
+    private String email;
+    
+    private String phone;
+    private String address;
+    private String password;
+    private String role;
+    private Date createAt;
+    
+    @Column(name = "verification_token")
+    private String verificationToken;
+    
+    @Column(name = "is_verified", nullable = false)
+    private boolean isVerified = false;
 
-  @Column(unique = true, nullable = false)
-  private String email;
-  private String phone;
-  private String address;
-  private String password;
-  private String role;
-  private Date CreateAt;
-  private String verficationToken;
-  private boolean isVerified;
+    @Column(name = "reset_token")
+    private String resetToken;
 
-  @Column(name = "reset_token")
-  private String resetToken;
+    // Constructors
+    public AppUser() {}
 
-  // GETTER & SETTER
+    // Getters and Setters
+    public int getId() {
+        return id;
+    }
 
-  public String getVerficationToken() {
-    return verficationToken;
-  }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-  public void setVerficationToken(String verficationToken) {
-    this.verficationToken = verficationToken;
-  }
+    public String getFullName() {
+        return fullName;
+    }
 
-  public boolean isVerified() {
-    return isVerified;
-  }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
-  public void setVerified(boolean isVerified) {
-    this.isVerified = isVerified;
-  }
+    public String getEmail() {
+        return email;
+    }
 
-  public String getFullName() {
-    return fullName;
-  }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-  public void setFullName(String fullName) {
-    this.fullName = fullName;
-  }
+    public String getPhone() {
+        return phone;
+    }
 
-  public String getEmail() {
-    return email;
-  }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    public String getAddress() {
+        return address;
+    }
 
-  public String getPhone() {
-    return phone;
-  }
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
+    public String getPassword() {
+        return password;
+    }
 
-  public String getAddress() {
-    return address;
-  }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-  public void setAddress(String address) {
-    this.address = address;
-  }
+    public String getRole() {
+        return role;
+    }
 
-  public String getPassword() {
-    return password;
-  }
+    public void setRole(String role) {
+        this.role = role;
+    }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+    public Date getCreateAt() {
+        return createAt;
+    }
 
-  public String getRole() {
-    return role;
-  }
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
 
-  public void setRole(String role) {
-    this.role = role;
-  }
+    public String getVerificationToken() {
+        return verificationToken;
+    }
 
-  public Date getCreateAt() {
-    return CreateAt;
-  }
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
 
-  public void setCreateAt(Date createAt) {
-    CreateAt = createAt;
-  }
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean isVerified) {
+        this.isVerified = isVerified;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
 }
