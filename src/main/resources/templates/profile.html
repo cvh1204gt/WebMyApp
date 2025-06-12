@@ -14,6 +14,7 @@
   <main>
     <section class="profile-section mt-5">
       <div class="dashboard-container">
+
         <!-- Card thông tin người dùng -->
         <div class="profile-card left d-flex flex-column align-items-center">
           <div class="profile-content d-flex flex-column align-items-center">
@@ -21,9 +22,15 @@
               <img src="/image/profile.png" alt="Avatar" />
             </div>
             <div class="text-center mt-3">
-              <h4 class="fw-bold">Nguyễn Văn A</h4>
-              <p class="fst-italic">nguyenvana@gmail.com</p>
-              <p class="role">Admin</p>
+              <h4 class="fw-bold" th:text="${user.fullName != null ? user.fullName : 'Chưa cập nhật'}">Nguyễn Văn A</h4>
+              <!-- Hiển thị email từ database -->
+              <p class="fst-italic" th:text="${user.email}">nguyenvana@gmail.com</p>
+              <!-- Hiển thị role từ database -->
+              <p th:text="${user.role == 'ADMIN' ? 'Quản lý' 
+                          : user.role == 'CLIENT' ? 'Khách hàng' 
+                          : user.role == 'STAFF' ? 'Nhân viên' 
+                          : 'Không xác định'}">
+              </p>
             </div>
           </div>
         </div>
@@ -31,54 +38,56 @@
         <!-- Form thông tin cá nhân -->
         <div class="profile-card right">
           <h3 class="mb-3">Thông tin cá nhân</h3>
-          <form>
-            <div class="row mb-3">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Tên đăng nhập<span class="text-danger">*</span></label>
-                <input type="text" class="form-control" placeholder="Tên đăng nhập" value="nguyenvana123"/>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Mật khẩu<span class="text-danger">*</span></label>
-                <div class="position-relative">
-                  <input type="password" class="form-control" value="123456789" disabled/>
-                  <i class="fa-regular fa-eye form"></i>
-                </div>
-              </div>
-            </div>
-
+          <form th:action="@{/profile/update}" method="post" th:object="${user}">
             <div class="row mb-3">
               <div class="col-md-6 mb-3">
                 <label class="form-label">Họ và tên<span class="text-danger">*</span></label>
-                <input type="text" class="form-control" value="Nguyễn Văn A"/>
+                <input type="text" class="form-control" name="fullName" th:value="${user.fullName}" required />
               </div>
+
               <div class="col-md-6">
                 <label class="form-label">Mật khẩu mới<span class="text-danger">*</span></label>
                 <div class="position-relative">
-                  <input type="password" class="form-control" placeholder="Nhập mật khẩu mới..."/>
+                  <input type="password" class="form-control" name="password" placeholder="Nhập mật khẩu mới..." />
                   <i class="fa-regular fa-eye form"></i>
                 </div>
               </div>
             </div>
 
-            <div class="col-md-6 mb-3 position-relative">
-              <label class="form-label">Ngày sinh<span class="text-danger">*</span></label>
-              <input class="form-control" type="date" value="1998-01-01" required/>
+            <div class="row mb-3">
+              <div class="col-md-6 mb-3 position-relative">
+                <label class="form-label">Ngày sinh<span class="text-danger">*</span></label>
+                <input class="form-control" type="date" name="birthDate" th:value="${user.birthDate}" required />
+              </div>
 
+              <div class="col-md-6">
+                <label class="form-label">Xác nhận mật khẩu<span class="text-danger">*</span></label>
+                <div class="position-relative">
+                  <input type="password" class="form-control" name="confirmPassword"
+                    placeholder="Xác nhận mật khẩu..." />
+                  <i class="fa-regular fa-eye form"></i>
+                </div>
+              </div>
             </div>
+
+
 
             <div class="col-md-6 mb-3">
               <label class="form-label">Email<span class="text-danger">*</span></label>
-              <input class="form-control" type="email" disabled value="nguyenvana@gmail.com" required />
+              <input class="form-control" type="email" disabled th:value="${user.email}" title="Bạn không thể sửa email"
+                required />
             </div>
 
             <div class="col-md-6 mb-3">
               <label class="form-label">Số điện thoại<span class="text-danger">*</span></label>
-              <input class="form-control" type="text" value="0123456789" required />
+              <input class="form-control" type="text" name="phone" th:value="${user.phone}" pattern="[0-9]{10,11}"
+                title="Số điện thoại phải có 10-11 chữ số" required />
             </div>
 
             <div class="col-md-12 mb-3">
               <label class="form-label">Địa chỉ<span class="text-danger">*</span></label>
-              <input class="form-control" type="text" placeholder="Nhập địa chỉ..."/>
+              <input class="form-control" type="text" name="address" placeholder="Nhập địa chỉ..."
+                th:value="${user.address}" />
             </div>
 
             <button type="submit" class="btn update-profile-btn">Cập nhật</button>
@@ -86,7 +95,60 @@
         </div>
       </div>
     </section>
+
+    <!-- Hiển thị thông báo -->
+    <div class="profile-alert">
+      <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert"
+        style="padding-right: 3rem;">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert"
+        style="padding-right: 3rem;">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+
   </main>
+
+  <script>
+    document.querySelector('form').addEventListener('submit', function (e) {
+      const password = document.querySelector('input[name="password"]').value;
+      const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
+
+      if (password && password !== confirmPassword) {
+        e.preventDefault();
+        alert('Mật khẩu xác nhận không khớp!');
+        return false;
+      }
+
+      if (password && password.length < 6) {
+        e.preventDefault();
+        alert('Mật khẩu phải có ít nhất 6 ký tự!');
+        return false;
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          // Sử dụng Bootstrap's fade effect
+          alert.classList.remove('show');
+          alert.classList.add('fade');
+          
+          // Remove element after animation completes
+          setTimeout(function() {
+            if (alert.parentNode) {
+              alert.parentNode.removeChild(alert);
+            }
+          }, 150); // Wait for fade animation
+        }, 3000); // 1.5 seconds
+      });
+    });
+  </script>
 
 </body>
 

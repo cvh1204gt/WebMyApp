@@ -1,5 +1,6 @@
 package com.bmt.MyApp.models;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -18,6 +19,7 @@ public class AppUser {
     private int id;
     
     private String fullName;
+    private String username;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -26,6 +28,7 @@ public class AppUser {
     private String address;
     private String password;
     private String role;
+    private LocalDate birthDate;
     private Date createAt;
     
     @Column(name = "verification_token")
@@ -55,6 +58,14 @@ public class AppUser {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -127,5 +138,13 @@ public class AppUser {
 
     public void setResetToken(String resetToken) {
         this.resetToken = resetToken;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 }
