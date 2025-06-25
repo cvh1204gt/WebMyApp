@@ -159,6 +159,8 @@ public class PaymentController {
       transaction.setStatus(TransactionStatus.SUCCESS);
       transaction.setCreatedAt(LocalDateTime.now());
 
+      transaction.setExpireDate(LocalDateTime.now().plusDays(service.getDuration()));
+
       transactionsRepository.save(transaction);
 
       model.addAttribute("amount", transaction.getAmount());
