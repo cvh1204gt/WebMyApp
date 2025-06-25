@@ -14,19 +14,26 @@
   <main>
     <section class="management-section">
       <h1 class="py-4">Quản lý tài khoản</h1>
+
+      <!-- Alert Messages -->
+      <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+      <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
       <div class="content-header">
-        <div class="d-flex gap-3">
-          <input type="search" class="form-control search-input" placeholder="Tìm kiếm theo tên, email..."
-            aria-label="Search">
-          <button class="btn btn-primary search-btn">Tìm kiếm</button>
-          <button class="btn delete-btn">Xóa bộ lọc</button>
-        </div>
-        <button class="btn-add-user">Thêm người dùng</button>
+        <form class="search-form" method="get" th:action="@{/admin/account_management}">
+          <input type="search" name="search" class="search-input" placeholder="Tìm kiếm theo tên, email..."
+            th:value="${search}" aria-label="Search">
+          <button type="submit" class="search-btn">Tìm kiếm</button>
+          <a href="/admin/account_management" class="delete-btn"
+            style="text-decoration: none; display: inline-block; line-height: 1.5;">Xóa bộ lọc</a>
+        </form>
+        <a href="/admin/add_account" class="btn-add-user">Thêm người dùng</a>
       </div>
 
       <table class="management-table">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Họ tên</th>
             <th>Email</th>
             <th>SĐT</th>
@@ -36,94 +43,69 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td data-label="Họ tên">Nguyễn Văn A</td>
-            <td data-label="Email">nguyenvana@gmail.com</td>
-            <td data-label="SĐT">0123456789</td>
-            <td data-label="Vai trò">Admin</td>
-            <td data-label="Ngày tạo">5/9/2025</td>
-            <td data-label="Hành động" class="d-flex flex-column gap-1">
-              <button class="btn-delete-user">Xóa</button>
-              <button class="btn-edit-user">Sửa</button>
+          <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.fullName}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.phone}"></td>
+            <td th:text="${user.role}"></td>
+            <td th:text="${#dates.format(user.createAt, 'dd/MM/yyyy')}"></td>
+            <!-- Thay thế button xóa trong bảng -->
+            <td class="d-flex flex-column gap-1">
+              <form th:action="@{/admin/delete_account}" method="post" style="display: inline;"
+                onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">
+                <input type="hidden" name="email" th:value="${user.email}">
+                <button type="submit" class="btn-delete-user">Xóa</button>
+              </form>
+              <a th:href="@{/admin/edit_account(email=${user.email})}" class="btn-edit-user"
+                style="text-decoration: none; text-align: center;">Sửa</a>
             </td>
           </tr>
-          <tr>
-            <td data-label="Họ tên">Nguyễn Văn A</td>
-            <td data-label="Email">nguyenvana@gmail.com</td>
-            <td data-label="SĐT">0123456789</td>
-            <td data-label="Vai trò">Admin</td>
-            <td data-label="Ngày tạo">5/9/2025</td>
-            <td data-label="Hành động" class="d-flex flex-column gap-1">
-              <button class="btn-delete-user">Xóa</button>
-              <button class="btn-edit-user">Sửa</button>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Họ tên">Nguyễn Văn A</td>
-            <td data-label="Email">nguyenvana@gmail.com</td>
-            <td data-label="SĐT">0123456789</td>
-            <td data-label="Vai trò">Admin</td>
-            <td data-label="Ngày tạo">5/9/2025</td>
-            <td data-label="Hành động" class="d-flex flex-column gap-1">
-              <button class="btn-delete-user">Xóa</button>
-              <button class="btn-edit-user">Sửa</button>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Họ tên">Nguyễn Văn A</td>
-            <td data-label="Email">nguyenvana@gmail.com</td>
-            <td data-label="SĐT">0123456789</td>
-            <td data-label="Vai trò">Admin</td>
-            <td data-label="Ngày tạo">5/9/2025</td>
-            <td data-label="Hành động" class="d-flex flex-column gap-1">
-              <button class="btn-delete-user">Xóa</button>
-              <button class="btn-edit-user">Sửa</button>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Họ tên">Nguyễn Văn A</td>
-            <td data-label="Email">nguyenvana@gmail.com</td>
-            <td data-label="SĐT">0123456789</td>
-            <td data-label="Vai trò">Admin</td>
-            <td data-label="Ngày tạo">5/9/2025</td>
-            <td data-label="Hành động" class="d-flex flex-column gap-1">
-              <button class="btn-delete-user">Xóa</button>
-              <button class="btn-edit-user">Sửa</button>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Họ tên">Nguyễn Văn A</td>
-            <td data-label="Email">nguyenvana@gmail.com</td>
-            <td data-label="SĐT">0123456789</td>
-            <td data-label="Vai trò">Admin</td>
-            <td data-label="Ngày tạo">5/9/2025</td>
-            <td data-label="Hành động" class="d-flex flex-column gap-1">
-              <button class="btn-delete-user">Xóa</button>
-              <button class="btn-edit-user">Sửa</button>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Họ tên">Nguyễn Văn A</td>
-            <td data-label="Email">nguyenvana@gmail.com</td>
-            <td data-label="SĐT">0123456789</td>
-            <td data-label="Vai trò">Admin</td>
-            <td data-label="Ngày tạo">5/9/2025</td>
-            <td data-label="Hành động" class="d-flex flex-column gap-1">
-              <button class="btn-delete-user">Xóa</button>
-              <button class="btn-edit-user">Sửa</button>
-            </td>
+          <tr th:if="${#lists.isEmpty(users)}">
+            <td colspan="7" style="text-align: center;">Không có dữ liệu</td>
           </tr>
         </tbody>
       </table>
 
-      <div class="pagination mt-3 d-flex justify-content-center gap-2">
-        <button class="pagination-btn">Trước</button>
-        <button class="page-btn active">1</button>
-        <button class="page-btn">2</button>
-        <button class="pagination-btn">Sau</button>
+      <!-- Pagination -->
+      <div class="pagination mt-3 d-flex justify-content-center gap-2" th:if="${totalPages > 1}">
+        <a th:if="${hasPrevious}" th:href="@{/admin/account_management(page=${currentPage - 1}, search=${search})}"
+          class="pagination-btn">Trước</a>
+
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+          <a th:href="@{/admin/account_management(page=${i}, search=${search})}"
+            th:class="${i == currentPage} ? 'page-btn active' : 'page-btn'" th:text="${i + 1}"></a>
+        </span>
+
+        <a th:if="${hasNext}" th:href="@{/admin/account_management(page=${currentPage + 1}, search=${search})}"
+          class="pagination-btn">Sau</a>
+      </div>
+
+      <div class="mt-3 text-center" th:if="${totalElements > 0}">
+        <p>Hiển thị [[${#lists.size(users)}]] trong tổng số [[${totalElements}]] kết quả</p>
       </div>
     </section>
   </main>
+
+  <script>
+    function deleteUser(email) {
+      if (confirm('Bạn có chắc chắn muốn xóa tài khoản này?')) {
+        // Tạo form để submit POST request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/delete_account';
+
+        const emailInput = document.createElement('input');
+        emailInput.type = 'hidden';
+        emailInput.name = 'email';
+        emailInput.value = email;
+
+        form.appendChild(emailInput);
+        document.body.appendChild(form);
+        form.submit();
+      }
+    }
+  </script>
 </body>
 
 </html>

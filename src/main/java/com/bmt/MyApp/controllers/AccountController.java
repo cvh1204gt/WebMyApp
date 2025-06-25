@@ -4,140 +4,177 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bmt.MyApp.models.AppUser;
-import com.bmt.MyApp.models.OtpVerificationDto;
-import com.bmt.MyApp.models.RegisterDto;
 import com.bmt.MyApp.repositories.AppUserRepository;
-import com.bmt.MyApp.services.OtpService;
-
-import jakarta.validation.Valid;
 
 @Controller
+@RequestMapping("/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AccountController {
-    
+
     @Autowired
-    private AppUserRepository repo;
-    
+    private AppUserRepository appUserRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
-    @Autowired
-    private OtpService otpService;
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-    @GetMapping("/register")
-    public String register(Model model) {
-        RegisterDto registerDto = new RegisterDto();
-        model.addAttribute("registerDto", registerDto);
-        model.addAttribute("success", false);
-        return "register";
-    }
-
-    @PostMapping("/register")
-    public String register(Model model, @Valid @ModelAttribute RegisterDto registerDto, 
-                          BindingResult result, RedirectAttributes redirectAttributes) {
-
-        // Validate password confirmation
-        if(!registerDto.getPassword().equals(registerDto.getConfirmPassword())) {
-            result.addError(
-                new FieldError("registerDto", "confirmPassword", "Nhập lại mật khẩu không chính xác, mời nhập lại!")
-            );
-        }
-
-        // Check if email already exists
-        Optional<AppUser> existingUser = repo.findByEmail(registerDto.getEmail());
-        if(existingUser.isPresent()) {
-            result.addError(
-                new FieldError("registerDto", "email", "Email đã tồn tại, mời nhập lại!")
-            );
-        }
-
-        if(result.hasErrors()) {
-            return "register";
-        }
-
-        try {
-            // Create new user
-            AppUser newUser = new AppUser();
-            newUser.setFullName(registerDto.getFullName());
-            newUser.setEmail(registerDto.getEmail());
-            newUser.setPhone(registerDto.getPhone());
-            newUser.setAddress(registerDto.getAddress());
-            newUser.setRole("CLIENT");
-            newUser.setCreateAt(new Date());
-            newUser.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-            newUser.setVerified(false); // User chưa được xác thực
-
-            repo.save(newUser);
-
-            // Generate and send OTP
-            otpService.generateAndSendOtp(registerDto.getEmail());
-
-            // Redirect to OTP verification page
-            redirectAttributes.addAttribute("email", registerDto.getEmail());
-            redirectAttributes.addFlashAttribute("message", "Đăng ký thành công! Vui lòng kiểm tra email để lấy mã OTP.");
-            return "redirect:/verify-otp";
-
-        } catch(Exception ex) {
-            result.addError(
-                new FieldError("registerDto", "fullName", "Có lỗi xảy ra: " + ex.getMessage())
-            );
-            return "register";
-        }
-    }
-
-    @GetMapping("/verify-otp")
-    public String showOtpVerification(@RequestParam("email") String email, Model model) {
-        OtpVerificationDto otpDto = new OtpVerificationDto();
-        otpDto.setEmail(email);
-        model.addAttribute("otpVerificationDto", otpDto);
-        return "verify-otp";
-    }
-
-    @PostMapping("/verify-otp")
-    public String verifyOtp(@Valid @ModelAttribute OtpVerificationDto otpDto, 
-                           BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+    @GetMapping("/account_management")
+    public String accountManagement(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "") String search,
+            Model model) {
         
-        if(result.hasErrors()) {
-            return "verify-otp";
-        }
-
-        boolean isValid = otpService.verifyOtp(otpDto.getEmail(), otpDto.getOtp());
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<AppUser> userPage;
         
-        if(isValid) {
-            redirectAttributes.addFlashAttribute("successMessage", "Xác thực thành công! Bạn có thể đăng nhập ngay bây giờ.");
-            return "redirect:/login";
+        if (search.isEmpty()) {
+            userPage = appUserRepository.findAll(pageable);
         } else {
-            model.addAttribute("error", "Mã OTP không hợp lệ hoặc đã hết hạn!");
-            return "verify-otp";
+            userPage = appUserRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                search, search, pageable);
+        }
+        
+        model.addAttribute("users", userPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("totalElements", userPage.getTotalElements());
+        model.addAttribute("hasPrevious", userPage.hasPrevious());
+        model.addAttribute("hasNext", userPage.hasNext());
+        model.addAttribute("search", search);
+        
+        return "account_management";
+    }
+
+    @GetMapping("/add_account")
+    public String showAddAccountForm(Model model) {
+        model.addAttribute("user", new AppUser());
+        model.addAttribute("isEdit", false);
+        return "add_edit_account";
+    }
+
+    @PostMapping("/add_account")
+    public String addAccount(@ModelAttribute AppUser user, RedirectAttributes redirectAttributes) {
+        try {
+            // Kiểm tra email đã tồn tại
+            if (appUserRepository.existsByEmail(user.getEmail())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Email đã tồn tại!");
+                return "redirect:/admin/add_account";
+            }
+
+            // Kiểm tra username đã tồn tại
+            if (user.getUsername() != null && !user.getUsername().isEmpty() 
+                && appUserRepository.existsByUsername(user.getUsername())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Username đã tồn tại!");
+                return "redirect:/admin/add_account";
+            }
+
+            // Mã hóa password
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setCreateAt(new Date());
+            user.setVerified(true); // Admin tạo thì tự động verify
+            
+            // Đặt role mặc định nếu chưa có
+            if (user.getRole() == null || user.getRole().isEmpty()) {
+                user.setRole("CLIENT");
+            }
+
+            appUserRepository.save(user);
+            redirectAttributes.addFlashAttribute("successMessage", "Thêm tài khoản thành công!");
+            return "redirect:/admin/account_management";
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra: " + e.getMessage());
+            return "redirect:/admin/add_account";
         }
     }
 
-    @PostMapping("/resend-otp")
-    public String resendOtp(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
+    @GetMapping("/edit_account")
+    public String showEditAccountForm(@RequestParam String email, Model model, RedirectAttributes redirectAttributes) {
+        Optional<AppUser> userOptional = appUserRepository.findByEmail(email);
+        
+        if (userOptional.isPresent()) {
+            model.addAttribute("user", userOptional.get());
+            model.addAttribute("isEdit", true);
+            return "add_edit_account";
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy tài khoản!");
+            return "redirect:/admin/account_management";
+        }
+    }
+
+    @PostMapping("/edit_account")
+    public String editAccount(@ModelAttribute AppUser user, RedirectAttributes redirectAttributes) {
         try {
-            otpService.generateAndSendOtp(email);
-            redirectAttributes.addFlashAttribute("message", "Mã OTP mới đã được gửi đến email của bạn!");
-        } catch(Exception ex) {
-            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra khi gửi OTP!");
+            Optional<AppUser> existingUserOptional = appUserRepository.findByEmail(user.getEmail());
+            
+            if (existingUserOptional.isPresent()) {
+                AppUser existingUser = existingUserOptional.get();
+                
+                // Cập nhật thông tin
+                existingUser.setFullName(user.getFullName());
+                existingUser.setPhone(user.getPhone());
+                existingUser.setAddress(user.getAddress());
+                existingUser.setRole(user.getRole());
+                existingUser.setBirthDate(user.getBirthDate());
+                
+                // Chỉ cập nhật username nếu có thay đổi và không trùng với user khác
+                if (user.getUsername() != null && !user.getUsername().equals(existingUser.getUsername())) {
+                    if (appUserRepository.existsByUsername(user.getUsername())) {
+                        redirectAttributes.addFlashAttribute("errorMessage", "Username đã tồn tại!");
+                        return "redirect:/admin/edit_account?email=" + user.getEmail();
+                    }
+                    existingUser.setUsername(user.getUsername());
+                }
+                
+                // Chỉ cập nhật password nếu có nhập password mới
+                if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                    existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+                }
+                
+                appUserRepository.save(existingUser);
+                redirectAttributes.addFlashAttribute("successMessage", "Cập nhật tài khoản thành công!");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy tài khoản!");
+            }
+            
+            return "redirect:/admin/account_management";
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra: " + e.getMessage());
+            return "redirect:/admin/edit_account?email=" + user.getEmail();
+        }
+    }
+
+    @PostMapping("/delete_account")
+    public String deleteAccount(@RequestParam String email, RedirectAttributes redirectAttributes) {
+        try {
+            Optional<AppUser> userOptional = appUserRepository.findByEmail(email);
+            
+            if (userOptional.isPresent()) {
+                appUserRepository.delete(userOptional.get());
+                redirectAttributes.addFlashAttribute("successMessage", "Xóa tài khoản thành công!");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy tài khoản!");
+            }
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra: " + e.getMessage());
         }
         
-        redirectAttributes.addAttribute("email", email);
-        return "redirect:/verify-otp";
+        return "redirect:/admin/account_management";
     }
 }

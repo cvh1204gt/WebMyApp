@@ -17,6 +17,23 @@
   --secondary-color: #6B8AD2;
   --hover-color: #FA9746;
   --white-color: #FFFFFF;
+  --black-color: #000000;
+  
+  /* Button Colors */
+  --success-color: #5cb85c;
+  --success-hover: #4cae4c;
+  --warning-color: #F29900;
+  --danger-color: #FF0000;
+  --info-color: #10BCC3;
+  --orange-color: #E8712F;
+  --green-primary: #0CAD55;
+  --green-hover: #0b9f4e;
+  --blue-primary: #2980b9;
+  --gray-color: #575757;
+  --light-gray: #aeaeae;
+  --border-color: #ddd;
+  --light-blue: #C7E1FA;
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
   /*========== Font and typography ==========*/
   --body-font: 'Poppins', sans-serif;
@@ -114,11 +131,7 @@ img {
   background-color: var(--first-color-light);
 }
 
-.header__input::-moz-placeholder {
-  font-family: var(--body-font);
-  color: var(--text-color);
-}
-
+.header__input::-moz-placeholder,
 .header__input::placeholder {
   font-family: var(--body-font);
   color: var(--text-color);
@@ -134,7 +147,7 @@ img {
   cursor: pointer;
 }
 
-/*========== NAV ==========*/
+/*========== NAVIGATION ==========*/
 .nav {
   position: fixed;
   top: 0;
@@ -155,10 +168,8 @@ img {
   padding-bottom: 3rem;
   overflow: auto;
   scrollbar-width: none;
-  /* For mozilla */
 }
 
-/* For Google Chrome and others */
 .nav__container::-webkit-scrollbar {
   display: none;
 }
@@ -188,14 +199,17 @@ img {
   color: var(--white-color);
 }
 
-.nav__link {
+/* Navigation Links */
+.nav__link,
+.nav__logout {
   display: flex;
   align-items: center;
   color: var(--text-color);
   transition: all .3s ease;
 }
 
-.nav__link:hover {
+.nav__link:hover,
+.nav__logout:hover {
   background: rgba(255, 255, 255, 0.2);
   padding: 10px;
   border-radius: 5px;
@@ -212,22 +226,27 @@ img {
   color: var(--white-color);
 }
 
-.nav__name {
+.nav__name,
+.nav__logo-name {
   font-size: var(--small-font-size);
   font-weight: 400;
   white-space: nowrap;
   color: var(--white-color);
 }
 
-.nav__logo-name {
-  color: var(--white-color);
-}
-
+/* Logout Button Specific */
 .nav__logout {
   margin-top: 5rem;
+  background: none;
+  border: none;
+  width: 100%;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--body-font);
 }
 
-/* Dropdown */
+/* Dropdown Navigation */
 .nav__dropdown {
   overflow: hidden;
   max-height: 21px;
@@ -261,25 +280,20 @@ img {
   transition: .4s;
 }
 
-/* Show dropdown collapse */
 .nav__dropdown:hover {
   max-height: 100rem;
 }
 
-/* Rotate icon arrow */
 .nav__dropdown:hover .nav__dropdown-icon {
   transform: rotate(180deg);
 }
 
-/*===== Show menu =====*/
+/* Show menu */
 .show-menu {
   left: 0;
 }
 
-/* CONTENT SECTION */
-
-
-/* DASHBOARD HOME */
+/*========== MAIN CONTENT ==========*/
 main {
   display: flex;
   flex-direction: column;
@@ -287,203 +301,11 @@ main {
   align-items: center;
 }
 
-.home-section {
-  max-width: 2560px;
-  width: 100%;
-}
-
-.dashboard-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-}
-
-.dashboard-card {
-  flex: 1 1 calc(50% - 20px);
-  /* 2 cột với khoảng cách */
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  max-width: 924px;
-  height: 400px;
-  position: relative;
-}
-
-.package {
-  display: flex;
-  margin-top: 10px;
-  border-radius: 5px;
-}
-
-.package-content .bxs-user.in-use {
-  background-color: #10BCC3;
-  padding: 20px;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 48px;
-}
-
-.package-content .bxs-user.expired {
-  background-color: #E8712F;
-  padding: 20px;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 48px;
-}
-
-.package-title.advanced {
-  color: #10BCC3;
-  font-size: 1.3em;
-}
-
-.package-title.extend {
-  color: #E8712F;
-  font-size: 1.3em;
-}
-
-.expiry {
-  font-size: 14px;
-  color: #aeaeae;
-}
-
-.divider {
-  border-top: 1px solid #aeaeae;
-  margin: 20px 0;
-}
-
-.dashboard-btn {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-}
-
-.recharge-btn {
-  background-color: #2ecc71;
-  color: white;
-}
-
-.fa-clock-rotate-left,
-.fa-bell {
-  font-size: 128px;
-  color: #aeaeae;
-  display: flex;
-  margin: 30px 0;
-  justify-content: center;
-}
-
-.detailed-btn.red {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.detailed-btn.yellow {
-  background-color: #f1c40f;
-  color: white;
-}
-
-.view-more {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  display: inline-block;
-  margin-top: 10px;
-  color: #2980b9;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-/* Responsive: Khi màn hình nhỏ thì chuyển thành cột */
-@media (max-width: 768px) {
-  .dashboard-card {
-    flex: 1 1 100%;
-  }
-}
-
-/* DASHBOARD PROFILE */
-.profile-section {
-  max-width: 2560px;
-  width: 100%;
-}
-
-.profile-card {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  flex: 1 1 45%;
-  position: relative;
-}
-
-.profile-card.left {
-  max-width: 500px;
-  height: 300px;
-  border-top: 100px solid #6B8AD2;
-}
-
-.profile-card.right {
-  max-width: 1200px;
-  height: auto;
-}
-
-.profile-content {
-  position: absolute;
-  top: -50px;
-}
-
-.profile-img img {
-  width: 100px;
-  height: 100px;
-  border: 5px solid #fff;
-  border-radius: 50%;
-}
-
-.fa-eye.form {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  cursor: pointer;
-}
-
-.update-profile-btn {
-  background-color: #0CAD55;
-  color: #fff;
-  transition: opacity .3s ease;
-}
-
-.update-profile-btn:hover {
-  opacity: 0.9;
-  color: #fff;
-}
-
-.profile-alert {
-  position: absolute;
-  bottom: 0;
-}
-
-/* Responsive */
-@media (max-width: 1200px) {
-  .profile-card {
-    flex: 1 1 100%;
-  }
-}
-
-/* DASHBOARD SERVICES*/
-.services-section {
-  max-width: 2560px;
-  width: 100%;
-}
-
 .content {
   flex: 1;
-  /* Allow content to take remaining space */
   padding: 20px;
-  background-color: #fff;
-  /* White background for content */
+  background-color: var(--white-color);
   margin: 20px;
-  /* Add some margin around the content block */
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
@@ -502,10 +324,156 @@ main {
   color: #333;
 }
 
-.btn-nap-tien {
-  background-color: #5cb85c;
-  /* Green */
-  color: white;
+/* Section Containers */
+.home-section,
+.profile-section,
+.services-section,
+.management-section,
+.giaodich-section,
+.history-section {
+  max-width: 2560px;
+  width: 100%;
+}
+
+/*========== DASHBOARD CARDS ==========*/
+.dashboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.dashboard-card {
+  flex: 1 1 calc(50% - 20px);
+  background: var(--white-color);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 924px;
+  height: 400px;
+  position: relative;
+}
+
+.package {
+  display: flex;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.package-content .bxs-user.in-use {
+  background-color: var(--info-color);
+  padding: 20px;
+  border-radius: 10px;
+  color: var(--white-color);
+  font-size: 48px;
+}
+
+.package-content .bxs-user.expired {
+  background-color: var(--orange-color);
+  padding: 20px;
+  border-radius: 10px;
+  color: var(--white-color);
+  font-size: 48px;
+}
+
+.package-title.advanced {
+  color: var(--info-color);
+  font-size: 1.3em;
+}
+
+.package-title.extend {
+  color: var(--orange-color);
+  font-size: 1.3em;
+}
+
+.expiry {
+  font-size: 14px;
+  color: var(--light-gray);
+}
+
+.divider {
+  border-top: 1px solid var(--light-gray);
+  margin: 20px 0;
+}
+
+.dashboard-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.fa-clock-rotate-left,
+.fa-bell {
+  font-size: 128px;
+  color: var(--light-gray);
+  display: flex;
+  margin: 30px 0;
+  justify-content: center;
+}
+
+.view-more {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--blue-primary);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/*========== PROFILE SECTION ==========*/
+.profile-card {
+  background-color: var(--white-color);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex: 1 1 45%;
+  position: relative;
+}
+
+.profile-card.left {
+  max-width: 500px;
+  height: 300px;
+  border-top: 100px solid var(--secondary-color);
+}
+
+.profile-card.right {
+  max-width: 1200px;
+  height: auto;
+}
+
+.profile-content {
+  position: absolute;
+  top: -50px;
+}
+
+.profile-img img {
+  width: 100px;
+  height: 100px;
+  border: 5px solid var(--white-color);
+  border-radius: 50%;
+}
+
+.fa-eye.form {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.profile-alert {
+  position: absolute;
+  bottom: 0;
+}
+
+/*========== BUTTONS ==========*/
+/* Primary Buttons */
+.btn-nap-tien,
+.recharge-btn {
+  background-color: var(--success-color);
+  color: var(--white-color);
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -514,66 +482,48 @@ main {
   transition: background-color 0.3s ease;
 }
 
-.btn-nap-tien:hover {
-  background-color: #4cae4c;
-  /* Darker green on hover */
+.btn-nap-tien:hover,
+.recharge-btn:hover {
+  background-color: var(--success-hover);
 }
 
-/* Table Styling */
-.service-table {
-  width: 100%;
-  border-collapse: collapse;
-  /* Remove space between borders */
-  margin-top: 20px;
+.btn-add-user,
+.update-profile-btn,
+.docx-btn {
+  background-color: var(--green-primary);
+  color: var(--white-color);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  transition: all .3s ease;
 }
 
-.service-table thead tr {
-  background-color: #6B8AD2;
-  color: #fff;
-  text-align: left;
+.btn-add-user:hover,
+.update-profile-btn:hover {
+  background-color: var(--green-hover);
 }
 
-.service-table th,
-.service-table td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #ddd;
-  /* Light grey border */
+.update-profile-btn:hover {
+  opacity: 0.9;
 }
 
-.service-table tbody tr:last-child td {
-  border-bottom: none;
-  /* No border on the last row */
-}
-
-/* Optional: Hover effect on rows */
-/* .service-table tbody tr:hover {
-  background-color: #f5f5f5;
-} */
-
-.service-table td.actions {
-  white-space: nowrap;
-  /* Prevent buttons from wrapping */
-}
-
-/* Action Buttons in Table */
+/* Action Buttons */
 .btn-action {
   padding: 8px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   margin-right: 5px;
-  /* Space between buttons */
   font-size: 14px;
   transition: background-color 0.3s ease;
 }
 
 .btn-action:last-child {
   margin-right: 0;
-  /* No margin on the last button */
 }
 
 .btn-buy {
-  background-color: #4cae4c;
+  background-color: var(--success-hover);
   color: var(--white-color);
 }
 
@@ -583,119 +533,103 @@ main {
 
 .btn-buy:hover {
   background-color: #49a349;
-  /* Darker green */
 }
 
 .btn-vnpay {
   background-color: transparent;
-  /* Blue */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  /* border: 1px solid #000; */
 }
 
 .btn-vnpay:hover {
   background-color: #025aa5;
-  /* Darker blue */
 }
 
-/* DASHBOARD MANAGE */
-/* USER MANAGEMENT */
-.management-section {
-  max-width: 2560px;
-  width: 100%;
+/* Management Buttons */
+.btn-edit-user,
+.btn-delete-user {
+  border-radius: 5px;
+  border: none;
+  max-width: 50px;
+  color: var(--white-color);
 }
 
-.management-section .search-input {
-  max-width: 350px;
-  height: fit-content;
-  width: 100%;
+.btn-edit-user {
+  background-color: var(--warning-color);
 }
 
-.management-section .search-btn,
-.management-section .delete-btn {
+.btn-delete-user {
+  background-color: var(--danger-color);
+}
+
+.delete-btn {
+  background-color: var(--gray-color);
+  color: var(--white-color);
   max-width: fit-content;
   height: fit-content;
   width: 100%;
 }
 
-.management-section .delete-btn {
-  background-color: #575757;
+/* Status Buttons */
+.detailed-btn.red {
+  background-color: #e74c3c;
   color: var(--white-color);
 }
 
-.btn-add-user {
-  padding: 10px 20px;
-  border: none;
-  background-color: #0CAD55;
-  color: #fff;
-  border-radius: 5px;
-  transition: all .3s ease;
+.detailed-btn.yellow {
+  background-color: #f1c40f;
+  color: var(--white-color);
 }
 
-.btn-add-user:hover {
-  background-color: #0b9f4e;
-}
-
-.management-table {
+/*========== TABLES ==========*/
+/* Base Table Styles */
+.service-table,
+.management-table,
+.giaodich-table,
+.history-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
 
+/* Table Headers */
+.service-table thead tr,
+.giaodich-table thead th,
+.history-table thead tr {
+  background-color: var(--secondary-color);
+  color: var(--white-color);
+  text-align: left;
+}
+
+.service-table th,
+.service-table td,
+.history-table th,
+.history-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.service-table tbody tr:last-child td,
+.history-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.service-table td.actions,
+.history-table td.actions {
+  white-space: nowrap;
+}
+
+/* Management Table */
 .management-table tr {
-  border-bottom: 2px solid #aeaeae;
+  border-bottom: 2px solid var(--light-gray);
 }
 
 .management-table td {
   padding: 10px 0;
 }
 
-.btn-edit-user,
-.btn-delete-user {
-  border-radius: 5px;
-  border: none;
-  /* padding: 10px; */
-  max-width: 50px;
-  color: var(--white-color);
-}
-
-.btn-edit-user {
-  background-color: #F29900;
-}
-
-.btn-delete-user {
-  background-color: #FF0000;
-}
-
-.pagination .page-btn,
-.pagination .pagination-btn {
-  border: none;
-  background-color: #C7E1FA;
-  border-radius: 5px;
-  padding: 0 10px;
-}
-
-.pagination .page-btn.active {
-  background-color: #6B8AD2;
-  color: var(--white-color);
-}
-
-/* GIAO DICH MANAGEMENT */
-.giaodich-section {
-  max-width: 2560px;
-  width: 100%;
-}
-
-.giaodich-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
+/* Transaction Table */
 .giaodich-table thead th {
   padding: 10px;
-  background-color: #6B8AD2;
-  color: var(--white-color);
 }
 
 .giaodich-table tr:nth-child(odd) {
@@ -703,65 +637,44 @@ main {
 }
 
 .giaodich-table tr:nth-child(even) {
-  background-color: #C7E1FA;
+  background-color: var(--light-blue);
 }
 
 .giaodich-table td {
   padding: 20px;
 }
 
-/* LICH SU GIAO DICH */
-.history-section {
-  max-width: 2560px;
-  width: 100%;
-}
-
-.history-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.history-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.history-table thead tr {
-  background-color: #6B8AD2;
-  color: #fff;
-  text-align: left;
-}
-
-.history-table th,
-.history-table td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #ddd;
-}
-
-.history-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-
-.history-table td.actions {
-  white-space: nowrap;
-}
-
-.docx-btn {
-  padding: 10px;
-  background-color: #0CAD55;
+/*========== PAGINATION ==========*/
+.pagination .page-btn,
+.pagination .pagination-btn {
   border: none;
-  color: var(--white-color);
+  background-color: var(--light-blue);
   border-radius: 5px;
+  padding: 0 10px;
 }
 
-/* FORM SECTION
-OTP */
+.pagination .page-btn.active {
+  background-color: var(--secondary-color);
+  color: var(--white-color);
+}
+
+/*========== SEARCH & FORM ELEMENTS ==========*/
+.search-input {
+  max-width: 350px;
+  height: fit-content;
+  width: 100%;
+}
+
+.search-btn {
+  max-width: fit-content;
+  height: fit-content;
+  width: 100%;
+}
+
+/*========== OTP VERIFICATION FORM ==========*/
 .verify-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -769,7 +682,7 @@ OTP */
 }
 
 .verify-card {
-  background: white;
+  background: var(--white-color);
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   padding: 40px;
@@ -781,7 +694,7 @@ OTP */
 .verify-logo {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -791,7 +704,7 @@ OTP */
 
 .verify-logo i {
   font-size: 40px;
-  color: white;
+  color: var(--white-color);
 }
 
 .verify-title {
@@ -837,13 +750,13 @@ OTP */
 }
 
 .verify-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   border: none;
   border-radius: 12px;
   padding: 15px 40px;
   font-size: 16px;
   font-weight: 600;
-  color: white;
+  color: var(--white-color);
   width: 100%;
   margin-bottom: 20px;
   transition: all 0.3s ease;
@@ -883,7 +796,7 @@ OTP */
 
 .resend-btn:hover {
   background: #667eea;
-  color: white;
+  color: var(--white-color);
 }
 
 .alert {
@@ -927,14 +840,15 @@ OTP */
   font-weight: 600;
 }
 
-/* ========== MEDIA QUERIES ==========*/
-/* For small devices reduce search*/
+/*========== MEDIA QUERIES ==========*/
+/* Small devices */
 @media screen and (max-width: 320px) {
   .header__search {
     width: 70%;
   }
 }
 
+/* Tablets and Desktop */
 @media screen and (min-width: 768px) {
   body {
     padding: 1rem 3rem 0 6rem;
@@ -971,7 +885,6 @@ OTP */
     left: 0;
     padding: 1.2rem 1.5rem 0;
     width: 68px;
-    /* Reduced navbar */
   }
 
   .nav__items {
@@ -992,6 +905,11 @@ OTP */
     color: var(--white-color);
   }
 
+  .nav__logout .nav__name {
+    opacity: 0;
+    transition: .3s;
+    color: var(--white-color);
+  }
 
   /* Navbar expanded */
   .nav:hover {
@@ -999,35 +917,33 @@ OTP */
   }
 
   /* Visible elements */
-  .nav:hover .nav__logo-name {
+  .nav:hover .nav__logo-name,
+  .nav:hover .nav__subtitle,
+  .nav:hover .nav__name,
+  .nav:hover .nav__dropdown-icon,
+  .nav:hover .nav__logout .nav__name {
     opacity: 1;
   }
 
-  .nav:hover .nav__subtitle {
-    opacity: 1;
+  /* Dashboard responsive */
+  .dashboard-card {
+    flex: 1 1 calc(50% - 20px);
   }
 
-  .nav:hover .nav__name {
-    opacity: 1;
+  /* Profile responsive */
+  .profile-card {
+    flex: 1 1 45%;
   }
 
-  .nav:hover .nav__dropdown-icon {
-    opacity: 1;
-  }
-
-}
-
-/* Bảng dịch vụ */
-@media (max-width: 768px) {
+  /* Content adjustments */
   .content {
     margin: 10px;
-    /* Adjust margin */
   }
 
-  .content-header {
+  /* .content-header {
     flex-direction: column;
     align-items: flex-start;
-  }
+  } */
 
   .content-header h1 {
     margin-bottom: 10px;
@@ -1036,31 +952,37 @@ OTP */
   .service-table th,
   .service-table td {
     padding: 8px 10px;
-    /* Adjust padding */
     font-size: 10px;
   }
 
   .btn-action {
     display: block;
-    /* Stack buttons in actions column */
     width: 100%;
     margin-right: 0;
     margin-bottom: 5px;
-    /* Space between stacked buttons */
     text-align: center;
   }
 
   .btn-action:last-child {
     margin-bottom: 0;
   }
-}
 
-/* Bảng quản lý tài khoản */
-@media screen and (max-width: 768px) {
   .btn-add-user {
     margin-top: 10px;
   }
+}
 
+/* Mobile responsive tables */
+@media screen and (max-width: 768px) {
+  .dashboard-card {
+    flex: 1 1 100%;
+  }
+
+  .profile-card {
+    flex: 1 1 100%;
+  }
+
+  /* Management table mobile */
   .management-table {
     border: 0;
     width: 100%;
@@ -1096,10 +1018,8 @@ OTP */
     flex-direction: column;
     gap: 0.5rem;
   }
-}
 
-/* Bảng quản lý giao dịch */
-@media screen and (max-width: 768px) {
+  /* Transaction table mobile */
   .giaodich-table {
     border: 0;
     width: 100%;
@@ -1135,11 +1055,8 @@ OTP */
     flex-direction: column;
     gap: 0.5rem;
   }
-}
 
-/* Bảng quản lý lịch sử giao dịch */
-@media screen and (max-width: 768px) {
-
+  /* History table mobile */
   .history-table {
     border: 0;
     width: 100%;

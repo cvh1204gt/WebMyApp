@@ -28,7 +28,6 @@ public class HomeController {
     return "home";
   }
 
-  // @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/profile")
   public String profile(Model model) {
     AppUser currentUser = appUserService.getCurrentUser();
@@ -42,7 +41,7 @@ public class HomeController {
     return "profile";
   }
 
-  // @PreAuthorize("hasRole('ADMIN')")
+
   @PostMapping("/profile/update")
   public String updateProfile(@ModelAttribute("user") AppUser user, 
                              RedirectAttributes redirectAttributes) {
@@ -65,16 +64,20 @@ public class HomeController {
     return "redirect:/profile";
   }
 
+  @PreAuthorize("hasRole('CLIENT')")
   @GetMapping("/services")
   public String services() {
     return "services";
   }
 
+  //ADMIN
+  @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/account_management")
   public String accountManagement() {
     return "account_management";
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/lichsugiaodich")
   public String lichSuGiaoDich() {
     return "lichsugiaodich";

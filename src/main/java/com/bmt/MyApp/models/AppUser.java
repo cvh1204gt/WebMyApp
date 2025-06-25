@@ -31,14 +31,14 @@ public class AppUser {
     private LocalDate birthDate;
     private Date createAt;
     
-    @Column(name = "verification_token")
-    private String verificationToken;
+    // @Column(name = "verification_token")
+    // private String verificationToken;
     
     @Column(name = "is_verified", nullable = false)
     private boolean isVerified = false;
 
-    @Column(name = "reset_token")
-    private String resetToken;
+    // @Column(name = "reset_token")
+    // private String resetToken;
 
     // Constructors
     public AppUser() {}
@@ -116,13 +116,13 @@ public class AppUser {
         this.createAt = createAt;
     }
 
-    public String getVerificationToken() {
-        return verificationToken;
-    }
+    // public String getVerificationToken() {
+    //     return verificationToken;
+    // }
 
-    public void setVerificationToken(String verificationToken) {
-        this.verificationToken = verificationToken;
-    }
+    // public void setVerificationToken(String verificationToken) {
+    //     this.verificationToken = verificationToken;
+    // }
 
     public boolean isVerified() {
         return isVerified;
@@ -132,13 +132,13 @@ public class AppUser {
         this.isVerified = isVerified;
     }
 
-    public String getResetToken() {
-        return resetToken;
-    }
+    // public String getResetToken() {
+    //     return resetToken;
+    // }
 
-    public void setResetToken(String resetToken) {
-        this.resetToken = resetToken;
-    }
+    // public void setResetToken(String resetToken) {
+    //     this.resetToken = resetToken;
+    // }
 
     public LocalDate getBirthDate() {
         return birthDate;
