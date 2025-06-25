@@ -29,6 +29,7 @@
               <p th:text="${user.role == 'ADMIN' ? 'Quản lý' 
                           : user.role == 'CLIENT' ? 'Khách hàng' 
                           : user.role == 'STAFF' ? 'Nhân viên' 
+                          : user.role == 'ADMINDICHVU' ? 'Admin dịch vụ' 
                           : 'Không xác định'}">
               </p>
             </div>

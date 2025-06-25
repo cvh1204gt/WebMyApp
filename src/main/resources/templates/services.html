@@ -10,7 +10,26 @@
 <body>
   <div class="container mt-5">
     <h2 class="mb-4">Danh sách gói dịch vụ</h2>
-    <div class="row">
+    
+    <!-- Hiển thị thông báo lỗi nếu có -->
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <span th:text="${errorMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <!-- Hiển thị thông báo thành công nếu có -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+      <span th:text="${successMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <!-- Kiểm tra xem có services hay không -->
+    <div th:if="${#lists.isEmpty(services)}" class="alert alert-info">
+      <h4>Không có gói dịch vụ nào khả dụng</h4>
+      <p>Bạn đã mua tất cả các gói dịch vụ và chúng vẫn còn hiệu lực. Vui lòng quay lại sau khi các gói hết hạn.</p>
+    </div>
+    
+    <div class="row" th:if="${!#lists.isEmpty(services)}">
       <div class="col-md-4 mb-4" th:each="service : ${services}">
         <div class="card h-100">
           <div class="card-body">
@@ -28,6 +47,9 @@
       </div>
     </div>
   </div>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -95,12 +95,12 @@
               </div>
             </div>
 
-            <a href="/services" class="nav__link" sec:authorize="hasRole('CLIENT')">
+            <a href="/services" class="nav__link" sec:authorize="hasAnyRole('CLIENT', 'ADMINDICHVU')">
               <i class='bx bx-package nav__icon'></i>
               <span class="nav__name">Gói dịch vụ</span>
             </a>
 
-            <a href="#" class="nav__link" sec:authorize="hasRole('CLIENT')">
+            <a href="#" class="nav__link" sec:authorize="hasAnyRole('CLIENT', 'ADMINDICHVU')">
               <i class='bx bx-dollar-circle nav__icon'></i>
               <span class="nav__name">Nạp tiền</span>
             </a>

@@ -1,6 +1,5 @@
 package com.bmt.MyApp.controllers;
 
-// import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -9,25 +8,20 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-// import java.util.Enumeration;
 import java.util.HashMap;
-// import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.http.HttpHeaders;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-// import org.springframework.web.bind.annotation.ResponseBody;
-// import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bmt.MyApp.config.VNPayConfig;
 import com.bmt.MyApp.models.AppUser;
@@ -39,12 +33,10 @@ import com.bmt.MyApp.repositories.ServicesRepository;
 import com.bmt.MyApp.repositories.TransactionsRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
-// import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
-// import org.springframework.security.core.context.SecurityContextHolder;
 
-@Controller // Thay đổi từ @RestController thành @Controller
+@Controller
 @RequestMapping("/api/payment")
 public class PaymentController {
 
@@ -61,9 +53,26 @@ public class PaymentController {
   public String createPaymentForService(
       @RequestParam("id") Integer serviceId,
       @RequestParam("amount") BigDecimal amount,
-      HttpServletRequest request) {
+      HttpServletRequest request,
+      RedirectAttributes redirectAttributes) {
 
     try {
+      // Lấy thông tin user hiện tại
+      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      String email = auth.getName();
+      AppUser currentUser = appUserRepository.findByEmail(email)
+          .orElseThrow(() -> new RuntimeException("User not found"));
+
+      // Kiểm tra xem user đã mua service này và chưa hết hạn chưa
+      Optional<Transactions> activeTransaction = transactionsRepository
+          .findActiveTransactionByUserAndService(currentUser, serviceId.longValue(), LocalDateTime.now());
+
+      if (activeTransaction.isPresent()) {
+        redirectAttributes.addFlashAttribute("errorMessage",
+            "Bạn đã mua gói dịch vụ này và vẫn còn hiệu lực!");
+        return "redirect:/services";
+      }
+
       long amountInVND = amount.multiply(new BigDecimal(100)).longValue(); // VNPay dùng đơn vị nhỏ
 
       String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
@@ -117,8 +126,9 @@ public class PaymentController {
       return "redirect:" + paymentUrl;
 
     } catch (Exception e) {
-      // Chuyển về trang lỗi tùy ý
-      return "redirect:/error";
+      redirectAttributes.addFlashAttribute("errorMessage",
+          "Có lỗi xảy ra khi tạo thanh toán: " + e.getMessage());
+      return "redirect:/services";
     }
   }
 
@@ -143,6 +153,18 @@ public class PaymentController {
       Services service = servicesRepository.findById(serviceId)
           .orElseThrow(() -> new RuntimeException("Service not found"));
 
+      // Kiểm tra lại xem user có đang có giao dịch active cho service này không
+      Optional<Transactions> existingTransaction = transactionsRepository
+          .findActiveTransactionByUserAndService(user, serviceId, LocalDateTime.now());
+
+      if (existingTransaction.isPresent()) {
+        model.addAttribute("error", "Bạn đã có gói dịch vụ này đang hoạt động!");
+        return "error";
+      }
+
+      user.setRole("ADMINDICHVU"); // hoặc Enum nếu bạn dùng Enum
+      appUserRepository.save(user);
+
       // ✅ Tạo và lưu transaction
       Transactions transaction = new Transactions();
       transaction.setUser(user);
@@ -159,6 +181,7 @@ public class PaymentController {
       transaction.setStatus(TransactionStatus.SUCCESS);
       transaction.setCreatedAt(LocalDateTime.now());
 
+      // Tính ngày hết hạn dựa trên duration của service
       transaction.setExpireDate(LocalDateTime.now().plusDays(service.getDuration()));
 
       transactionsRepository.save(transaction);
@@ -166,11 +189,11 @@ public class PaymentController {
       model.addAttribute("amount", transaction.getAmount());
       model.addAttribute("bankcode", transaction.getBankCode());
       model.addAttribute("orderinfo", orderInfo);
+      model.addAttribute("expireDate", transaction.getExpireDate());
       return "receipt";
     } else {
       model.addAttribute("error", "payment_failed");
       return "error";
     }
   }
-
 }

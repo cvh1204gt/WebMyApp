@@ -20,10 +20,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/register", "/register/**", "/login", "/verify-otp", "/verify-otp/**", 
                                "/resend-otp", "/css/**", "/js/**", "/image/**").permitAll()
-                .requestMatchers("/home", "/profile").hasAnyRole("ADMIN", "CLIENT")
+                .requestMatchers("/home", "/profile").hasAnyRole("ADMIN", "CLIENT", "ADMINDICHVU")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/account_management", "/lichsugiaodich").hasRole("ADMIN")
-                .requestMatchers("/services").hasRole("CLIENT")
+                .requestMatchers("/services").hasAnyRole("CLIENT", "ADMINDICHVU")
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")
