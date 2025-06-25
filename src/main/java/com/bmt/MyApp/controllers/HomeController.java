@@ -64,11 +64,11 @@ public class HomeController {
     return "redirect:/profile";
   }
 
-  @PreAuthorize("hasRole('CLIENT')")
-  @GetMapping("/services")
-  public String services() {
-    return "services";
-  }
+  // @PreAuthorize("hasRole('CLIENT')")
+  // @GetMapping("/services")
+  // public String services() {
+  //   return "services";
+  // }
 
   //ADMIN
   @PreAuthorize("hasRole('ADMIN')")
