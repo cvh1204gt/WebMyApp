@@ -15,69 +15,240 @@
     <section class="giaodich-section">
       <h1 class="py-4">Quản lý giao dịch</h1>
 
+      <!-- Form tìm kiếm -->
+      <div class="content-header mb-4">
+        <form class="search-form" method="get" th:action="@{/lichsugiaodich}">
+          <div class="search-row">
+            <input type="search" name="search" class="search-input" placeholder="Tìm kiếm theo tên người dùng..."
+              th:value="${search}" aria-label="Search">
+            
+            <div class="date-group">
+              <label>Ngày giao dịch:</label>
+              <input type="date" name="startDate" class="date-input" th:value="${startDate}" placeholder="Từ ngày">
+              <span>đến</span>
+              <input type="date" name="endDate" class="date-input" th:value="${endDate}" placeholder="Đến ngày">
+            </div>
+            
+            <div class="date-group">
+              <label>Ngày hết hạn:</label>
+              <input type="date" name="expireStartDate" class="date-input" th:value="${expireStartDate}" placeholder="Từ ngày">
+              <span>đến</span>
+              <input type="date" name="expireEndDate" class="date-input" th:value="${expireEndDate}" placeholder="Đến ngày">
+            </div>
+          </div>
+          
+          <div class="search-buttons">
+            <button type="submit" class="search-btn">Tìm kiếm</button>
+            <a href="/lichsugiaodich" class="delete-btn">Xóa bộ lọc</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Thông tin tổng quan -->
+      <div class="mb-3">
+        <p>Tổng số giao dịch: <strong th:text="${totalElements}">0</strong></p>
+      </div>
+
       <table class="giaodich-table">
         <thead>
           <tr>
             <th>Mã giao dịch</th>
             <th>Người dùng</th>
             <th>Số tiền</th>
-            <th>Loại giao dịch</th>
             <th>Trạng thái</th>
             <th>Ngày giao dịch</th>
+            <th>Ngày hết hạn</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td data-label="Mã giao dịch">01234</td>
-            <td data-label="Người dùng">Nguyễn Văn A</td>
-            <td data-label="Số tiền">499.999 VNĐ</td>
-            <td data-label="Loại giao dịch">Nạp tiền</td>
-            <td data-label="Trạng thái">Thành công</td>
-            <td data-label="Ngày tạo">14/5/2025</td>
+          <tr th:if="${#lists.isEmpty(transactions)}">
+            <td colspan="6" class="text-center">Không có giao dịch nào</td>
           </tr>
-          <tr>
-            <td data-label="Mã giao dịch">01234</td>
-            <td data-label="Người dùng">Nguyễn Văn A</td>
-            <td data-label="Số tiền">499.999 VNĐ</td>
-            <td data-label="Loại giao dịch">Nạp tiền</td>
-            <td data-label="Trạng thái">Thành công</td>
-            <td data-label="Ngày tạo">14/5/2025</td>
-          </tr>
-          <tr>
-            <td data-label="Mã giao dịch">01234</td>
-            <td data-label="Người dùng">Nguyễn Văn A</td>
-            <td data-label="Số tiền">499.999 VNĐ</td>
-            <td data-label="Loại giao dịch">Nạp tiền</td>
-            <td data-label="Trạng thái">Thành công</td>
-            <td data-label="Ngày tạo">14/5/2025</td>
-          </tr>
-          <tr>
-            <td data-label="Mã giao dịch">01234</td>
-            <td data-label="Người dùng">Nguyễn Văn A</td>
-            <td data-label="Số tiền">499.999 VNĐ</td>
-            <td data-label="Loại giao dịch">Nạp tiền</td>
-            <td data-label="Trạng thái">Thành công</td>
-            <td data-label="Ngày tạo">14/5/2025</td>
-          </tr>
-          <tr>
-            <td data-label="Mã giao dịch">01234</td>
-            <td data-label="Người dùng">Nguyễn Văn A</td>
-            <td data-label="Số tiền">499.999 VNĐ</td>
-            <td data-label="Loại giao dịch">Nạp tiền</td>
-            <td data-label="Trạng thái">Thành công</td>
-            <td data-label="Ngày tạo">14/5/2025</td>
+          <tr th:each="transaction : ${transactions}">
+            <td data-label="Mã giao dịch" th:text="${transaction.vnpTxnRef}">-</td>
+            <td data-label="Người dùng" th:text="${transaction.user.fullName}">-</td>
+            <td data-label="Số tiền">
+              <span th:text="${#numbers.formatDecimal(transaction.service.price, 0, 'COMMA', 0, 'POINT')}">0</span>
+              <span th:text="${transaction.currencyCode}">VND</span>
+            </td>
+            <td data-label="Trạng thái">
+              <span th:class="${'status-' + transaction.status.toString().toLowerCase()}" 
+                    th:text="${transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).PENDING ? 'Đang xử lý' : 
+                             transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).SUCCESS ? 'Thành công' : 
+                             transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).FAILED ? 'Thất bại' : 
+                             transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).CANCELLED ? 'Đã hủy' : 
+                             transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).EXPIRED ? 'Hết hạn' : 'Không xác định'}">
+                -
+              </span>
+            </td>
+            <td data-label="Ngày giao dịch" 
+                th:text="${transaction.createdAt != null ? #temporals.format(transaction.createdAt, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
+            <td data-label="Ngày hết hạn" 
+                th:text="${transaction.expireDate != null ? #temporals.format(transaction.expireDate, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
           </tr>
         </tbody>
       </table>
 
-      <div class="pagination mt-3 d-flex justify-content-center gap-2">
-        <button class="pagination-btn">Trước</button>
-        <button class="page-btn active">1</button>
-        <button class="page-btn">2</button>
-        <button class="pagination-btn">Sau</button>
+      <!-- Pagination -->
+      <div class="pagination mt-3 d-flex justify-content-center gap-2" th:if="${totalPages > 1}">
+        <a th:href="@{/lichsugiaodich(page=${currentPage - 1}, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}" 
+           class="pagination-btn" 
+           th:classappend="${!hasPrevious} ? 'disabled' : ''"
+           th:if="${hasPrevious}">
+          Trước
+        </a>
+        
+        <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" 
+              th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}">
+          <a th:href="@{/lichsugiaodich(page=${pageNum}, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}" 
+             class="page-btn" 
+             th:classappend="${pageNum == currentPage} ? 'active' : ''"
+             th:text="${pageNum + 1}">1</a>
+        </span>
+        
+        <a th:href="@{/lichsugiaodich(page=${currentPage + 1}, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}" 
+           class="pagination-btn" 
+           th:classappend="${!hasNext} ? 'disabled' : ''"
+           th:if="${hasNext}">
+          Sau
+        </a>
       </div>
     </section>
   </main>
+
+  <style>
+    .content-header {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .search-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .date-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .date-group label {
+      font-weight: 500;
+      color: #333;
+      white-space: nowrap;
+    }
+    
+    .date-input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      min-width: 140px;
+    }
+    
+    .search-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .search-btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    
+    .search-btn:hover {
+      background: #0056b3;
+    }
+    
+    .delete-btn {
+      background: #6c757d;
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: background-color 0.3s;
+      display: inline-block;
+    }
+    
+    .delete-btn:hover {
+      background: #5a6268;
+      text-decoration: none;
+      color: white;
+    }
+    
+    @media (max-width: 768px) {
+      .search-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .date-group {
+        justify-content: space-between;
+      }
+      
+      .search-buttons {
+        justify-content: center;
+      }
+    }
+    
+    .status-pending {
+      color: #ffc107;
+      font-weight: bold;
+    }
+    .status-success {
+      color: #28a745;
+      font-weight: bold;
+    }
+    .status-failed {
+      color: #dc3545;
+      font-weight: bold;
+    }
+    .status-cancelled {
+      color: #6c757d;
+      font-weight: bold;
+    }
+    .status-expired {
+      color: #fd7e14;
+      font-weight: bold;
+    }
+    .pagination-btn.disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+    .page-btn.active {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
 </body>
 
 </html>

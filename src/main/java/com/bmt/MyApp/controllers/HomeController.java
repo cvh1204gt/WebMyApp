@@ -77,9 +77,9 @@ public class HomeController {
     return "account_management";
   }
 
-  @PreAuthorize("hasRole('ADMIN')")
-  @GetMapping("/lichsugiaodich")
-  public String lichSuGiaoDich() {
-    return "lichsugiaodich";
-  }
+  // @PreAuthorize("hasRole('ADMIN')")
+  // @GetMapping("/lichsugiaodich")
+  // public String lichSuGiaoDich() {
+  //   return "lichsugiaodich";
+  // }
 }
