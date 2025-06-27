@@ -82,4 +82,11 @@ public class HomeController {
   // public String lichSuGiaoDich() {
   //   return "lichsugiaodich";
   // }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/service_management")
+  public String service_management() {
+    return "service_management";
+  }
+
 }
