@@ -18,7 +18,7 @@ public class EmailService {
         message.setText("Mã OTP của bạn là: " + otp + 
                        "\nMã này có hiệu lực trong vòng 5 phút." +
                        "\nVui lòng không chia sẻ mã này với bất kỳ ai.");
-        message.setFrom("manhdung11092003@gmail.com");
+        message.setFrom("chuvanhung1122004@gmail.com");
         
         mailSender.send(message);
     }

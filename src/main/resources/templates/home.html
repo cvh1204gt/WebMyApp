@@ -14,7 +14,7 @@
   <main>
     <section class="home-section">
       <div class="content-header">
-        <h1>Xin chào, Nguyễn Văn A</h1>
+        <h1>Xin chào, <span th:text="${user.fullName != null ? user.fullName : user.username}">Người dùng</span></h1>
       </div>
       <div class="dashboard-container">
 

@@ -674,7 +674,7 @@ main {
 /*========== OTP VERIFICATION FORM ==========*/
 .verify-container {
   min-height: 100vh;
-  background: var(--gradient-primary);
+  background: #F9F6FD;
   display: flex;
   align-items: center;
   justify-content: center;

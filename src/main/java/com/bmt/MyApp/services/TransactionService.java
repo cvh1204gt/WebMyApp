@@ -1,7 +1,8 @@
 package com.bmt.MyApp.services;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.bmt.MyApp.models.AppUser;
 import com.bmt.MyApp.models.Transactions;
+import com.bmt.MyApp.models.Transactions.TransactionStatus;
 import com.bmt.MyApp.repositories.TransactionsRepository;
 
 @Service
@@ -48,34 +50,78 @@ public class TransactionService {
         return transactionsRepository.count();
     }
 
-    public Page<Transactions> searchTransactions(String search, String startDate, String endDate, 
-                                               String expireStartDate, String expireEndDate, Pageable pageable) {
-        
+    public Page<Transactions> searchTransactions(String search, String startDate, String endDate,
+                                                 String expireStartDate, String expireEndDate, Pageable pageable) {
+
         LocalDateTime startDateTime = null;
         LocalDateTime endDateTime = null;
         LocalDateTime expireStartDateTime = null;
         LocalDateTime expireEndDateTime = null;
-        
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        
+
         try {
             if (startDate != null && !startDate.trim().isEmpty()) {
-                startDateTime = LocalDateTime.parse(startDate + "T00:00:00");
+                startDateTime = LocalDate.parse(startDate).atStartOfDay();
             }
             if (endDate != null && !endDate.trim().isEmpty()) {
-                endDateTime = LocalDateTime.parse(endDate + "T23:59:59");
+                endDateTime = LocalDate.parse(endDate).atTime(23, 59, 59);
             }
             if (expireStartDate != null && !expireStartDate.trim().isEmpty()) {
-                expireStartDateTime = LocalDateTime.parse(expireStartDate + "T00:00:00");
+                expireStartDateTime = LocalDate.parse(expireStartDate).atStartOfDay();
             }
             if (expireEndDate != null && !expireEndDate.trim().isEmpty()) {
-                expireEndDateTime = LocalDateTime.parse(expireEndDate + "T23:59:59");
+                expireEndDateTime = LocalDate.parse(expireEndDate).atTime(23, 59, 59);
             }
         } catch (Exception e) {
-            // Nếu có lỗi parse date, bỏ qua và tìm kiếm không có điều kiện date
+            // ignore parse error
         }
-        
+
         return transactionsRepository.searchTransactions(
             search, startDateTime, endDateTime, expireStartDateTime, expireEndDateTime, pageable);
+    }
+
+    // === Dùng cho xuất Excel ===
+    public List<Transactions> searchTransactionsForExport(String search, String startDate, String endDate,
+                                                          String expireStartDate, String expireEndDate) {
+        LocalDateTime startDateTime = null;
+        LocalDateTime endDateTime = null;
+        LocalDateTime expireStartDateTime = null;
+        LocalDateTime expireEndDateTime = null;
+
+        try {
+            if (startDate != null && !startDate.trim().isEmpty()) {
+                startDateTime = LocalDate.parse(startDate).atStartOfDay();
+            }
+            if (endDate != null && !endDate.trim().isEmpty()) {
+                endDateTime = LocalDate.parse(endDate).atTime(23, 59, 59);
+            }
+            if (expireStartDate != null && !expireStartDate.trim().isEmpty()) {
+                expireStartDateTime = LocalDate.parse(expireStartDate).atStartOfDay();
+            }
+            if (expireEndDate != null && !expireEndDate.trim().isEmpty()) {
+                expireEndDateTime = LocalDate.parse(expireEndDate).atTime(23, 59, 59);
+            }
+        } catch (Exception e) {
+            // ignore parse error
+        }
+
+        return transactionsRepository.searchTransactionsForExport(
+            search, startDateTime, endDateTime, expireStartDateTime, expireEndDateTime);
+    }
+
+    // === Thống kê ===
+    public long countTransactionsByStatus(TransactionStatus status) {
+        return transactionsRepository.countByStatus(status);
+    }
+
+    public BigDecimal sumAmountByStatus(TransactionStatus status) {
+        return transactionsRepository.sumAmountByStatus(status);
+    }
+
+    public BigDecimal sumByStatusAndDateRange(TransactionStatus status, LocalDateTime start, LocalDateTime end) {
+        return transactionsRepository.sumByStatusAndDateRange(status, start, end);
+    }
+
+    public long countByStatusAndDateRange(TransactionStatus status, LocalDateTime start, LocalDateTime end) {
+        return transactionsRepository.countByStatusAndDateRange(status, start, end);
     }
 }

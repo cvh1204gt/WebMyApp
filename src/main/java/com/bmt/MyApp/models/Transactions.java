@@ -20,226 +20,237 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "transactions")
 public class Transactions {
-  public enum TransactionStatus {
-    PENDING,
-    SUCCESS,
-    FAILED,
-    CANCELLED,
-    EXPIRED
-  }
+    
+    public enum TransactionStatus {
+        PENDING,
+        SUCCESS,
+        FAILED,
+        CANCELLED,
+        EXPIRED
+    }
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  // ManyToOne with User
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
-  private AppUser user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private AppUser user;
 
-  // ManyToOne with Service
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "service_id", nullable = false)
-  private Services service;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id", nullable = false)
+    private Services service;
 
-  @Column(name = "vnp_txn_ref", unique = true, nullable = false)
-  private String vnpTxnRef;
+    @Column(name = "vnp_txn_ref", unique = true, nullable = false)
+    private String vnpTxnRef;
 
-  @Column(precision = 15, scale = 2, nullable = false)
-  private BigDecimal amount;
+    @Column(precision = 15, scale = 2, nullable = false)
+    private BigDecimal amount;
 
-  @Column(nullable = false)
-  private String currencyCode = "VND";
+    @Column(nullable = false)
+    private String currencyCode = "VND";
 
-  private String bankCode;
-  private String orderInfo;
-  private String orderType = "other";
-  private String locale = "vn";
-  private String ipAddress;
+    private String bankCode;
+    private String orderInfo;
+    private String orderType = "other";
+    private String locale = "vn";
+    private String ipAddress;
 
-  private String vnpResponseCode;
-  private String vnpTransactionNo;
-  private String vnpBankTranNo;
-  private String vnpCardType;
-  private String vnpPayDate;
+    private String vnpResponseCode;
+    private String vnpTransactionNo;
+    private String vnpBankTranNo;
+    private String vnpCardType;
+    private String vnpPayDate;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private TransactionStatus status = TransactionStatus.PENDING;
+    // ✅ Thêm trường bị thiếu
+    private String vnpBankCode;
 
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
-  private LocalDateTime expireDate;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TransactionStatus status = TransactionStatus.PENDING;
 
-  @PrePersist
-  protected void onCreate() {
-    createdAt = LocalDateTime.now();
-    updatedAt = LocalDateTime.now();
-  }
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime expireDate;
 
-  @PreUpdate
-  protected void onUpdate() {
-    updatedAt = LocalDateTime.now();
-  }
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
 
-  // GETTER & SETTER
-  public Long getId() {
-    return id;
-  }
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    // === Getter & Setter ===
 
-  public AppUser getUser() {
-    return user;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public void setUser(AppUser user) {
-    this.user = user;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public Services getService() {
-    return service;
-  }
+    public AppUser getUser() {
+        return user;
+    }
 
-  public void setService(Services service) {
-    this.service = service;
-  }
+    public void setUser(AppUser user) {
+        this.user = user;
+    }
 
-  public String getVnpTxnRef() {
-    return vnpTxnRef;
-  }
+    public Services getService() {
+        return service;
+    }
 
-  public void setVnpTxnRef(String vnpTxnRef) {
-    this.vnpTxnRef = vnpTxnRef;
-  }
+    public void setService(Services service) {
+        this.service = service;
+    }
 
-  public BigDecimal getAmount() {
-    return amount;
-  }
+    public String getVnpTxnRef() {
+        return vnpTxnRef;
+    }
 
-  public void setAmount(BigDecimal amount) {
-    this.amount = amount;
-  }
+    public void setVnpTxnRef(String vnpTxnRef) {
+        this.vnpTxnRef = vnpTxnRef;
+    }
 
-  public String getCurrencyCode() {
-    return currencyCode;
-  }
+    public BigDecimal getAmount() {
+        return amount;
+    }
 
-  public void setCurrencyCode(String currencyCode) {
-    this.currencyCode = currencyCode;
-  }
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 
-  public String getBankCode() {
-    return bankCode;
-  }
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
 
-  public void setBankCode(String bankCode) {
-    this.bankCode = bankCode;
-  }
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
 
-  public String getOrderInfo() {
-    return orderInfo;
-  }
+    public String getBankCode() {
+        return bankCode;
+    }
 
-  public void setOrderInfo(String orderInfo) {
-    this.orderInfo = orderInfo;
-  }
+    public void setBankCode(String bankCode) {
+        this.bankCode = bankCode;
+    }
 
-  public String getOrderType() {
-    return orderType;
-  }
+    public String getOrderInfo() {
+        return orderInfo;
+    }
 
-  public void setOrderType(String orderType) {
-    this.orderType = orderType;
-  }
+    public void setOrderInfo(String orderInfo) {
+        this.orderInfo = orderInfo;
+    }
 
-  public String getLocale() {
-    return locale;
-  }
+    public String getOrderType() {
+        return orderType;
+    }
 
-  public void setLocale(String locale) {
-    this.locale = locale;
-  }
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
 
-  public String getIpAddress() {
-    return ipAddress;
-  }
+    public String getLocale() {
+        return locale;
+    }
 
-  public void setIpAddress(String ipAddress) {
-    this.ipAddress = ipAddress;
-  }
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
 
-  public String getVnpResponseCode() {
-    return vnpResponseCode;
-  }
+    public String getIpAddress() {
+        return ipAddress;
+    }
 
-  public void setVnpResponseCode(String vnpResponseCode) {
-    this.vnpResponseCode = vnpResponseCode;
-  }
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
 
-  public String getVnpTransactionNo() {
-    return vnpTransactionNo;
-  }
+    public String getVnpResponseCode() {
+        return vnpResponseCode;
+    }
 
-  public void setVnpTransactionNo(String vnpTransactionNo) {
-    this.vnpTransactionNo = vnpTransactionNo;
-  }
+    public void setVnpResponseCode(String vnpResponseCode) {
+        this.vnpResponseCode = vnpResponseCode;
+    }
 
-  public String getVnpBankTranNo() {
-    return vnpBankTranNo;
-  }
+    public String getVnpTransactionNo() {
+        return vnpTransactionNo;
+    }
 
-  public void setVnpBankTranNo(String vnpBankTranNo) {
-    this.vnpBankTranNo = vnpBankTranNo;
-  }
+    public void setVnpTransactionNo(String vnpTransactionNo) {
+        this.vnpTransactionNo = vnpTransactionNo;
+    }
 
-  public String getVnpCardType() {
-    return vnpCardType;
-  }
+    public String getVnpBankTranNo() {
+        return vnpBankTranNo;
+    }
 
-  public void setVnpCardType(String vnpCardType) {
-    this.vnpCardType = vnpCardType;
-  }
+    public void setVnpBankTranNo(String vnpBankTranNo) {
+        this.vnpBankTranNo = vnpBankTranNo;
+    }
 
-  public String getVnpPayDate() {
-    return vnpPayDate;
-  }
+    public String getVnpCardType() {
+        return vnpCardType;
+    }
 
-  public void setVnpPayDate(String vnpPayDate) {
-    this.vnpPayDate = vnpPayDate;
-  }
+    public void setVnpCardType(String vnpCardType) {
+        this.vnpCardType = vnpCardType;
+    }
 
-  public TransactionStatus getStatus() {
-    return status;
-  }
+    public String getVnpPayDate() {
+        return vnpPayDate;
+    }
 
-  public void setStatus(TransactionStatus status) {
-    this.status = status;
-  }
+    public void setVnpPayDate(String vnpPayDate) {
+        this.vnpPayDate = vnpPayDate;
+    }
 
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
+    public String getVnpBankCode() {
+        return vnpBankCode;
+    }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
+    public void setVnpBankCode(String vnpBankCode) {
+        this.vnpBankCode = vnpBankCode;
+    }
 
-  public LocalDateTime getUpdatedAt() {
-    return updatedAt;
-  }
+    public TransactionStatus getStatus() {
+        return status;
+    }
 
-  public void setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
-  }
+    public void setStatus(TransactionStatus status) {
+        this.status = status;
+    }
 
-  public LocalDateTime getExpireDate() {
-    return expireDate;
-  }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-  public void setExpireDate(LocalDateTime expireDate) {
-    this.expireDate = expireDate;
-  }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(LocalDateTime expireDate) {
+        this.expireDate = expireDate;
+    }
 }

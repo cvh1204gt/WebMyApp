@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống Kê Giao Dịch</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .stats-card .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .stats-card .stats-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .stats-card .stats-icon {
+            font-size: 3rem;
+            opacity: 0.3;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        .filter-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        .chart-tabs {
+            border-bottom: 2px solid #f8f9fa;
+            margin-bottom: 30px;
+        }
+        .chart-tab {
+            background: none;
+            border: none;
+            padding: 15px 25px;
+            margin-right: 10px;
+            border-radius: 10px 10px 0 0;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+        .chart-tab.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 -3px 15px rgba(102, 126, 234, 0.3);
+        }
+        .chart-tab:hover:not(.active) {
+            background: #f8f9fa;
+            color: #495057;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 30px;
+            border-radius: 0 0 30px 30px;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        .no-data {
+            text-align: center;
+            padding: 60px;
+            color: #6c757d;
+        }
+        .filter-group {
+            margin-bottom: 20px;
+        }
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        .form-select, .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 12px 15px;
+            transition: border-color 0.3s ease;
+        }
+        .form-select:focus, .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="container">
+            <h1 class="mb-0"><i class="fas fa-chart-line me-3"></i>Thống Kê Giao Dịch</h1>
+            <p class="mb-0 mt-2">Theo dõi và phân tích dữ liệu giao dịch</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats Cards -->
+        <div class="row">
+            <div class="col-md-6 col-lg-3">
+                <div class="stats-card position-relative">
+                    <div class="stats-number" id="totalTransactions">0</div>
+                    <div class="stats-label">Tổng Giao Dịch</div>
+                    <i class="fas fa-exchange-alt stats-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stats-card position-relative">
+                    <div class="stats-number" id="successTransactions">0</div>
+                    <div class="stats-label">Giao Dịch Thành Công</div>
+                    <i class="fas fa-check-circle stats-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stats-card position-relative">
+                    <div class="stats-number" id="totalRevenue">0đ</div>
+                    <div class="stats-label">Tổng Doanh Thu</div>
+                    <i class="fas fa-dollar-sign stats-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stats-card position-relative">
+                    <div class="stats-number" id="avgTransaction">0đ</div>
+                    <div class="stats-label">Trung Bình/Giao Dịch</div>
+                    <i class="fas fa-calculator stats-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <h4 class="mb-4"><i class="fas fa-filter me-2"></i>Bộ Lọc</h4>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label>Loại Hiển Thị</label>
+                        <select class="form-select" id="viewType">
+                            <option value="monthly">Theo Tháng</option>
+                            <option value="yearly">Theo Năm</option>
+                            <option value="all">Tất Cả</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label>Năm</label>
+                        <select class="form-select" id="yearSelect">
+                            <option value="">-- Chọn Năm --</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025" selected>2025</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label>Tháng</label>
+                        <select class="form-select" id="monthSelect">
+                            <option value="">-- Chọn Tháng --</option>
+                            <option value="1">Tháng 1</option>
+                            <option value="2">Tháng 2</option>
+                            <option value="3">Tháng 3</option>
+                            <option value="4">Tháng 4</option>
+                            <option value="5">Tháng 5</option>
+                            <option value="6">Tháng 6</option>
+                            <option value="7">Tháng 7</option>
+                            <option value="8">Tháng 8</option>
+                            <option value="9">Tháng 9</option>
+                            <option value="10">Tháng 10</option>
+                            <option value="11">Tháng 11</option>
+                            <option value="12">Tháng 12</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-primary w-100" onclick="updateChart()">
+                            <i class="fas fa-sync-alt me-2"></i>Cập Nhật
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="chart-container">
+            <div class="chart-tabs">
+                <button class="chart-tab active" onclick="switchChart('revenue')">
+                    <i class="fas fa-chart-bar me-2"></i>Doanh Thu
+                </button>
+                <button class="chart-tab" onclick="switchChart('transactions')">
+                    <i class="fas fa-chart-line me-2"></i>Số Giao Dịch
+                </button>
+                <button class="chart-tab" onclick="switchChart('comparison')">
+                    <i class="fas fa-chart-pie me-2"></i>So Sánh
+                </button>
+            </div>
+            
+            <div id="chartLoading" class="loading">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p class="mt-3">Đang tải dữ liệu...</p>
+            </div>
+            
+            <div id="chartContainer" style="display: none;">
+                <canvas id="mainChart" height="400"></canvas>
+            </div>
+            
+            <div id="noDataMessage" class="no-data" style="display: none;">
+                <i class="fas fa-chart-line fa-3x mb-3"></i>
+                <p>Không có dữ liệu để hiển thị</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let currentChart = null;
+        let currentChartType = 'revenue';
+        let chartData = {
+            revenue: null,
+            transactions: null,
+            comparison: null
+        };
+
+        // Khởi tạo trang
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeFilters();
+            updateChart();
+        });
+
+        function initializeFilters() {
+            const viewType = document.getElementById('viewType');
+            const monthSelect = document.getElementById('monthSelect');
+            
+            viewType.addEventListener('change', function() {
+                if (this.value === 'yearly' || this.value === 'all') {
+                    monthSelect.disabled = true;
+                    monthSelect.value = '';
+                } else {
+                    monthSelect.disabled = false;
+                }
+            });
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(value);
+        }
+
+        function formatNumber(value) {
+            return new Intl.NumberFormat('vi-VN').format(value);
+        }
+
+        async function fetchData() {
+            const viewType = document.getElementById('viewType').value;
+            const year = document.getElementById('yearSelect').value;
+            const month = document.getElementById('monthSelect').value;
+
+            try {
+                let dataPromises = [];
+                
+                if (viewType === 'monthly' && year) {
+                    if (month) {
+                        // Dữ liệu theo tháng cụ thể
+                        const start = `${year}-${String(month).padStart(2, '0')}-01`;
+                        const end = new Date(year, month, 0);
+                        const endStr = `${year}-${String(month).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}`;
+                        
+                        dataPromises.push(fetch(`/api/thongke-tuychon?start=${start}&end=${endStr}`));
+                        dataPromises.push(fetch(`/api/thongke-tong-hop?year=${year}&month=${month}`));
+                    } else {
+                        // Dữ liệu theo các tháng trong năm
+                        dataPromises.push(fetch(`/api/thongke-theo-thang?year=${year}`));
+                        dataPromises.push(fetch(`/api/thongke-tong-hop?year=${year}`));
+                    }
+                } else if (viewType === 'yearly') {
+                    // Dữ liệu theo năm
+                    dataPromises.push(fetch(`/api/thongke-theo-nam`));
+                    dataPromises.push(fetch(`/api/thongke-tong-hop-tat-ca`));
+                } else if (viewType === 'all') {
+                    // Tất cả dữ liệu
+                    dataPromises.push(fetch(`/api/thongke-tat-ca`));
+                    dataPromises.push(fetch(`/api/thongke-tong-hop-tat-ca`));
+                }
+
+                const responses = await Promise.all(dataPromises);
+                const data = await Promise.all(responses.map(r => r.json()));
+                
+                return {
+                    chartData: data[0],
+                    summary: data[1] || { count: 0, total: 0 }
+                };
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+                return { chartData: null, summary: { count: 0, total: 0 } };
+            }
+        }
+
+        function updateStatsCards(summary) {
+            const totalTransactions = summary.count || 0;
+            const totalRevenue = summary.total || 0;
+            const avgTransaction = totalTransactions > 0 ? totalRevenue / totalTransactions : 0;
+
+            document.getElementById('totalTransactions').textContent = formatNumber(totalTransactions);
+            document.getElementById('successTransactions').textContent = formatNumber(totalTransactions);
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+            document.getElementById('avgTransaction').textContent = formatCurrency(avgTransaction);
+        }
+
+        function processChartData(data, viewType) {
+            if (!data) return { labels: [], datasets: [] };
+
+            let labels = [];
+            let revenueData = [];
+            let transactionData = [];
+
+            if (viewType === 'monthly') {
+                // Xử lý dữ liệu theo tháng
+                if (typeof data === 'object' && !Array.isArray(data)) {
+                    labels = Object.keys(data);
+                    revenueData = Object.values(data);
+                    transactionData = labels.map(() => Math.floor(Math.random() * 100) + 10); // Mock data
+                } else {
+                    labels = ['Tháng hiện tại'];
+                    revenueData = [data || 0];
+                    transactionData = [Math.floor(Math.random() * 50) + 5];
+                }
+            } else {
+                // Xử lý dữ liệu khác
+                labels = data.labels || [];
+                revenueData = data.revenue || [];
+                transactionData = data.transactions || [];
+            }
+
+            return {
+                labels,
+                revenue: revenueData,
+                transactions: transactionData
+            };
+        }
+
+        function createChart(type, data) {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            let config = {};
+
+            switch (type) {
+                case 'revenue':
+                    config = {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Doanh Thu (VND)',
+                                data: data.revenue,
+                                backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                                borderColor: 'rgba(102, 126, 234, 1)',
+                                borderWidth: 2,
+                                borderRadius: 8,
+                                borderSkipped: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Biểu Đồ Doanh Thu',
+                                    font: { size: 16, weight: 'bold' }
+                                },
+                                legend: { display: false }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return formatCurrency(value);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    break;
+
+                case 'transactions':
+                    config = {
+                        type: 'line',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Số Giao Dịch',
+                                data: data.transactions,
+                                borderColor: 'rgba(118, 75, 162, 1)',
+                                backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: 'rgba(118, 75, 162, 1)',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 6
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Biểu Đồ Số Giao Dịch',
+                                    font: { size: 16, weight: 'bold' }
+                                },
+                                legend: { display: false }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return formatNumber(value);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    break;
+
+                case 'comparison':
+                    config = {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                data: data.revenue,
+                                backgroundColor: [
+                                    'rgba(102, 126, 234, 0.8)',
+                                    'rgba(118, 75, 162, 0.8)',
+                                    'rgba(255, 99, 132, 0.8)',
+                                    'rgba(54, 162, 235, 0.8)',
+                                    'rgba(255, 206, 86, 0.8)',
+                                    'rgba(75, 192, 192, 0.8)'
+                                ],
+                                borderWidth: 2,
+                                borderColor: '#fff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'So Sánh Doanh Thu',
+                                    font: { size: 16, weight: 'bold' }
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 20,
+                                        usePointStyle: true
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    break;
+            }
+
+            currentChart = new Chart(ctx, config);
+        }
+
+        async function updateChart() {
+            const viewType = document.getElementById('viewType').value;
+            
+            // Hiển thị loading
+            document.getElementById('chartLoading').style.display = 'block';
+            document.getElementById('chartContainer').style.display = 'none';
+            document.getElementById('noDataMessage').style.display = 'none';
+
+            try {
+                const result = await fetchData();
+                const processedData = processChartData(result.chartData, viewType);
+                
+                // Cập nhật stats cards
+                updateStatsCards(result.summary);
+                
+                // Lưu dữ liệu
+                chartData = {
+                    labels: processedData.labels,
+                    revenue: processedData.revenue,
+                    transactions: processedData.transactions
+                };
+
+                // Hiển thị biểu đồ
+                if (processedData.labels.length > 0) {
+                    createChart(currentChartType, chartData);
+                    document.getElementById('chartContainer').style.display = 'block';
+                } else {
+                    document.getElementById('noDataMessage').style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Lỗi khi cập nhật biểu đồ:', error);
+                document.getElementById('noDataMessage').style.display = 'block';
+            } finally {
+                document.getElementById('chartLoading').style.display = 'none';
+            }
+        }
+
+        function switchChart(type) {
+            // Cập nhật active tab
+            document.querySelectorAll('.chart-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            currentChartType = type;
+            
+            if (chartData.labels && chartData.labels.length > 0) {
+                createChart(type, chartData);
+            }
+        }
+
+        // Mock API endpoints (để demo hoạt động)
+        if (!window.fetch.toString().includes('[native code]')) {
+            const originalFetch = window.fetch;
+            window.fetch = function(url, options) {
+                // Mock data cho demo
+                if (url.includes('/api/thongke-theo-thang')) {
+                    return Promise.resolve({
+                        json: () => Promise.resolve({
+                            '01/2025': 15000000,
+                            '02/2025': 22000000,
+                            '03/2025': 18000000,
+                            '04/2025': 25000000,
+                            '05/2025': 30000000,
+                            '06/2025': 28000000,
+                            '07/2025': 35000000
+                        })
+                    });
+                }
+                
+                if (url.includes('/api/thongke-tong-hop')) {
+                    return Promise.resolve({
+                        json: () => Promise.resolve({
+                            count: 156,
+                            total: 173000000
+                        })
+                    });
+                }
+                
+                return originalFetch.apply(this, arguments);
+            };
+        }
+    </script>
+</body>
+</html>

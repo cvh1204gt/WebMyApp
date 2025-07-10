@@ -91,9 +91,38 @@
                   <a href="/admin/account_management" class="nav__dropdown-item">Tài khoản</a>
                   <a href="/lichsugiaodich" class="nav__dropdown-item">Giao dịch</a>
                   <a href="/service_management" class="nav__dropdown-item">Gói dịch vụ</a>
+                  <a href="/logs" class="nav__dropdown-item" sec:authorize="hasRole('ADMIN')">Log</a>
+                  <a href="/thongkegiaodich" class="nav__dropdown-item">Thong ke</a>
                 </div>
               </div>
             </div>
+
+
+            <a href="/admin/account_management" class="nav__link">
+              <i class='bx bx-user nav__icon'></i>
+              <span class="nav__name">Tài khoản</span>
+            </a>
+
+            <a href="/lichsugiaodich" class="nav__link">
+              <i class='bx bx-user nav__icon'></i>
+              <span class="nav__name">Giao dịch</span>
+            </a>
+
+            <a href="/service_management" class="nav__link">
+              <i class='bx bx-history nav__icon'></i>
+              <span class="nav__name">Gói dịch vụ</span>
+            </a>
+
+            <a href="/logs" class="nav__link">
+              <i class='bx bx-user nav__icon'></i>
+              <span class="nav__name">Log</span>
+            </a>
+            
+
+
+
+
+
 
             <a href="/services" class="nav__link" sec:authorize="hasAnyRole('CLIENT', 'ADMINDICHVU')">
               <i class='bx bx-package nav__icon'></i>

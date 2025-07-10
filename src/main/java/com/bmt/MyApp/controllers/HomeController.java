@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.bmt.MyApp.models.AppUser;
 import com.bmt.MyApp.services.AppUserService;
 
+
 @Controller
 public class HomeController {
 
@@ -23,10 +24,10 @@ public class HomeController {
     return "index";
   }
 
-  @GetMapping("/home")
-  public String dashboard() {
-    return "home";
-  }
+  // @GetMapping("/home")
+  // public String dashboard() {
+  //   return "home";
+  // }
 
   @GetMapping("/profile")
   public String profile(Model model) {
@@ -88,5 +89,18 @@ public class HomeController {
   public String service_management() {
     return "service_management";
   }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/log")
+  public String log() {
+    return "log";
+  }
+
+  // @PreAuthorize("hasRole('ADMIN')")
+  // @GetMapping("/thongkegiaodich")
+  // public String thongkegiaodich() {
+  //   return "thongkegiaodich";
+  // }
+
 
 }
