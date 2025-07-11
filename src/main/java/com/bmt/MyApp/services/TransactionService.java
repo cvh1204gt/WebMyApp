@@ -79,7 +79,6 @@ public class TransactionService {
             search, startDateTime, endDateTime, expireStartDateTime, expireEndDateTime, pageable);
     }
 
-    // === Dùng cho xuất Excel ===
     public List<Transactions> searchTransactionsForExport(String search, String startDate, String endDate,
                                                           String expireStartDate, String expireEndDate) {
         LocalDateTime startDateTime = null;
@@ -108,7 +107,7 @@ public class TransactionService {
             search, startDateTime, endDateTime, expireStartDateTime, expireEndDateTime);
     }
 
-    // === Thống kê ===
+    // Thống kê
     public long countTransactionsByStatus(TransactionStatus status) {
         return transactionsRepository.countByStatus(status);
     }
@@ -123,5 +122,10 @@ public class TransactionService {
 
     public long countByStatusAndDateRange(TransactionStatus status, LocalDateTime start, LocalDateTime end) {
         return transactionsRepository.countByStatusAndDateRange(status, start, end);
+    }
+
+    // Lấy giao dịch theo tên người dùng (cho user hiện tại)
+    public Page<Transactions> findByUsername(String username, Pageable pageable) {
+        return transactionsRepository.findByUsername(username, pageable);
     }
 }

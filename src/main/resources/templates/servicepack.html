@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: page_head}"></head>
+<body>
+<header th:replace="~{layout :: page_header}"></header>
+<div th:replace="~{layout :: page_navbar}"></div>
+
+<main>
+  <section class="giaodich-section">
+    <h1 class="py-4">Quản lý Gói Dịch Vụ</h1>
+
+    <!-- Form tìm kiếm -->
+    <div class="content-header mb-4">
+      <form class="search-form" method="get" th:action="@{/servicepacks}">
+        <div class="search-row">
+          <input type="search" name="search" class="search-input" placeholder="Tìm theo tên, mô tả..."
+                 th:value="${search}" aria-label="Search">
+          <div class="search-buttons">
+            <button type="submit" class="search-btn">Tìm kiếm</button>
+            <a href="/servicepacks" class="delete-btn">Xóa bộ lọc</a>
+            <a href="/servicepacks/add" class="search-btn">+ Thêm mới</a>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Kết quả -->
+    <div class="results-info mb-3">
+      <span th:if="${totalElements > 0}">
+        Hiển thị <strong th:text="${currentPage * size + 1}">1</strong> - 
+        <strong th:text="${(currentPage + 1) * size > totalElements ? totalElements : (currentPage + 1) * size}">10</strong> 
+        trong tổng số <strong th:text="${totalElements}">0</strong> gói dịch vụ
+      </span>
+      <span th:if="${totalElements == 0}">Không có dữ liệu</span>
+    </div>
+
+    <!-- Bảng dữ liệu -->
+    <div class="table-responsive">
+      <table class="giaodich-table">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên gói</th>
+            <th>Giá</th>
+            <th>Thời lượng</th>
+            <th>Mô tả</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="pack, iterStat : ${packs}">
+            <td th:text="${currentPage * size + iterStat.count}">1</td>
+            <td th:text="${pack.name}">Gói A</td>
+            <td th:text="${#numbers.formatDecimal(pack.price, 0, 'COMMA', 0, 'POINT')}">500000</td>
+            <td th:text="${pack.duration} + ' ngày'">30 ngày</td>
+            <td th:text="${pack.description}" class="detail-cell">Mô tả gói</td>
+            <td>
+              <div class="action-buttons">
+                <a th:href="@{'/servicepacks/edit/' + ${pack.id}}" class="action-btn edit">Sửa</a>
+                <form th:action="@{'/servicepacks/delete/' + ${pack.id}}" method="post"
+                      onsubmit="return confirm('Bạn chắc chắn muốn xóa?')">
+                  <button type="submit" class="action-btn delete">Xóa</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(packs)}">
+            <td colspan="6" class="text-center">Không có dữ liệu</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container mt-4" th:if="${totalPages > 1}">
+      <div class="pagination-info">
+        <span>Trang <strong th:text="${currentPage + 1}">1</strong> / <strong th:text="${totalPages}">1</strong></span>
+      </div>
+      <div class="pagination-controls">
+        <a th:href="@{/servicepacks(page=0, search=${search})}" class="pagination-btn"
+           th:classappend="${currentPage == 0} ? 'disabled' : ''">⇤</a>
+        <a th:href="@{/servicepacks(page=${currentPage - 1}, search=${search})}" class="pagination-btn"
+           th:classappend="${!hasPrevious} ? 'disabled' : ''">←</a>
+        <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+              th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}">
+          <a th:href="@{/servicepacks(page=${pageNum}, search=${search})}" class="page-btn"
+             th:classappend="${pageNum == currentPage} ? 'active' : ''"
+             th:text="${pageNum + 1}">1</a>
+        </span>
+        <a th:href="@{/servicepacks(page=${currentPage + 1}, search=${search})}" class="pagination-btn"
+           th:classappend="${!hasNext} ? 'disabled' : ''">→</a>
+        <a th:href="@{/servicepacks(page=${totalPages - 1}, search=${search})}" class="pagination-btn"
+           th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">⇥</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<style>
+  .content-header {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .search-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .search-input {
+    flex: 1;
+    min-width: 250px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+  }
+
+  .search-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .search-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+
+  .search-btn:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+  }
+
+  .delete-btn {
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    display: inline-block;
+  }
+
+  .delete-btn:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+  }
+
+  .results-info {
+    color: #666;
+    font-size: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .giaodich-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .giaodich-table th {
+    background: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  .giaodich-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+  }
+
+  .giaodich-table tbody tr:hover {
+    background: #f8f9fa;
+  }
+
+  .detail-cell {
+    max-width: 200px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-top: 1px solid #eee;
+  }
+
+  .pagination-info {
+    color: #666;
+    font-size: 14px;
+  }
+
+  .pagination-controls {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .pagination-btn,
+  .page-btn {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s;
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .pagination-btn:hover:not(.disabled),
+  .page-btn:hover:not(.active) {
+    background: #f8f9fa;
+    border-color: #007bff;
+    color: #007bff;
+  }
+
+  .pagination-btn.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .page-btn.active {
+    background: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .search-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .search-buttons {
+      justify-content: center;
+    }
+
+    .pagination-container {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .pagination-controls {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .search-input {
+      min-width: 100%;
+    }
+  }
+
+  .action-buttons {
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .action-btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 60px;
+  }
+
+  .action-btn.edit {
+    background-color: #17a2b8;
+    color: white;
+  }
+
+  .action-btn.edit:hover {
+    background-color: #138496;
+    transform: translateY(-1px);
+  }
+
+  .action-btn.delete {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .action-btn.delete:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+  }
+
+  .action-buttons form {
+    display: inline;
+  }
+</style>
+</body>
+</html>

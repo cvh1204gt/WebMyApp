@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: page_head}"></head>
+<body>
+<header th:replace="~{layout :: page_header}"></header>
+<div th:replace="~{layout :: page_navbar}"></div>
+
+<main>
+  <section class="giaodich-section">
+    <h1 class="py-4">Chỉnh Sửa Gói Dịch Vụ</h1>
+
+    <form method="post" th:action="@{'/servicepacks/edit/' + ${pack.id}}" class="search-form">
+      <div class="search-row">
+        <input type="text" name="name" class="search-input" placeholder="Tên gói" th:value="${pack.name}" required>
+        <input type="number" step="0.01" name="price" class="search-input" placeholder="Giá (VNĐ)" th:value="${pack.price}" required>
+      </div>
+      <div class="search-row">
+        <input type="number" name="duration" class="search-input" placeholder="Thời lượng (ngày)" th:value="${pack.duration}" required>
+      </div>
+      <div class="search-row">
+        <textarea name="description" class="search-input" placeholder="Mô tả" rows="4"
+                  th:text="${pack.description}"></textarea>
+      </div>
+      <div class="search-buttons">
+        <button type="submit" class="search-btn">💾 Cập nhật</button>
+        <a href="/servicepacks" class="delete-btn">↩ Hủy</a>
+      </div>
+    </form>
+  </section>
+</main>
+<style>
+    .content-header {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .search-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+    }
+    
+    .date-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .date-group label {
+      font-weight: 500;
+      color: #333;
+      white-space: nowrap;
+    }
+    
+    .date-input {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      min-width: 150px;
+      transition: border-color 0.3s;
+    }
+    
+    .date-input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+    }
+    
+    .search-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .search-btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .search-btn:hover {
+      background: #0056b3;
+      transform: translateY(-1px);
+    }
+    
+    .delete-btn {
+      background: #6c757d;
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+    
+    .delete-btn:hover {
+      background: #5a6268;
+      text-decoration: none;
+      color: white;
+      transform: translateY(-1px);
+    }
+    
+    .results-info {
+      color: #666;
+      font-size: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .table-responsive {
+      overflow-x: auto;
+    }
+    
+    .giaodich-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .giaodich-table th {
+      background: #f8f9fa;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #dee2e6;
+    }
+    
+    .giaodich-table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+    }
+    
+    .giaodich-table tbody tr:hover {
+      background: #f8f9fa;
+    }
+    
+    .detail-cell {
+      max-width: 200px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    .pagination-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-top: 1px solid #eee;
+    }
+    
+    .pagination-info {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .pagination-controls {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    
+    .pagination-btn,
+    .page-btn {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      color: #333;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: all 0.3s;
+      min-width: 40px;
+      text-align: center;
+    }
+    
+    .pagination-btn:hover:not(.disabled),
+    .page-btn:hover:not(.active) {
+      background: #f8f9fa;
+      border-color: #007bff;
+      color: #007bff;
+    }
+    
+    .pagination-btn.disabled {
+      pointer-events: none;
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .page-btn.active {
+      background: #007bff;
+      border-color: #007bff;
+      color: white;
+    }
+    
+    .text-center {
+      text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+      .search-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .date-group {
+        justify-content: space-between;
+      }
+      
+      .search-buttons {
+        justify-content: center;
+      }
+      
+      .pagination-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .pagination-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .search-input {
+        min-width: 100%;
+      }
+    }
+  </style>
+</body>
+</html>

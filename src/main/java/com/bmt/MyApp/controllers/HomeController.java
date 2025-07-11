@@ -96,6 +96,7 @@ public class HomeController {
     return "log";
   }
 
+
   // @PreAuthorize("hasRole('ADMIN')")
   // @GetMapping("/thongkegiaodich")
   // public String thongkegiaodich() {

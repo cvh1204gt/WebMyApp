@@ -98,22 +98,22 @@
             </div>
 
 
-            <a href="/admin/account_management" class="nav__link">
+            <a href="/admin/account_management" class="nav__link" sec:authorize="hasRole('ADMIN')">
               <i class='bx bx-user nav__icon'></i>
               <span class="nav__name">Tài khoản</span>
             </a>
 
-            <a href="/lichsugiaodich" class="nav__link">
+            <a href="/lichsugiaodich" class="nav__link" sec:authorize="hasRole('ADMIN')">
               <i class='bx bx-user nav__icon'></i>
               <span class="nav__name">Giao dịch</span>
             </a>
 
-            <a href="/service_management" class="nav__link">
+            <a href="/servicepacks" class="nav__link" sec:authorize="hasRole('ADMIN')">
               <i class='bx bx-history nav__icon'></i>
               <span class="nav__name">Gói dịch vụ</span>
             </a>
 
-            <a href="/logs" class="nav__link">
+            <a href="/logs" class="nav__link" sec:authorize="hasRole('ADMIN')">
               <i class='bx bx-user nav__icon'></i>
               <span class="nav__name">Log</span>
             </a>
@@ -133,6 +133,12 @@
               <i class='bx bx-dollar-circle nav__icon'></i>
               <span class="nav__name">Nạp tiền</span>
             </a>
+
+            <a href="user_transactions" class="nav__link" sec:authorize="hasAnyRole('CLIENT', 'ADMINDICHVU')">
+              <i class='bx bx-dollar-circle nav__icon'></i>
+              <span class="nav__name">Lịch Sử Giao Dịch</span>
+            </a>
+
           </div>
         </div>
       </div>

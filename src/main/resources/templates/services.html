@@ -1,57 +1,131 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
-
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <head th:replace="~{layout :: page_head}"></head>
-
 <body>
-  <!--========== HEADER ==========-->
-  <header th:replace="~{layout :: page_header}"></header>
+<header th:replace="~{layout :: page_header}"></header>
+<div th:replace="~{layout :: page_navbar}"></div>
 
-  <!--========== NAV ==========--> 
-  <div th:replace="~{layout :: page_navbar}"></div>
+<main>
+  <section class="giaodich-section">
+    <h2 class="py-4">Danh sách gói dịch vụ</h2>
 
-  <div class="container mt-5">
-    <h2 class="mb-4">Danh sách gói dịch vụ</h2>
-    
-    <!-- Hiển thị thông báo lỗi nếu có -->
-    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-      <span th:text="${errorMessage}"></span>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    
-    <!-- Hiển thị thông báo thành công nếu có -->
-    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-      <span th:text="${successMessage}"></span>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    
-    <!-- Kiểm tra xem có services hay không -->
+    <!-- Hiển thị thông báo -->
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
     <div th:if="${#lists.isEmpty(services)}" class="alert alert-info">
-      <h4>Không có gói dịch vụ nào khả dụng</h4>
-      <p>Bạn đã mua tất cả các gói dịch vụ và chúng vẫn còn hiệu lực. Vui lòng quay lại sau khi các gói hết hạn.</p>
+      Bạn đã mua tất cả các gói dịch vụ. Vui lòng quay lại sau khi các gói hết hạn.
     </div>
-    
-    <div class="row" th:if="${!#lists.isEmpty(services)}">
-      <div class="col-md-4 mb-4" th:each="service : ${services}">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title" th:text="${service.name}">Tên gói</h5>
-            <p class="card-text"
-              th:text="'Giá: ' + ${#numbers.formatDecimal(service.price, 0, 'COMMA', 2, 'POINT')} + ' VND'">Giá</p>
-            <p class="card-text" th:text="'Thời hạn: ' + ${service.duration} + ' ngày'">Thời hạn</p>
-            <p class="card-text" th:text="${service.description}">Mô tả</p>
-          </div>
-          <div class="card-footer text-center">
-            <a th:href="@{/api/payment/create_payment_service(id=${service.id}, amount=${#numbers.formatDecimal(service.price, 0, 'NONE', 0, 'NONE')})}"
-              class="btn btn-primary">Mua ngay</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
 
+    <div th:if="${!#lists.isEmpty(services)}" class="table-responsive">
+      <table class="giaodich-table">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên gói</th>
+            <th>Giá</th>
+            <th>Thời hạn</th>
+            <th>Mô tả</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="service, iterStat : ${services}">
+            <td th:text="${iterStat.index + 1}">1</td>
+            <td th:text="${service.name}">Gói A</td>
+            <td th:text="${#numbers.formatDecimal(service.price, 0, 'COMMA', 2, 'POINT')} + ' VND'">100.000 VND</td>
+            <td th:text="${service.duration} + ' ngày'">30 ngày</td>
+            <td th:text="${service.description}" class="detail-cell">Mô tả chi tiết</td>
+            <td>
+              <div class="action-buttons">
+                <a th:href="@{/api/payment/create_payment_service(id=${service.id}, amount=${#numbers.formatDecimal(service.price, 0, 'NONE', 0, 'NONE')})}"
+                   class="action-btn vnpay">VNPAY</a>
+                <a th:href="@{/api/payment/balance_payment_service(id=${service.id})}"
+                   class="action-btn balance">Số dư</a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<style>
+  .giaodich-section {
+    padding: 30px;
+  }
+
+  .giaodich-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+
+  .giaodich-table th {
+    background: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  .giaodich-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+  }
+
+  .giaodich-table tbody tr:hover {
+    background: #f1f1f1;
+  }
+
+  .detail-cell {
+    max-width: 300px;
+    word-wrap: break-word;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    border: none;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .action-btn.vnpay {
+    background-color: #007bff;
+  }
+
+  .action-btn.vnpay:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+  }
+
+  .action-btn.balance {
+    background-color: #28a745;
+  }
+
+  .action-btn.balance:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+  }
+</style>
+
+</body>
 </html>

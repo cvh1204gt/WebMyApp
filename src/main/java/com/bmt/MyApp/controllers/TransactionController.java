@@ -2,6 +2,7 @@
 package com.bmt.MyApp.controllers;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -102,6 +103,28 @@ public class TransactionController {
 
         return "lichsugiaodich";
     }
+
+    // Lịch sử giao dịch của chính người dùng
+        @GetMapping("/user_transactions")
+        public String lichSuGiaoDichCuaToi(@RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size,
+                                        Principal principal,
+                                        Model model) {
+            String username = principal.getName();
+
+            Page<Transactions> transactionPage = transactionService.findByUsername(username, PageRequest.of(page, size, Sort.by("createdAt").descending()));
+
+            model.addAttribute("transactions", transactionPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", transactionPage.getTotalPages());
+            model.addAttribute("totalElements", transactionPage.getTotalElements());
+            model.addAttribute("hasNext", transactionPage.hasNext());
+            model.addAttribute("hasPrevious", transactionPage.hasPrevious());
+            model.addAttribute("size", size);
+
+            return "user_transactions"; // tạo file này trong templates
+        }
+
 
     // Xuất Excel toàn bộ giao dịch theo bộ lọc
     @GetMapping("/lichsugiaodich/export")

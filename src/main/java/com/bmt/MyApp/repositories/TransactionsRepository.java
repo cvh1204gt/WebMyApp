@@ -88,4 +88,10 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Long
     long countByStatusAndDateRange(@Param("status") TransactionStatus status,
                                    @Param("startDate") LocalDateTime start,
                                    @Param("endDate") LocalDateTime end);
+
+
+       // === Giao dịch của chính người dùng đang đăng nhập ===
+       @Query("SELECT t FROM Transactions t WHERE t.user.username = :username ORDER BY t.createdAt DESC")
+       Page<Transactions> findByUsername(@Param("username") String username, Pageable pageable);
+
 }

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: page_head}"></head>
+<body>
+<header th:replace="~{layout :: page_header}"></header>
+<div th:replace="~{layout :: page_navbar}"></div>
+
+<main>
+  <section class="giaodich-section">
+    <h1 class="py-4">Lịch sử giao dịch của bạn</h1>
+
+    <div class="results-info mb-3">
+      <span th:if="${totalElements > 0}">
+        Hiển thị <strong th:text="${currentPage * size + 1}">1</strong> - 
+        <strong th:text="${(currentPage + 1) * size > totalElements ? totalElements : (currentPage + 1) * size}">10</strong> 
+        trong tổng số <strong th:text="${totalElements}">0</strong> giao dịch
+      </span>
+      <span th:if="${totalElements == 0}">Không có dữ liệu</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="giaodich-table">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Mã giao dịch</th>
+            <th>Số tiền</th>
+            <th>Loại</th>
+            <th>Ngày giao dịch</th>
+            <th>Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="txn, iterStat : ${transactions}">
+            <td th:text="${currentPage * size + iterStat.count}">1</td>
+            <td th:text="${txn.code}">TXN001</td>
+            <td th:text="${#numbers.formatDecimal(txn.amount, 0, 'COMMA', 0, 'POINT')}">100,000</td>
+            <td th:text="${txn.type}">Nạp</td>
+            <td th:text="${#temporals.format(txn.createdAt, 'dd/MM/yyyy HH:mm')}">01/07/2025</td>
+            <td th:text="${txn.status}">Thành công</td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(transactions)}">
+            <td colspan="6" class="text-center">Không có dữ liệu</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-container mt-4" th:if="${totalPages > 1}">
+      <div class="pagination-info">
+        <span>Trang <strong th:text="${currentPage + 1}">1</strong> / <strong th:text="${totalPages}">1</strong></span>
+      </div>
+      <div class="pagination-controls">
+        <a th:href="@{/transactions/history(page=0)}" class="pagination-btn" th:classappend="${currentPage == 0} ? 'disabled' : ''">⇤</a>
+        <a th:href="@{/transactions/history(page=${currentPage - 1})}" class="pagination-btn" th:classappend="${currentPage == 0} ? 'disabled' : ''">←</a>
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+              th:if="${i >= currentPage - 2 && i <= currentPage + 2}">
+          <a th:href="@{/transactions/history(page=${i})}" class="page-btn" th:classappend="${i == currentPage} ? 'active' : ''"
+             th:text="${i + 1}">1</a>
+        </span>
+        <a th:href="@{/transactions/history(page=${currentPage + 1})}" class="pagination-btn" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled' : ''">→</a>
+        <a th:href="@{/transactions/history(page=${totalPages - 1})}" class="pagination-btn" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled' : ''">⇥</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Có thể dùng chung style với log.html nếu layout đã include -->
+</body>
+</html>
