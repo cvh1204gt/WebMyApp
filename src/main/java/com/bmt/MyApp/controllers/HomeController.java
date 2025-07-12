@@ -85,16 +85,17 @@ public class HomeController {
   // }
 
   @PreAuthorize("hasRole('ADMIN')")
-  @GetMapping("/service_management")
-  public String service_management() {
-    return "service_management";
-  }
-
-  @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/log")
   public String log() {
     return "log";
   }
+
+
+  @GetMapping("/recharge")
+  public String recharge() {
+    return "recharge";
+  }
+
 
 
   // @PreAuthorize("hasRole('ADMIN')")

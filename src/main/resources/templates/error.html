@@ -36,11 +36,11 @@
 
 <body>
     <div class="error-container">
-        <h1>❌ Payment Failed</h1>
+        <h1>❌ Failed</h1>
         <p th:text="${error == 'payment_failed' ? 'Payment was cancelled or failed. Please try again.' : 
                       error == 'invalid_signature' ? 'Invalid payment signature. Please contact support.' :
                       'Payment was not successful. Please try again.'}">
-            Payment was not successful. Please try again.
+                         Please try again.
         </p>
         <a href="/home" class="btn">Return to Home</a>
     </div>

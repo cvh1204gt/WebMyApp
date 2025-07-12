@@ -13,87 +13,810 @@
   <!--========== CONTENTS ==========-->
   <main>
     <section class="home-section">
-      <div class="content-header">
-        <h1>Xin chào, <span th:text="${user.fullName != null ? user.fullName : user.username}">Người dùng</span></h1>
+      <!-- Welcome Header -->
+      <div class="welcome-header">
+        <div class="welcome-content">
+          <h1 class="welcome-title">Xin chào, <span class="user-name" th:text="${user.fullName != null ? user.fullName : user.username}">Người dùng</span>!</h1>
+          <p class="welcome-subtitle">Chào mừng bạn quay trở lại</p>
+        </div>
+        <div class="welcome-decoration">
+          <div class="decoration-circle"></div>
+          <div class="decoration-circle"></div>
+          <div class="decoration-circle"></div>
+        </div>
       </div>
-      <div class="dashboard-container">
 
-        <div class="dashboard-card service">
-          <h3 class="mb-4">Gói dịch vụ của bạn gần đây</h3>
-
-          <div class="package">
-            <div class="package-content d-flex align-items-center">
-              <i class='bx bxs-user in-use'></i>
-              <div class="ms-3">
-                <h4 class="package-title advanced mb-3">Nâng cao<span class="expiry">(đang sử dụng)</span></h4>
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <p class="m-0">Trạng thái:</p>
-                    <p class="m-0">Thời hạn:</p>
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        <!-- Main Content Area -->
+        <div class="main-content">
+          <!-- Services Section -->
+          <div class="section-card services-section">
+            <div class="section-header">
+              <h2 class="section-title">
+                <i class="fas fa-cube"></i>
+                Gói dịch vụ của bạn
+              </h2>
+            </div>
+            
+            <div class="services-list">
+              <!-- Active Package -->
+              <div class="service-item active">
+                <div class="service-icon active">
+                  <i class="fas fa-crown"></i>
+                </div>
+                <div class="service-details">
+                  <div class="service-header">
+                    <h3 class="service-name">Gói Nâng cao</h3>
+                    <span class="service-badge active">Đang hoạt động</span>
                   </div>
-                  <div class="ms-3">
-                    <p class="m-0 text-success"><i class='bx bx-check-circle me-2'></i>Đã kích hoạt</p>
-                    <p class="m-0 text-danger"><i class='bx bx-time-five me-2'></i>90 ngày</p>
+                  <div class="service-info">
+                    <div class="info-item">
+                      <i class="fas fa-check-circle"></i>
+                      <span>Đã kích hoạt</span>
+                    </div>
+                    <div class="info-item">
+                      <i class="fas fa-clock"></i>
+                      <span>Còn 90 ngày</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Expired Package -->
+              <div class="service-item expired">
+                <div class="service-icon expired">
+                  <i class="fas fa-box"></i>
+                </div>
+                <div class="service-details">
+                  <div class="service-header">
+                    <h3 class="service-name">Gói Mở rộng</h3>
+                    <span class="service-badge expired">Đã hết hạn</span>
+                  </div>
+                  <div class="service-info">
+                    <div class="info-item">
+                      <i class="fas fa-exclamation-triangle"></i>
+                      <span>Hết hạn 3 ngày trước</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            <div class="section-footer">
+              <a href="#" class="view-all-link">
+                <span>Xem tất cả gói dịch vụ</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
           </div>
 
-          <div class="divider"></div>
+          <!-- Recent Activity -->
+          <div class="activity-grid">
+            <div class="section-card activity-card">
+              <div class="section-header">
+                <h2 class="section-title">
+                  <i class="fas fa-history"></i>
+                  Hoạt động gần đây
+                </h2>
+              </div>
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <i class="fas fa-clock-rotate-left"></i>
+                </div>
+                <p class="empty-text">Chưa có hoạt động nào</p>
+                <button class="empty-action-btn">Xem lịch sử</button>
+              </div>
+            </div>
 
-          <div class="package">
-            <div class="package-content d-flex align-items-center">
-              <i class='bx bxs-user expired'></i>
-              <div class="ms-3">
-                <h4 class="package-title extend mb-3">Mở rộng<span class="expiry">(hết hạn 3 ngày trước)</span></h4>
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <p class="m-0">Trạng thái:</p>
-                    <p class="m-0">Thời hạn:</p>
-                  </div>
-                  <div class="ms-3">
-                    <p class="m-0 text-success"><i class='bx bx-check-circle me-2'></i>Đã kích hoạt</p>
-                    <p class="m-0 text-danger"><i class='bx bx-time-five me-2'></i>Hết hạn</p>
-                  </div>
+            <div class="section-card notification-card">
+              <div class="section-header">
+                <h2 class="section-title">
+                  <i class="fas fa-bell"></i>
+                  Thông báo
+                </h2>
+              </div>
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <i class="fas fa-bell-slash"></i>
+                </div>
+                <p class="empty-text">Không có thông báo mới</p>
+                <button class="empty-action-btn">Xem tất cả</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <!-- Balance Card -->
+          <div class="section-card balance-card">
+            <div class="section-header">
+              <h2 class="section-title">
+                <i class="fas fa-wallet"></i>
+                Số dư tài khoản
+              </h2>
+            </div>
+            
+            <div class="balance-display">
+              <div class="balance-amount">
+                <span class="currency">VNĐ</span>
+                <span class="amount" id="balanceAmount">2,500,000</span>
+                <button class="toggle-btn" id="toggleBalance">
+                  <i class="fas fa-eye" id="eyeIcon"></i>
+                </button>
+              </div>
+              <p class="balance-note">Số dư khả dụng</p>
+            </div>
+
+            <div class="balance-actions">
+              <button class="action-btn primary">
+                <i class="fas fa-plus"></i>
+                Nạp tiền
+              </button>
+              <button class="action-btn secondary">
+                <i class="fas fa-exchange-alt"></i>
+                Chuyển khoản
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="section-card stats-card">
+            <div class="section-header">
+              <h2 class="section-title">
+                <i class="fas fa-chart-line"></i>
+                Thống kê nhanh
+              </h2>
+            </div>
+            
+            <div class="stats-list">
+              <div class="stat-item">
+                <div class="stat-icon">
+                  <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value">12</span>
+                  <span class="stat-label">Giao dịch tháng này</span>
+                </div>
+              </div>
+              
+              <div class="stat-item">
+                <div class="stat-icon">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value">4.8</span>
+                  <span class="stat-label">Đánh giá trung bình</span>
+                </div>
+              </div>
+              
+              <div class="stat-item">
+                <div class="stat-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value">156</span>
+                  <span class="stat-label">Khách hàng</span>
                 </div>
               </div>
             </div>
           </div>
-          <a href="#" class="view-more">Xem thêm</a>
-        </div>
-
-        <div class="dashboard-card balance">
-          <h3 class="mb-4">Số dư tài khoản của bạn</h3>
-          <div class="d-flex justify-content-between">
-            <p>Số dư:</p>
-            <div class="d-flex gap-2">
-              <i class="fa-solid fa-eye"></i>
-              <p>************</p>
-            </div>
-          </div>
-          <div class="divider"></div>
-          <button class="btn dashboard-btn recharge-btn">Nạp tiền</button>
-        </div>
-
-        <div class="dashboard-card history">
-          <h3>Lịch sử gần đây</h3>
-          <i class="fa-solid fa-clock-rotate-left"></i>
-          <p class="text-center">Bạn không có lịch sử nào gần đây</p>
-          <button class="btn dashboard-btn detailed-btn red">Xem chi tiết</button>
-        </div>
-
-        <div class="dashboard-card notification">
-          <h3>Thông báo gần đây</h3>
-          <i class="fa-solid fa-bell"></i>
-          <p class="text-center">Bạn không có thông báo nào gần đây</p>
-          <button class="btn dashboard-btn detailed-btn yellow">Xem chi tiết</button>
         </div>
       </div>
     </section>
-
   </main>
-  
+
+  <style>
+    :root {
+      --primary-color: #4f46e5;
+      --primary-light: #6366f1;
+      --primary-dark: #3730a3;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .home-section {
+      padding: 24px;
+      background: var(--gray-50);
+      min-height: calc(100vh - 200px);
+    }
+
+    /* Welcome Header */
+    .welcome-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      color: var(--white);
+      padding: 32px;
+      border-radius: var(--radius-xl);
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .welcome-content {
+      flex: 1;
+    }
+
+    .welcome-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      color: #fbbf24;
+    }
+
+    .welcome-subtitle {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      margin: 0;
+      font-weight: 400;
+    }
+
+    .welcome-decoration {
+      position: relative;
+      width: 100px;
+      height: 100px;
+    }
+
+    .decoration-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .decoration-circle:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      top: 10px;
+      right: 10px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .decoration-circle:nth-child(2) {
+      width: 50px;
+      height: 50px;
+      top: 30px;
+      right: 0;
+      animation: float 3s ease-in-out infinite 0.5s;
+    }
+
+    .decoration-circle:nth-child(3) {
+      width: 30px;
+      height: 30px;
+      top: 0;
+      right: 30px;
+      animation: float 3s ease-in-out infinite 1s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .section-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .section-header {
+      padding: 20px 24px;
+      background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      color: var(--primary-color);
+      font-size: 1.125rem;
+    }
+
+    /* Services Section */
+    .services-section {
+      min-height: 400px;
+    }
+
+    .services-list {
+      padding: 24px;
+    }
+
+    .service-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      margin-bottom: 16px;
+    }
+
+    .service-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .service-item.active {
+      background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+      border-color: var(--success-color);
+    }
+
+    .service-item.expired {
+      background: linear-gradient(135deg, #fef3c7 0%, #fef7cd 100%);
+      border-color: var(--warning-color);
+      opacity: 0.8;
+    }
+
+    .service-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--white);
+      box-shadow: var(--shadow-md);
+    }
+
+    .service-icon.active {
+      background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+    }
+
+    .service-icon.expired {
+      background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+    }
+
+    .service-details {
+      flex: 1;
+    }
+
+    .service-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .service-name {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin: 0;
+    }
+
+    .service-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .service-badge.active {
+      background: var(--success-color);
+      color: var(--white);
+    }
+
+    .service-badge.expired {
+      background: var(--warning-color);
+      color: var(--white);
+    }
+
+    .service-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+
+    .info-item i {
+      color: var(--success-color);
+    }
+
+    .service-item.expired .info-item i {
+      color: var(--warning-color);
+    }
+
+    .section-footer {
+      padding: 20px 24px;
+      background: var(--gray-50);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .view-all-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      transition: all 0.3s ease;
+    }
+
+    .view-all-link:hover {
+      background: var(--primary-color);
+      color: var(--white);
+      transform: translateX(4px);
+    }
+
+    /* Activity Grid */
+    .activity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .activity-card,
+    .notification-card {
+      min-height: 280px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: 40px 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      color: var(--gray-300);
+      margin-bottom: 16px;
+    }
+
+    .empty-text {
+      color: var(--gray-500);
+      font-size: 1rem;
+      margin: 0 0 20px 0;
+    }
+
+    .empty-action-btn {
+      background: var(--gray-100);
+      color: var(--gray-600);
+      border: 1px solid var(--gray-200);
+      padding: 8px 20px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .empty-action-btn:hover {
+      background: var(--primary-color);
+      color: var(--white);
+      border-color: var(--primary-color);
+    }
+
+    /* Balance Card */
+    .balance-card {
+      background: linear-gradient(135deg, var(--white) 0%, #f8fafc 100%);
+    }
+
+    .balance-display {
+      padding: 24px;
+      text-align: center;
+    }
+
+    .balance-amount {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .currency {
+      font-size: 1rem;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+
+    .amount {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      color: var(--gray-400);
+      transition: all 0.3s ease;
+    }
+
+    .toggle-btn:hover {
+      background: var(--gray-100);
+      color: var(--primary-color);
+    }
+
+    .balance-note {
+      color: var(--gray-500);
+      font-size: 0.875rem;
+      margin: 0;
+    }
+
+    .balance-actions {
+      padding: 20px 24px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.875rem;
+    }
+
+    .action-btn.primary {
+      background: var(--primary-color);
+      color: var(--white);
+    }
+
+    .action-btn.primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .action-btn.secondary {
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-200);
+    }
+
+    .action-btn.secondary:hover {
+      background: var(--secondary-color);
+      color: var(--white);
+      border-color: var(--secondary-color);
+    }
+
+    /* Stats Card */
+    .stats-list {
+      padding: 24px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .stat-item:last-child {
+      border-bottom: none;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .stat-info {
+      flex: 1;
+    }
+
+    .stat-value {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      color: var(--gray-500);
+      font-size: 0.875rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      
+      .sidebar {
+        order: -1;
+      }
+      
+      .activity-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .home-section {
+        padding: 16px;
+      }
+      
+      .welcome-header {
+        padding: 24px;
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+      }
+      
+      .welcome-title {
+        font-size: 1.875rem;
+      }
+      
+      .dashboard-grid {
+        gap: 20px;
+      }
+      
+      .service-item {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .service-header {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .balance-actions {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .welcome-title {
+        font-size: 1.5rem;
+      }
+      
+      .section-header {
+        padding: 16px 20px;
+      }
+      
+      .services-list,
+      .balance-display,
+      .stats-list {
+        padding: 20px;
+      }
+    }
+  </style>
+
+  <script>
+    // Toggle balance visibility
+    document.getElementById('toggleBalance').addEventListener('click', function() {
+      const balanceAmount = document.getElementById('balanceAmount');
+      const eyeIcon = document.getElementById('eyeIcon');
+      
+      if (balanceAmount.textContent === '2,500,000') {
+        balanceAmount.textContent = '••••••••';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      } else {
+        balanceAmount.textContent = '2,500,000';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      }
+    });
+
+    // Add smooth animations
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.section-card');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      });
+
+      cards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.6s ease';
+        observer.observe(card);
+      });
+    });
+  </script>
 </body>
 
 </html>

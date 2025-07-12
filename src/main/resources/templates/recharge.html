@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: page_head}"></head>
+
+<body>
+  <!--========== HEADER ==========-->
+  <header th:replace="~{layout :: page_header}"></header>
+
+  <!--========== NAV ==========-->
+  <div th:replace="~{layout :: page_navbar}"></div>
+
+  <!--========== CONTENTS ==========-->
+  <main>
+    <section class="giaodich-section">
+      <h1 class="py-4">Nạp Tiền</h1>
+
+      <!-- Thông tin số dư -->
+      <div class="balance-info">
+        <div class="balance-card">
+          <div class="balance-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <div class="balance-content">
+            <h3>Số dư hiện tại: 999.999 VND</h3>
+            <p class="balance-amount" th:text="${#numbers.formatDecimal(currentBalance, 0, 'COMMA', 0, 'POINT')}">1,250,000</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form nạp tiền -->
+      <div class="recharge-form-container">
+        <form class="recharge-form" method="post" th:action="@{/recharge}">
+          <h2>Nạp tiền vào tài khoản</h2>
+          
+          <div class="form-group">
+            <label for="amount">Số tiền muốn nạp (VND)</label>
+            <input type="number" id="amount" name="amount" class="form-input" 
+                   placeholder="Nhập số tiền..." min="10000" max="100000000" required>
+            <small class="form-hint">Tối thiểu 10,000 VND - Tối đa 100,000,000 VND</small>
+          </div>
+
+          <div class="form-group">
+            <label for="paymentMethod">Phương thức thanh toán</label>
+            <select id="paymentMethod" name="paymentMethod" class="form-select" required>
+              <option value="">Chọn phương thức thanh toán</option>
+              <option value="bank_transfer">Chuyển khoản ngân hàng</option>
+              <option value="momo">Ví MoMo</option>
+              <option value="zalopay">ZaloPay</option>
+              <option value="vnpay">VNPay</option>
+              <option value="credit_card">Thẻ tín dụng</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="note">Ghi chú (không bắt buộc)</label>
+            <textarea id="note" name="note" class="form-textarea" rows="3" 
+                      placeholder="Nhập ghi chú..."></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="submit-btn">Nạp tiền</button>
+            <button type="reset" class="reset-btn">Đặt lại</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Thống kê nhanh -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <h4>Hôm nay</h4>
+          <p class="stat-value" th:text="${#numbers.formatDecimal(todayAmount, 0, 'COMMA', 0, 'POINT')}">0</p>
+          <span class="stat-label">VND</span>
+        </div>
+        <div class="stat-card">
+          <h4>Tháng này</h4>
+          <p class="stat-value" th:text="${#numbers.formatDecimal(monthAmount, 0, 'COMMA', 0, 'POINT')}">2,500,000</p>
+          <span class="stat-label">VND</span>
+        </div>
+        <div class="stat-card">
+          <h4>Tổng cộng</h4>
+          <p class="stat-value" th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')}">15,750,000</p>
+          <span class="stat-label">VND</span>
+        </div>
+      </div>
+
+      <!-- Lịch sử nạp tiền -->
+      <div class="history-section">
+        <h2>Lịch sử nạp tiền</h2>
+        
+        <!-- Form tìm kiếm -->
+        <div class="content-header mb-4">
+          <form class="search-form" method="get" th:action="@{/recharge}">
+            <div class="search-row">
+              <div class="date-group">
+                <label>Thời gian:</label>
+                <input type="date" name="startDate" class="date-input" 
+                       th:value="${startDate}" placeholder="Từ ngày">
+                <span>đến</span>
+                <input type="date" name="endDate" class="date-input" 
+                       th:value="${endDate}" placeholder="Đến ngày">
+              </div>
+              
+              <div class="status-group">
+                <label>Trạng thái:</label>
+                <select name="status" class="status-select">
+                  <option value="">Tất cả</option>
+                  <option value="pending" th:selected="${status == 'pending'}">Đang xử lý</option>
+                  <option value="completed" th:selected="${status == 'completed'}">Thành công</option>
+                  <option value="failed" th:selected="${status == 'failed'}">Thất bại</option>
+                </select>
+              </div>
+              
+              <div class="search-buttons">
+                <button type="submit" class="search-btn">Tìm kiếm</button>
+                <a href="/recharge" class="delete-btn">Xóa bộ lọc</a>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Thông tin tổng quan -->
+        <div class="results-info mb-3">
+          <span th:if="${totalElements > 0}">
+            Hiển thị <strong th:text="${currentPage * size + 1}">1</strong> - 
+            <strong th:text="${(currentPage + 1) * size > totalElements ? totalElements : (currentPage + 1) * size}">10</strong> 
+            trong tổng số <strong th:text="${totalElements}">0</strong> giao dịch
+          </span>
+          <span th:if="${totalElements == 0}">
+            Không tìm thấy giao dịch nào
+          </span>
+        </div>
+
+        <!-- Bảng lịch sử -->
+        <div class="table-responsive">
+          <table class="giaodich-table">
+            <thead>
+              <tr>
+                <th>Mã GD</th>
+                <th>Số tiền</th>
+                <th>Phương thức</th>
+                <th>Trạng thái</th>
+                <th>Thời gian</th>
+                <th>Ghi chú</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="transaction, iterStat : ${transactions}">
+                <td>
+                  <span class="transaction-id" th:text="${transaction.transactionId}">RC240712001</span>
+                </td>
+                <td>
+                  <span class="amount-text" th:text="${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 0, 'POINT')} + ' VND'">500,000 VND</span>
+                </td>
+                <td>
+                  <span class="payment-method" th:text="${transaction.paymentMethod}">Chuyển khoản</span>
+                </td>
+                <td>
+                  <span class="status-badge" th:classappend="${transaction.status}"
+                        th:text="${transaction.status == 'completed' ? 'Thành công' : 
+                                  transaction.status == 'pending' ? 'Đang xử lý' : 'Thất bại'}">
+                    Thành công
+                  </span>
+                </td>
+                <td th:text="${#temporals.format(transaction.createdAt, 'dd/MM/yyyy HH:mm')}">
+                  12/07/2024 10:30
+                </td>
+                <td>
+                  <span class="note-text" th:text="${transaction.note ?: 'Không có'}">Nạp tiền định kỳ</span>
+                </td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(transactions)}">
+                <td colspan="6" class="text-center">Không có giao dịch nào</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-container mt-4" th:if="${totalPages > 1}">
+          <div class="pagination-info">
+            <span>Trang <strong th:text="${currentPage + 1}">1</strong> / <strong th:text="${totalPages}">1</strong></span>
+          </div>
+          
+          <div class="pagination-controls">
+            <!-- First page -->
+            <a th:href="@{/recharge(page=0, startDate=${startDate}, endDate=${endDate}, status=${status})}" 
+               class="pagination-btn" 
+               th:classappend="${currentPage == 0} ? 'disabled' : ''"
+               title="Trang đầu">
+              ⇤
+            </a>
+            
+            <!-- Previous page -->
+            <a th:href="@{/recharge(page=${currentPage - 1}, startDate=${startDate}, endDate=${endDate}, status=${status})}" 
+               class="pagination-btn" 
+               th:classappend="${!hasPrevious} ? 'disabled' : ''"
+               title="Trang trước">
+              ←
+            </a>
+            
+            <!-- Page numbers -->
+            <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" 
+                  th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}">
+              <a th:href="@{/recharge(page=${pageNum}, startDate=${startDate}, endDate=${endDate}, status=${status})}" 
+                 class="page-btn" 
+                 th:classappend="${pageNum == currentPage} ? 'active' : ''"
+                 th:text="${pageNum + 1}">1</a>
+            </span>
+            
+            <!-- Next page -->
+            <a th:href="@{/recharge(page=${currentPage + 1}, startDate=${startDate}, endDate=${endDate}, status=${status})}" 
+               class="pagination-btn" 
+               th:classappend="${!hasNext} ? 'disabled' : ''"
+               title="Trang sau">
+              →
+            </a>
+            
+            <!-- Last page -->
+            <a th:href="@{/recharge(page=${totalPages - 1}, startDate=${startDate}, endDate=${endDate}, status=${status})}" 
+               class="pagination-btn" 
+               th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''"
+               title="Trang cuối">
+              ⇥
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .py-4 {
+      padding: 20px 0;
+    }
+    
+    .mb-3 {
+      margin-bottom: 15px;
+    }
+    
+    .mb-4 {
+      margin-bottom: 20px;
+    }
+    
+    .mt-4 {
+      margin-top: 20px;
+    }
+
+    /* Balance Info */
+    .balance-info {
+      margin-bottom: 30px;
+    }
+    
+    .balance-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .balance-icon {
+      background: rgba(255,255,255,0.2);
+      padding: 15px;
+      border-radius: 50%;
+    }
+    
+    .balance-content h3 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+    
+    .balance-amount {
+      margin: 0;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    /* Recharge Form */
+    .recharge-form-container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    
+    .recharge-form h2 {
+      margin: 0 0 25px 0;
+      color: #333;
+      font-size: 24px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s;
+      box-sizing: border-box;
+    }
+    
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-hint {
+      color: #666;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .submit-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .submit-btn:hover {
+      background: #5a67d8;
+      transform: translateY(-2px);
+    }
+    
+    .reset-btn {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .reset-btn:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+    }
+
+    /* Stats */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stat-card h4 {
+      margin: 0 0 15px 0;
+      color: #666;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      margin: 0;
+    }
+    
+    .stat-label {
+      color: #666;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    /* History Section */
+    .history-section {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .history-section h2 {
+      margin: 0 0 25px 0;
+      color: #333;
+      font-size: 24px;
+    }
+
+    /* Search Form */
+    .content-header {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .search-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+    }
+    
+    .date-group,
+    .status-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .date-group label,
+    .status-group label {
+      font-weight: 500;
+      color: #333;
+      white-space: nowrap;
+    }
+    
+    .date-input,
+    .status-select {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      min-width: 150px;
+      transition: border-color 0.3s;
+    }
+    
+    .date-input:focus,
+    .status-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.15);
+    }
+    
+    .search-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .search-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .search-btn:hover {
+      background: #5a67d8;
+      transform: translateY(-1px);
+    }
+    
+    .delete-btn {
+      background: #6c757d;
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+    
+    .delete-btn:hover {
+      background: #5a6268;
+      text-decoration: none;
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    /* Table */
+    .results-info {
+      color: #666;
+      font-size: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .table-responsive {
+      overflow-x: auto;
+    }
+    
+    .giaodich-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .giaodich-table th {
+      background: #f8f9fa;
+      padding: 15px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #dee2e6;
+    }
+    
+    .giaodich-table td {
+      padding: 15px 12px;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
+    }
+    
+    .giaodich-table tbody tr:hover {
+      background: #f8f9fa;
+    }
+    
+    .transaction-id {
+      font-family: monospace;
+      font-weight: bold;
+      color: #667eea;
+      font-size: 13px;
+    }
+    
+    .amount-text {
+      font-weight: bold;
+      color: #28a745;
+      font-size: 15px;
+    }
+    
+    .payment-method {
+      background: #e9ecef;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .status-badge.completed {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .status-badge.pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-badge.failed {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .note-text {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #666;
+      font-size: 13px;
+    }
+
+    /* Pagination */
+    .pagination-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-top: 1px solid #eee;
+    }
+    
+    .pagination-info {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .pagination-controls {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    
+    .pagination-btn,
+    .page-btn {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      color: #333;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: all 0.3s;
+      min-width: 40px;
+      text-align: center;
+    }
+    
+    .pagination-btn:hover:not(.disabled),
+    .page-btn:hover:not(.active) {
+      background: #f8f9fa;
+      border-color: #667eea;
+      color: #667eea;
+    }
+    
+    .pagination-btn.disabled {
+      pointer-events: none;
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .page-btn.active {
+      background: #667eea;
+      border-color: #667eea;
+      color: white;
+    }
+    
+    .text-center {
+      text-align: center;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .balance-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .search-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .date-group,
+      .status-group {
+        justify-content: space-between;
+      }
+      
+      .search-buttons {
+        justify-content: center;
+      }
+      
+      .pagination-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .pagination-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .submit-btn,
+      .reset-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</body>
+
+</html>

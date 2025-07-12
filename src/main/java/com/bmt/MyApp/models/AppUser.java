@@ -2,12 +2,15 @@ package com.bmt.MyApp.models;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -39,6 +42,10 @@ public class AppUser {
 
     // @Column(name = "reset_token")
     // private String resetToken;
+
+    // OneToMany with Transactions
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transactions> transactions;
 
     // Constructors
     public AppUser() {}
@@ -146,5 +153,13 @@ public class AppUser {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public List<Transactions> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transactions> transactions) {
+        this.transactions = transactions;
     }
 }

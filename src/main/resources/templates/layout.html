@@ -37,7 +37,7 @@
       <img src="/image/profile.png" alt="" class="header__img">
 
       <a href="#" class="header__logo">
-        <img src="/image/logo.png" alt="">
+        <img src="" alt="">
       </a>
 
       <div class="header__search">
@@ -77,9 +77,9 @@
           </div>
 
           <div class="nav__items">
-            <h3 class="nav__subtitle">Danh mục</h3>
+            <h3 class="nav__subtitle">Quản lý</h3>
 
-            <div class="nav__dropdown" sec:authorize="hasRole('ADMIN')">
+            <!-- <div class="nav__dropdown" sec:authorize="hasRole('ADMIN')">
               <a href="#" class="nav__link">
                 <i class='bx bxs-user-account nav__icon'></i>
                 <span class="nav__name">Quản lý</span>
@@ -95,29 +95,34 @@
                   <a href="/thongkegiaodich" class="nav__dropdown-item">Thong ke</a>
                 </div>
               </div>
-            </div>
-
+            </div> -->
 
             <a href="/admin/account_management" class="nav__link" sec:authorize="hasRole('ADMIN')">
-              <i class='bx bx-user nav__icon'></i>
+              <i class='bx bx-id-card nav__icon'></i>
               <span class="nav__name">Tài khoản</span>
             </a>
 
             <a href="/lichsugiaodich" class="nav__link" sec:authorize="hasRole('ADMIN')">
-              <i class='bx bx-user nav__icon'></i>
+              <i class='bx bx-transfer-alt nav__icon'></i>
               <span class="nav__name">Giao dịch</span>
             </a>
 
             <a href="/servicepacks" class="nav__link" sec:authorize="hasRole('ADMIN')">
-              <i class='bx bx-history nav__icon'></i>
+              <i class='bx bx-package nav__icon'></i>
               <span class="nav__name">Gói dịch vụ</span>
             </a>
 
             <a href="/logs" class="nav__link" sec:authorize="hasRole('ADMIN')">
-              <i class='bx bx-user nav__icon'></i>
+              <i class='bx bx-file nav__icon'></i>
               <span class="nav__name">Log</span>
             </a>
-            
+
+            <a href="/thongkegiaodich" class="nav__link" sec:authorize="hasRole('ADMIN')">
+              <i class='bx bx-bar-chart-alt-2 nav__icon'></i>
+              <span class="nav__name">Thống kê</span>
+            </a>
+
+
 
 
 
@@ -129,7 +134,7 @@
               <span class="nav__name">Gói dịch vụ</span>
             </a>
 
-            <a href="#" class="nav__link" sec:authorize="hasAnyRole('CLIENT', 'ADMINDICHVU')">
+            <a href="/recharge" class="nav__link" sec:authorize="hasAnyRole('CLIENT', 'ADMINDICHVU')">
               <i class='bx bx-dollar-circle nav__icon'></i>
               <span class="nav__name">Nạp tiền</span>
             </a>

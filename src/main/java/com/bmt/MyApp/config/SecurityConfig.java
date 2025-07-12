@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .requestMatchers("/home", "/profile").hasAnyRole("ADMIN", "CLIENT", "ADMINDICHVU")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/account_management", "/lichsugiaodich").hasRole("ADMIN")
-                .requestMatchers("/services", "/user_transactions").hasAnyRole("CLIENT", "ADMINDICHVU")
+                .requestMatchers("/services", "/user_transactions", "/recharge").hasAnyRole("CLIENT", "ADMINDICHVU")
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")

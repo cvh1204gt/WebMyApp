@@ -62,11 +62,14 @@ public class ServicePackService {
 
     public void delete(Long id, String username) {
         ServicePack s = serviceRepo.findById(id).orElseThrow();
+        String packName = s.getName();
+        Long packId = s.getId();
+        
         serviceRepo.delete(s);
         logRepo.save(SystemLog.builder()
                 .username(username)
                 .action("Xóa")
-                .detail("Xóa gói: " + s.getName())
+                .detail("Xóa gói dịch vụ: " + packName + " (ID: " + packId + ")")
                 .timestamp(LocalDateTime.now())
                 .build());
     }
