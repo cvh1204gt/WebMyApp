@@ -19,7 +19,7 @@ public class OtpToken {
     @Column(nullable = false)
     private String email;
     
-    @Column(nullable = false)
+    @Column(name = "otp_code", nullable = false)
     private String otp;
     
     @Column(nullable = false)

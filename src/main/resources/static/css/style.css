@@ -462,6 +462,55 @@ footer {
     color: #3a3fcf;
 }
 
+/* Action buttons trong bảng */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.action-btn.edit {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.action-btn.edit:hover {
+    background-color: #e0a800;
+    transform: translateY(-1px);
+}
+
+.action-btn.delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.action-btn.delete:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+.action-btn.member {
+    background-color: #28a745;
+    color: white;
+}
+
+.action-btn.member:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+}
+
 /* Responsive */
 @media (max-width: 992px) {
 
@@ -556,5 +605,16 @@ footer {
 
     .section-title {
         font-size: 2em;
+    }
+
+    /* Responsive cho action buttons */
+    .action-buttons {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .action-btn {
+        font-size: 11px;
+        padding: 4px 8px;
     }
 }

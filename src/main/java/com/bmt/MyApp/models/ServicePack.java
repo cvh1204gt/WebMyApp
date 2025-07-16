@@ -2,6 +2,7 @@ package com.bmt.MyApp.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,4 +41,14 @@ public class ServicePack {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Transient
+    private List<ServicePackMember> members;
+
+    public List<ServicePackMember> getMembers() {
+        return members;
+    }
+    public void setMembers(List<ServicePackMember> members) {
+        this.members = members;
+    }
 }

@@ -22,4 +22,14 @@ public class EmailService {
         
         mailSender.send(message);
     }
+
+    public void sendPasswordResetEmail(String toEmail, String resetLink) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Đặt lại mật khẩu - MyApp");
+        message.setText("Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào liên kết sau để đặt lại mật khẩu mới:\n" + resetLink +
+                       "\n\nNếu bạn không yêu cầu, hãy bỏ qua email này.");
+        message.setFrom("chuvanhung1122004@gmail.com");
+        mailSender.send(message);
+    }
 }

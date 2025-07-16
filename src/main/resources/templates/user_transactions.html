@@ -33,9 +33,9 @@
         <tbody>
           <tr th:each="txn, iterStat : ${transactions}">
             <td th:text="${currentPage * size + iterStat.count}">1</td>
-            <td th:text="${txn.code}">TXN001</td>
+            <td th:text="${txn.vnpTxnRef}">TXN001</td>
             <td th:text="${#numbers.formatDecimal(txn.amount, 0, 'COMMA', 0, 'POINT')}">100,000</td>
-            <td th:text="${txn.type}">Nạp</td>
+            <td th:text="${txn.orderType}">Nạp</td>
             <td th:text="${#temporals.format(txn.createdAt, 'dd/MM/yyyy HH:mm')}">01/07/2025</td>
             <td th:text="${txn.status}">Thành công</td>
           </tr>
@@ -51,15 +51,15 @@
         <span>Trang <strong th:text="${currentPage + 1}">1</strong> / <strong th:text="${totalPages}">1</strong></span>
       </div>
       <div class="pagination-controls">
-        <a th:href="@{/transactions/history(page=0)}" class="pagination-btn" th:classappend="${currentPage == 0} ? 'disabled' : ''">⇤</a>
-        <a th:href="@{/transactions/history(page=${currentPage - 1})}" class="pagination-btn" th:classappend="${currentPage == 0} ? 'disabled' : ''">←</a>
+        <a th:href="@{/user_transactions(page=0)}" class="pagination-btn" th:classappend="${currentPage == 0} ? 'disabled' : ''">⇤</a>
+        <a th:href="@{/user_transactions(page=${currentPage - 1})}" class="pagination-btn" th:classappend="${currentPage == 0} ? 'disabled' : ''">←</a>
         <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
               th:if="${i >= currentPage - 2 && i <= currentPage + 2}">
-          <a th:href="@{/transactions/history(page=${i})}" class="page-btn" th:classappend="${i == currentPage} ? 'active' : ''"
+          <a th:href="@{/user_transactions(page=${i})}" class="page-btn" th:classappend="${i == currentPage} ? 'active' : ''"
              th:text="${i + 1}">1</a>
         </span>
-        <a th:href="@{/transactions/history(page=${currentPage + 1})}" class="pagination-btn" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled' : ''">→</a>
-        <a th:href="@{/transactions/history(page=${totalPages - 1})}" class="pagination-btn" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled' : ''">⇥</a>
+        <a th:href="@{/user_transactions(page=${currentPage + 1})}" class="pagination-btn" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled' : ''">→</a>
+        <a th:href="@{/user_transactions(page=${totalPages - 1})}" class="pagination-btn" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled' : ''">⇥</a>
       </div>
     </div>
   </section>

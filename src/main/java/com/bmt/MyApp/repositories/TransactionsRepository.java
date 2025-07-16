@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.bmt.MyApp.models.AppUser;
+import com.bmt.MyApp.models.Services;
 import com.bmt.MyApp.models.Transactions;
 import com.bmt.MyApp.models.Transactions.TransactionStatus;
 
@@ -89,9 +90,15 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Long
                                    @Param("startDate") LocalDateTime start,
                                    @Param("endDate") LocalDateTime end);
 
+    // === Lấy các gói dịch vụ đã mua thành công của user ===
+    @Query("SELECT DISTINCT t.service FROM Transactions t WHERE t.user = :user " +
+           "AND t.status = 'SUCCESS' AND t.expireDate > :currentTime")
+    List<Services> findPurchasedServicesByUser(@Param("user") AppUser user, 
+                                               @Param("currentTime") LocalDateTime currentTime);
 
-       // === Giao dịch của chính người dùng đang đăng nhập ===
-       @Query("SELECT t FROM Transactions t WHERE t.user.username = :username ORDER BY t.createdAt DESC")
-       Page<Transactions> findByUsername(@Param("username") String username, Pageable pageable);
+    // === Giao dịch của chính người dùng đang đăng nhập ===
+    @Query("SELECT t FROM Transactions t WHERE t.user.email = :email ORDER BY t.createdAt DESC")
+    Page<Transactions> findByEmail(@Param("email") String email, Pageable pageable);
 
+    List<Transactions> findByUserAndStatus(AppUser user, Transactions.TransactionStatus status);
 }

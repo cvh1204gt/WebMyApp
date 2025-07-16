@@ -139,10 +139,19 @@
               <span class="nav__name">Nạp tiền</span>
             </a>
 
-            <a href="user_transactions" class="nav__link" sec:authorize="hasAnyRole('CLIENT', 'ADMINDICHVU')">
-              <i class='bx bx-dollar-circle nav__icon'></i>
-              <span class="nav__name">Lịch Sử Giao Dịch</span>
+            <a href="/user_transactions" class="nav__link" sec:authorize="hasAnyRole('CLIENT', 'ADMINDICHVU')">
+              <i class='bx bx-transfer-alt nav__icon'></i>
+              <span class="nav__name">Giao dịch</span>
             </a>
+
+            <!-- Thành viên: chỉ hiển thị nếu có ít nhất 1 gói dịch vụ -->
+            <th:block th:if="${packs != null and !#lists.isEmpty(packs)}">
+              <a th:href="@{'/servicepacks/members'}" class="nav__link" sec:authorize="hasRole('ADMINDICHVU')">
+                <i class='bx bx-user-plus nav__icon'></i>
+                <span class="nav__name">Thành viên</span>
+              </a>
+            </th:block>
+
 
           </div>
         </div>

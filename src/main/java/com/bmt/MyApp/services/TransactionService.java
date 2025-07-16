@@ -124,8 +124,8 @@ public class TransactionService {
         return transactionsRepository.countByStatusAndDateRange(status, start, end);
     }
 
-    // Lấy giao dịch theo tên người dùng (cho user hiện tại)
-    public Page<Transactions> findByUsername(String username, Pageable pageable) {
-        return transactionsRepository.findByUsername(username, pageable);
+    // Lấy giao dịch theo email người dùng (cho user hiện tại)
+    public Page<Transactions> findByEmail(String email, Pageable pageable) {
+        return transactionsRepository.findByEmail(email, pageable);
     }
 }

@@ -57,6 +57,8 @@
             <td>
               <div class="action-buttons">
                 <a th:href="@{'/servicepacks/edit/' + ${pack.id}}" class="action-btn edit">Sửa</a>
+                <a th:href="@{'/servicepacks/add-member-page?servicePackId=' + ${pack.id}}" class="action-btn member" 
+                   th:if="${#authentication.authorities.contains('ROLE_ADMINDICHVU')}">Thêm thành viên</a>
                 <form th:action="@{'/servicepacks/delete/' + ${pack.id}}" method="post"
                       onsubmit="return confirm('Bạn chắc chắn muốn xóa?')">
                   <button type="submit" class="action-btn delete">Xóa</button>
@@ -337,6 +339,16 @@
 
   .action-btn.delete:hover {
     background-color: #c82333;
+    transform: translateY(-1px);
+  }
+
+  .action-btn.member {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .action-btn.member:hover {
+    background-color: #218838;
     transform: translateY(-1px);
   }
 

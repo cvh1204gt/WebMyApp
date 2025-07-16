@@ -26,10 +26,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bmt.MyApp.config.VNPayConfig;
 import com.bmt.MyApp.models.AppUser;
+import com.bmt.MyApp.models.ServicePack;
+import com.bmt.MyApp.models.ServicePackMember;
 import com.bmt.MyApp.models.Services;
 import com.bmt.MyApp.models.Transactions;
 import com.bmt.MyApp.models.Transactions.TransactionStatus;
 import com.bmt.MyApp.repositories.AppUserRepository;
+import com.bmt.MyApp.repositories.ServicePackMemberRepository;
+import com.bmt.MyApp.repositories.ServicePackRepository;
 import com.bmt.MyApp.repositories.ServicesRepository;
 import com.bmt.MyApp.repositories.TransactionsRepository;
 import com.bmt.MyApp.services.LogService;
@@ -44,6 +48,8 @@ public class PaymentController {
     @Autowired private TransactionsRepository transactionsRepository;
     @Autowired private ServicesRepository servicesRepository;
     @Autowired private LogService logService;
+    @Autowired private ServicePackRepository servicePackRepository;
+    @Autowired private ServicePackMemberRepository servicePackMemberRepository;
 
     @GetMapping("/create_payment_service")
     public String createPaymentForService(
@@ -150,6 +156,13 @@ public class PaymentController {
 
             user.setRole("ADMINDICHVU");
             appUserRepository.save(user);
+
+            // Thêm vào ServicePackMember nếu chưa có
+            ServicePack servicePack = servicePackRepository.findById(serviceId).orElse(null);
+            if (servicePack != null && !servicePackMemberRepository.existsByUserAndServicePack(user, servicePack)) {
+                ServicePackMember member = new ServicePackMember(user, servicePack);
+                servicePackMemberRepository.save(member);
+            }
 
             Transactions transaction = new Transactions();
             transaction.setUser(user);

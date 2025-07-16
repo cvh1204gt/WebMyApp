@@ -29,8 +29,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bmt.MyApp.models.AppUser;
 import com.bmt.MyApp.models.Transactions;
 import com.bmt.MyApp.models.Transactions.TransactionStatus;
+import com.bmt.MyApp.repositories.AppUserRepository;
 import com.bmt.MyApp.services.TransactionExcelService;
 import com.bmt.MyApp.services.TransactionService;
 
@@ -42,6 +44,9 @@ public class TransactionController {
 
     @Autowired
     private TransactionExcelService excelService;
+
+    @Autowired
+    private AppUserRepository appUserRepository;
 
     // Xuất Excel cho 1 giao dịch đơn lẻ
     @GetMapping("/lichsugiaodich/export-single/{id}")
@@ -110,9 +115,15 @@ public class TransactionController {
                                         @RequestParam(defaultValue = "10") int size,
                                         Principal principal,
                                         Model model) {
-            String username = principal.getName();
+            String userEmail = principal.getName();
+            
+            // Lấy user từ database để đảm bảo tồn tại
+            AppUser currentUser = appUserRepository.findByEmail(userEmail).orElse(null);
+            if (currentUser == null) {
+                return "redirect:/login";
+            }
 
-            Page<Transactions> transactionPage = transactionService.findByUsername(username, PageRequest.of(page, size, Sort.by("createdAt").descending()));
+            Page<Transactions> transactionPage = transactionService.findByEmail(userEmail, PageRequest.of(page, size, Sort.by("createdAt").descending()));
 
             model.addAttribute("transactions", transactionPage.getContent());
             model.addAttribute("currentPage", page);
@@ -122,9 +133,8 @@ public class TransactionController {
             model.addAttribute("hasPrevious", transactionPage.hasPrevious());
             model.addAttribute("size", size);
 
-            return "user_transactions"; // tạo file này trong templates
+            return "user_transactions";
         }
-
 
     // Xuất Excel toàn bộ giao dịch theo bộ lọc
     @GetMapping("/lichsugiaodich/export")

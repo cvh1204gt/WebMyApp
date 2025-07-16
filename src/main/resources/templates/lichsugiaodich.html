@@ -86,9 +86,9 @@
             <tr th:each="transaction, iterStat : ${transactions}">
               <td th:text="${currentPage * size + iterStat.count}">1</td>
               <td data-label="Mã giao dịch" th:text="${transaction.vnpTxnRef}">-</td>
-              <td data-label="Người dùng" th:text="${transaction.user.fullName}">-</td>
+              <td data-label="Người dùng" th:text="${transaction.user != null ? transaction.user.fullName : 'N/A'}">-</td>
               <td data-label="Số tiền">
-                <span th:text="${#numbers.formatDecimal(transaction.service.price, 0, 'COMMA', 0, 'POINT')}">0</span>
+                <span th:text="${transaction.service != null ? #numbers.formatDecimal(transaction.service.price, 0, 'COMMA', 0, 'POINT') : 'N/A'}">0</span>
                 <span th:text="${transaction.currencyCode}">VND</span>
               </td>
               <td data-label="Trạng thái">

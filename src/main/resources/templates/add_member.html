@@ -6,24 +6,29 @@
 <div th:replace="~{layout :: page_navbar}"></div>
 <main>
   <section class="giaodich-section">
-    <h1 class="py-4">Thêm Gói Dịch Vụ</h1>
+    <h1 class="py-4">Thêm Thành viên vào Gói Dịch Vụ</h1>
     <div class="content-header mb-4">
-      <form method="post" th:action="@{/servicepacks/add}" class="search-form">
+      <form class="search-form" method="post" th:action="@{/servicepacks/add-member}">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
         <div class="search-row">
-          <input type="text" name="name" class="search-input" placeholder="Tên gói dịch vụ" required>
-          <input type="number" name="price" step="0.01" class="search-input" placeholder="Giá (VNĐ)" required>
-        </div>
-        <div class="search-row">
-          <input type="number" name="duration" class="search-input" placeholder="Thời lượng (ngày)" required>
-        </div>
-        <div class="search-row">
-          <textarea name="description" class="search-input" placeholder="Mô tả" rows="4"></textarea>
+          <input type="email" name="userEmail" class="search-input" placeholder="Email user muốn thêm..." required>
+          <select name="servicePackId" class="search-input" required>
+            <option value="">Chọn gói dịch vụ</option>
+            <option th:each="pack : ${packs}"
+                    th:value="${pack.id}"
+                    th:text="${pack.name + ' (' + pack.duration + ' ngày)'}"
+                    th:selected="${pack.id} == ${selectedPackId}">
+              Gói dịch vụ
+            </option>
+          </select>
         </div>
         <div class="search-buttons">
-          <button type="submit" class="search-btn">💾 Lưu gói dịch vụ</button>
-          <a href="/servicepacks" class="delete-btn">⟲ Quay lại</a>
+          <button type="submit" class="search-btn">💾 Thêm thành viên</button>
+          <a th:href="@{/servicepacks/members}" class="delete-btn">⟲ Quay lại danh sách gói</a>
         </div>
       </form>
+      <div th:if="${successMessage}" class="alert alert-success mt-3" th:text="${successMessage}"></div>
+      <div th:if="${errorMessage}" class="alert alert-danger mt-3" th:text="${errorMessage}"></div>
     </div>
   </section>
 </main>
@@ -97,6 +102,22 @@
     text-decoration: none;
     color: white;
     transform: translateY(-1px);
+  }
+  .alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+  }
+  .alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+  .alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
   }
 </style>
 </body>

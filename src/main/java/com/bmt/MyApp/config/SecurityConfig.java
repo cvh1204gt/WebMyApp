@@ -25,11 +25,14 @@ public class SecurityConfig {
         return http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/register", "/register/**", "/login", "/verify-otp", "/verify-otp/**", 
-                               "/resend-otp", "/css/**", "/js/**", "/image/**").permitAll()
+                               "/resend-otp", "/css/**", "/js/**", "/image/**",
+                               "/forgot-password", "/reset-password", "/reset-password/**").permitAll()
                 .requestMatchers("/home", "/profile").hasAnyRole("ADMIN", "CLIENT", "ADMINDICHVU")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/account_management", "/lichsugiaodich").hasRole("ADMIN")
                 .requestMatchers("/services", "/user_transactions", "/recharge").hasAnyRole("CLIENT", "ADMINDICHVU")
+                .requestMatchers("/servicepacks/add-member", "/servicepacks/add-member-page", "/servicepacks/members/**").hasAnyRole("ADMIN", "ADMINDICHVU")
+                .requestMatchers("/servicepacks/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")

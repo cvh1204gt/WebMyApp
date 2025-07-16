@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: page_head}"></head>
+<body>
+<header th:replace="~{layout :: page_header}"></header>
+<div th:replace="~{layout :: page_navbar}"></div>
+<main>
+  <section class="giaodich-section">
+    <h1 class="py-4" th:if="${servicePack != null}" th:text="'Thành viên của gói: ' + ${servicePack.name}">Thành viên của gói</h1>
+    <h1 class="py-4" th:if="${servicePack == null}">Quản lý thành viên gói dịch vụ</h1>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+    <!-- Nếu đang xem thành viên của 1 gói -->
+    <div th:if="${servicePack != null}" class="table-responsive">
+      <table class="giaodich-table">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="member, iterStat : ${members}">
+            <td th:text="${iterStat.count}">1</td>
+            <td th:text="${member.user.fullName}">Nguyễn Văn A</td>
+            <td th:text="${member.user.email}">user@example.com</td>
+            <td th:text="${member.user.phone}">0123456789</td>
+            <td>
+              <form th:action="@{'/servicepacks/members/remove/' + ${member.id}}" method="post"
+                    onsubmit="return confirm('Bạn chắc chắn muốn xóa thành viên này?')" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(members)}">
+            <td colspan="5" class="text-center">Chưa có thành viên nào trong gói dịch vụ này</td>
+          </tr>
+        </tbody>
+      </table>
+      <a th:href="@{/servicepacks/members}" class="btn btn-secondary mt-3">⟲ Quay lại danh sách gói</a>
+    </div>
+
+    <!-- Nếu không có servicePack, hiển thị bảng tổng hợp các gói -->
+    <div th:if="${servicePack == null}" class="content-header mb-4">
+      <form class="search-form" method="get" th:action="@{/servicepacks/members}">
+        <div class="search-row">
+          <input type="search" name="search" class="search-input" placeholder="Tìm kiếm theo tên gói dịch vụ..." th:value="${search}" aria-label="Search">
+          <div class="search-buttons">
+            <button type="submit" class="search-btn">Tìm kiếm</button>
+            <a th:href="@{/servicepacks/members}" class="delete-btn">Xóa bộ lọc</a>
+            <a th:if="${packs != null and !#lists.isEmpty(packs)}" th:href="@{/servicepacks/add-member-page}" class="btn btn-success">+ Thêm thành viên</a>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div th:if="${servicePack == null}" class="table-responsive">
+      <table class="giaodich-table">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên gói dịch vụ</th>
+            <th>Thời hạn (ngày)</th>
+            <th>Giá</th>
+            <th>Số thành viên</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="pack, iterStat : ${packs}">
+            <td th:text="${iterStat.count}">1</td>
+            <td th:text="${pack.name}">Tên gói</td>
+            <td th:text="${pack.duration}">30</td>
+            <td th:text="${#numbers.formatDecimal(pack.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">100,000 VND</td>
+            <td th:text="${pack.members != null ? #lists.size(pack.members) : 0}">0</td>
+            <td>
+              <a th:href="@{/servicepacks/members(servicePackId=${pack.id})}" class="btn btn-primary btn-sm">Xem thành viên</a>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(packs)}">
+            <td colspan="6" class="text-center">Chưa có gói dịch vụ nào</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<style>
+  .content-header {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .search-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .search-input {
+    flex: 1;
+    min-width: 250px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+  }
+  
+  .search-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .search-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+  
+  .search-btn:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+  }
+  
+  .delete-btn {
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    display: inline-block;
+  }
+  
+  .delete-btn:hover {
+    background: #5a6268;
+    text-decoration: none;
+    color: white;
+    transform: translateY(-1px);
+  }
+  
+  .btn-primary {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 7px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    text-decoration: none;
+    margin-right: 5px;
+  }
+  .btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+  }
+  .btn-success {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 7px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+  .btn-success:hover {
+    background: #218838;
+    transform: translateY(-1px);
+  }
+  .btn-danger {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 7px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+  .btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+  }
+  .btn-secondary {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 7px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+  .btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+  }
+  .table-responsive {
+    overflow-x: auto;
+  }
+  .giaodich-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .giaodich-table th, .giaodich-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+    text-align: left;
+  }
+  .giaodich-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #dee2e6;
+  }
+  .giaodich-table tbody tr:hover {
+    background: #f8f9fa;
+  }
+  .alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+  }
+  .alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+  .alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+</style>
+</body>
+</html> 

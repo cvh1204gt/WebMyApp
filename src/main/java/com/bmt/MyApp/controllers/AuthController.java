@@ -1,7 +1,9 @@
 package com.bmt.MyApp.controllers;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,8 +19,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bmt.MyApp.models.AppUser;
 import com.bmt.MyApp.models.OtpVerificationDto;
+import com.bmt.MyApp.models.PasswordResetToken;
 import com.bmt.MyApp.models.RegisterDto;
 import com.bmt.MyApp.repositories.AppUserRepository;
+import com.bmt.MyApp.repositories.PasswordResetTokenRepository;
+import com.bmt.MyApp.services.EmailService;
 import com.bmt.MyApp.services.OtpService;
 
 import jakarta.validation.Valid;
@@ -34,6 +39,11 @@ public class AuthController {
     
     @Autowired
     private OtpService otpService;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/login")
     public String login() {
@@ -139,5 +149,69 @@ public class AuthController {
         
         redirectAttributes.addAttribute("email", email);
         return "redirect:/verify-otp";
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPasswordForm() {
+        return "forgot_password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String handleForgotPassword(@RequestParam("email") String email, Model model, RedirectAttributes redirectAttributes) {
+        Optional<AppUser> userOpt = repo.findByEmail(email);
+        if (userOpt.isPresent()) {
+            // Xóa token cũ nếu có
+            passwordResetTokenRepository.deleteByEmail(email);
+            // Sinh token mới
+            String token = UUID.randomUUID().toString();
+            LocalDateTime expiry = LocalDateTime.now().plusMinutes(30);
+            PasswordResetToken resetToken = new PasswordResetToken(email, token, expiry);
+            passwordResetTokenRepository.save(resetToken);
+            // Gửi email
+            String resetLink = "http://localhost:8080/reset-password?token=" + token;
+            emailService.sendPasswordResetEmail(email, resetLink);
+        }
+        redirectAttributes.addFlashAttribute("message", "Nếu email tồn tại, liên kết đặt lại mật khẩu đã được gửi!");
+        return "redirect:/forgot-password";
+    }
+
+    @GetMapping("/reset-password")
+    public String showResetPasswordForm(@RequestParam("token") String token, Model model, RedirectAttributes redirectAttributes) {
+        Optional<PasswordResetToken> tokenOpt = passwordResetTokenRepository.findByToken(token);
+        if (tokenOpt.isEmpty() || tokenOpt.get().getExpiryTime().isBefore(java.time.LocalDateTime.now())) {
+            redirectAttributes.addFlashAttribute("message", "Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.");
+            return "redirect:/forgot-password";
+        }
+        model.addAttribute("token", token);
+        return "reset_password";
+    }
+
+    @PostMapping("/reset-password")
+    public String handleResetPassword(@RequestParam("token") String token,
+                                      @RequestParam("password") String password,
+                                      @RequestParam("confirmPassword") String confirmPassword,
+                                      Model model, RedirectAttributes redirectAttributes) {
+        Optional<PasswordResetToken> tokenOpt = passwordResetTokenRepository.findByToken(token);
+        if (tokenOpt.isEmpty() || tokenOpt.get().getExpiryTime().isBefore(java.time.LocalDateTime.now())) {
+            redirectAttributes.addFlashAttribute("message", "Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.");
+            return "redirect:/forgot-password";
+        }
+        if (!password.equals(confirmPassword)) {
+            model.addAttribute("token", token);
+            model.addAttribute("message", "Mật khẩu nhập lại không khớp.");
+            return "reset_password";
+        }
+        PasswordResetToken resetToken = tokenOpt.get();
+        Optional<AppUser> userOpt = repo.findByEmail(resetToken.getEmail());
+        if (userOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "Không tìm thấy tài khoản.");
+            return "redirect:/forgot-password";
+        }
+        AppUser user = userOpt.get();
+        user.setPassword(passwordEncoder.encode(password));
+        repo.save(user);
+        passwordResetTokenRepository.delete(resetToken);
+        redirectAttributes.addFlashAttribute("message", "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập.");
+        return "redirect:/login";
     }
 }
