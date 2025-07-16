@@ -58,8 +58,14 @@ public class ServicePackController {
 
     // Xử lý thêm mới
     @PostMapping("/add")
-    public String add(@ModelAttribute ServicePack pack, Principal principal) {
-        service.add(pack, principal.getName());
+    public String add(@ModelAttribute ServicePack pack, Principal principal, RedirectAttributes redirectAttributes) {
+        try {
+            service.add(pack, principal.getName());
+            redirectAttributes.addFlashAttribute("successMessage", "Thêm gói dịch vụ thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi thêm gói dịch vụ!");
+        }
+        
         return "redirect:/servicepacks";
     }
 
@@ -72,17 +78,35 @@ public class ServicePackController {
 
     // Xử lý cập nhật
     @PostMapping("/edit/{id}")
-    public String edit(@PathVariable Long id, @ModelAttribute ServicePack pack, Principal principal) {
-        service.update(id, pack, principal.getName());
+    public String edit(@PathVariable Long id, @ModelAttribute ServicePack pack, Principal principal, RedirectAttributes redirectAttributes) {
+        try {
+            service.update(id, pack, principal.getName());
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật gói dịch vụ thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi cập nhật gói dịch vụ!");
+        }
         return "redirect:/servicepacks";
     }
 
     // Xử lý xóa
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, Principal principal) {
-        service.delete(id, principal.getName());
+    public String delete(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
+        try {
+            service.delete(id, principal.getName());
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa gói dịch vụ thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi xóa gói dịch vụ!");
+        }
+        
         return "redirect:/servicepacks";
     }
+
+
+
+
+
+
+
 
     // Trang thêm thành viên (form đơn)
     @GetMapping("/add-member-page")

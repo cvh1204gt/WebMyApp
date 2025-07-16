@@ -13,7 +13,7 @@
     <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
     <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 
-    <div th:if="${#lists.isEmpty(services)}" class="alert alert-info">
+    <div th:if="${#lists.isEmpty(services)}" class="alert-info">
       Bạn đã mua tất cả các gói dịch vụ. Vui lòng quay lại sau khi các gói hết hạn.
     </div>
 

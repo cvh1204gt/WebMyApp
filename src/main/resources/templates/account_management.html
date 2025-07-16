@@ -15,24 +15,14 @@
     <section class="giaodich-section">
       <h1 class="py-4">Quản lý tài khoản</h1>
 
-      <!-- Alert Messages -->
-      <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-      <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+      <!--========== ALERT MESSAGES ==========-->
+      <div th:replace="~{layout :: alert_message}"></div>
 
-      <!-- Form tìm kiếm -->
-      <div class="content-header mb-4">
-        <form class="search-form" method="get" th:action="@{/admin/account_management}">
-          <div class="search-row">
-            <input type="search" name="search" class="search-input"
-                   placeholder="Tìm kiếm theo tên, email..." th:value="${search}" aria-label="Search">
-
-            <div class="search-buttons">
-              <button type="submit" class="search-btn">Tìm kiếm</button>
-              <a href="/admin/account_management" class="delete-btn">Xóa bộ lọc</a>
-              <a href="/admin/add_account" class="search-btn">Thêm người dùng</a>
-            </div>
-          </div>
-        </form>
+      <!--========== THANH CÔNG CỤ ==========-->
+      <div th:replace="~{layout :: tool_bar(
+        '/admin/account_management',
+        '/admin/account_management',
+        '/admin/add_account')}">
       </div>
 
       <!-- Bảng tài khoản -->
@@ -51,27 +41,26 @@
           </thead>
           <tbody>
             <tr th:each="user : ${users}">
-              <td th:text="${user.id}"></td>
-              <td th:text="${user.fullName}"></td>
-              <td th:text="${user.email}"></td>
-              <td th:text="${user.phone}"></td>
-              <td th:text="${user.role}"></td>
-              <td th:text="${#dates.format(user.createAt, 'dd/MM/yyyy')}"></td>
-              <td>
+              <td th:text="${user.id}" data-label="ID"></td>
+              <td th:text="${user.fullName}" data-label="Họ tên"></td>
+              <td th:text="${user.email}" data-label="Email"></td>
+              <td th:text="${user.phone}" data-label="SĐT"></td>
+              <td th:text="${user.role}" data-label="Vai trò"></td>
+              <td th:text="${#dates.format(user.createAt, 'dd/MM/yyyy')}" data-label="Ngày tạo"></td>
+              <td data-label="Hành động">
                 <div class="action-buttons">
-                    <a th:href="@{/admin/edit_account(email=${user.email})}" class="action-btn edit">Sửa</a>
-                    <!-- Chỉ hiển thị nút xóa nếu không phải tài khoản của chính mình -->
-                    <form th:if="${user.email != #authentication.name}" 
-                          th:action="@{/admin/delete_account}" method="post"
-                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')" style="display:inline;">
-                      <input type="hidden" name="email" th:value="${user.email}">
-                      <button type="submit" class="action-btn delete">Xóa</button>
-                    </form>
-                    <!-- Hiển thị thông báo nếu là tài khoản của chính mình -->
-                    <span th:if="${user.email == #authentication.name}" 
-                          class="text-muted" style="font-size: 12px; color: #6c757d;">
-                      <i class="fas fa-info-circle"></i> Tài khoản hiện tại
-                    </span>
+                  <a th:href="@{/admin/edit_account(email=${user.email})}" class="action-btn edit">Sửa</a>
+                  <!-- Chỉ hiển thị nút xóa nếu không phải tài khoản của chính mình -->
+                  <form th:if="${user.email != #authentication.name}" th:action="@{/admin/delete_account}" method="post"
+                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')" style="display:inline;">
+                    <input type="hidden" name="email" th:value="${user.email}">
+                    <button type="submit" class="action-btn delete">Xóa</button>
+                  </form>
+                  <!-- Hiển thị thông báo nếu là tài khoản của chính mình -->
+                  <span th:if="${user.email == #authentication.name}" class="text-muted"
+                    style="font-size: 12px; color: #6c757d;">
+                    <i class="fas fa-info-circle"></i> Tài khoản hiện tại
+                  </span>
                 </div>
               </td>
 
@@ -86,278 +75,32 @@
       <!-- Pagination -->
       <div class="pagination-container mt-4" th:if="${totalPages > 1}">
         <div class="pagination-info">
-          <span>Trang <strong th:text="${currentPage + 1}">1</strong> / <strong th:text="${totalPages}">1</strong></span>
+          <span>Trang <strong th:text="${currentPage + 1}">1</strong> / <strong
+              th:text="${totalPages}">1</strong></span>
         </div>
-        
-        <div class="pagination-controls">
-          <a th:href="@{/admin/account_management(page=0, search=${search})}" 
-             class="pagination-btn" 
-             th:classappend="${currentPage == 0} ? 'disabled' : ''"
-             title="Trang đầu">⇤</a>
 
-          <a th:href="@{/admin/account_management(page=${currentPage - 1}, search=${search})}" 
-             class="pagination-btn" 
-             th:classappend="${!hasPrevious} ? 'disabled' : ''"
-             title="Trang trước">←</a>
+        <div class="pagination-controls">
+          <a th:href="@{/admin/account_management(page=0, search=${search})}" class="pagination-btn"
+            th:classappend="${currentPage == 0} ? 'disabled' : ''" title="Trang đầu">⇤</a>
+
+          <a th:href="@{/admin/account_management(page=${currentPage - 1}, search=${search})}" class="pagination-btn"
+            th:classappend="${!hasPrevious} ? 'disabled' : ''" title="Trang trước">←</a>
 
           <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}">
-            <a th:href="@{/admin/account_management(page=${pageNum}, search=${search})}" 
-               class="page-btn" 
-               th:classappend="${pageNum == currentPage} ? 'active' : ''"
-               th:text="${pageNum + 1}">1</a>
+            th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}">
+            <a th:href="@{/admin/account_management(page=${pageNum}, search=${search})}" class="page-btn"
+              th:classappend="${pageNum == currentPage} ? 'active' : ''" th:text="${pageNum + 1}">1</a>
           </span>
 
-          <a th:href="@{/admin/account_management(page=${currentPage + 1}, search=${search})}" 
-             class="pagination-btn" 
-             th:classappend="${!hasNext} ? 'disabled' : ''"
-             title="Trang sau">→</a>
+          <a th:href="@{/admin/account_management(page=${currentPage + 1}, search=${search})}" class="pagination-btn"
+            th:classappend="${!hasNext} ? 'disabled' : ''" title="Trang sau">→</a>
 
-          <a th:href="@{/admin/account_management(page=${totalPages - 1}, search=${search})}" 
-             class="pagination-btn" 
-             th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''"
-             title="Trang cuối">⇥</a>
+          <a th:href="@{/admin/account_management(page=${totalPages - 1}, search=${search})}" class="pagination-btn"
+            th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''" title="Trang cuối">⇥</a>
         </div>
       </div>
     </section>
   </main>
-
-  <style>
-    .content-header {
-      background: #f8f9fa;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .search-form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .search-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .search-input {
-      flex: 1;
-      min-width: 250px;
-      padding: 10px 15px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 14px;
-      transition: border-color 0.3s;
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
-    }
-
-    .search-buttons {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .search-btn {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.3s;
-      text-decoration: none;
-    }
-
-    .search-btn:hover {
-      background: #0056b3;
-      transform: translateY(-1px);
-    }
-
-    .delete-btn {
-      background: #6c757d;
-      color: white;
-      text-decoration: none;
-      padding: 10px 15px;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.3s;
-      display: inline-block;
-    }
-
-    .delete-btn:hover {
-      background: #5a6268;
-      transform: translateY(-1px);
-    }
-
-    .table-responsive {
-      overflow-x: auto;
-    }
-
-    .giaodich-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .giaodich-table th {
-      background: #f8f9fa;
-      padding: 12px;
-      text-align: left;
-      font-weight: 600;
-      color: #333;
-      border-bottom: 2px solid #dee2e6;
-    }
-
-    .giaodich-table td {
-      padding: 12px;
-      border-bottom: 1px solid #eee;
-      vertical-align: top;
-    }
-
-    .giaodich-table tbody tr:hover {
-      background: #f8f9fa;
-    }
-
-    .pagination-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 0;
-      border-top: 1px solid #eee;
-    }
-
-    .pagination-info {
-      color: #666;
-      font-size: 14px;
-    }
-
-    .pagination-controls {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-    }
-
-    .pagination-btn,
-    .page-btn {
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      color: #333;
-      text-decoration: none;
-      border-radius: 4px;
-      font-size: 14px;
-      transition: all 0.3s;
-      min-width: 40px;
-      text-align: center;
-    }
-
-    .pagination-btn:hover:not(.disabled),
-    .page-btn:hover:not(.active) {
-      background: #f8f9fa;
-      border-color: #007bff;
-      color: #007bff;
-    }
-
-    .pagination-btn.disabled {
-      pointer-events: none;
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .page-btn.active {
-      background: #007bff;
-      border-color: #007bff;
-      color: white;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    @media (max-width: 768px) {
-      .search-row {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .search-buttons {
-        justify-content: center;
-      }
-
-      .pagination-container {
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .pagination-controls {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .search-input {
-        min-width: 100%;
-      }
-    }
-
-    .action-buttons {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .action-btn {
-    display: inline-block;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    text-align: center;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    min-width: 60px;
-  }
-
-  .action-btn.edit {
-    background-color: #17a2b8;
-    color: #fff;
-  }
-
-  .action-btn.edit:hover {
-    background-color: #138496;
-    transform: translateY(-1px);
-  }
-
-  .action-btn.delete {
-    background-color: #dc3545;
-    color: #fff;
-  }
-
-  .action-btn.delete:hover {
-    background-color: #c82333;
-    transform: translateY(-1px);
-  }
-
-  .action-buttons form {
-    display: inline;
-  }
-
-
-  </style>
 </body>
+
 </html>

@@ -172,6 +172,112 @@
     </nav>
   </div>
 
+  <!--========== THANH CÔNG CỤ ==========-->
+  <!-- QUẢN LÝ TÀI KHOẢN & QUẢN LÝ GÓI -->
+  <div class="content-header mb-4" th:fragment="tool_bar(actionUrl, resetUrl, addUrl)">
+    <form class="search-form" method="get" th:action="${actionUrl}">
+      <div class="search-row">
+        <div class="tool-bar-input d-flex gap-3">
+          <input type="search" name="search" class="search-input" placeholder="Tìm kiếm theo tên, email..."
+            th:value="${search}" aria-label="Search">
+
+          <div class="date-group">
+            <label>Từ ngày:</label>
+            <input type="date" name="startDate" class="date-input" th:value="${startDate}" placeholder="Từ ngày">
+            <span>đến</span>
+            <input type="date" name="endDate" class="date-input" th:value="${endDate}" placeholder="Đến ngày">
+          </div>
+        </div>
+
+        <div class="search-buttons">
+          <button type="submit" class="search-btn" title="Tìm kiếm">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <a th:href="${resetUrl}" class="delete-btn" title="Xóa bộ lọc tìm kiếm">
+            <i class="fa-solid fa-arrow-rotate-left"></i>
+          </a>
+          <a th:href="${addUrl}" class="add-btn" title="Thêm">
+            <i class="fa-solid fa-plus"></i>
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- QUẢN LÝ LOGS -->
+  <div class="content-header mb-4" th:fragment="tool_bar_log">
+    <form class="search-form" method="get" th:action="@{/logs}">
+      <div class="search-row">
+        <div class="tool-bar-input d-flex gap-3">
+          <input type="search" name="search" class="search-input" placeholder="Tìm kiếm theo tên, email..."
+            th:value="${search}" aria-label="Search">
+
+          <div class="date-group">
+            <label>Từ ngày:</label>
+            <input type="date" name="startDate" class="date-input" th:value="${startDate}" placeholder="Từ ngày">
+            <span>đến</span>
+            <input type="date" name="endDate" class="date-input" th:value="${endDate}" placeholder="Đến ngày">
+          </div>
+        </div>
+
+        <div class="search-buttons">
+          <button type="submit" class="search-btn" title="Tìm kiếm">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <a href="/logs" class="delete-btn" title="Xóa bộ lọc">
+            <i class="fa-solid fa-arrow-rotate-left"></i>
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- QUẢN LÝ GIAO DỊCH -->
+  <div class="content-header mb-4" th:fragment="tool_bar_transaction">
+    <form class="search-form" method="get" th:action="@{/lichsugiaodich}">
+      <div class="search-row">
+        <div class="tool-bar-input d-flex gap-3">
+          <input type="search" name="search" class="search-input" placeholder="Tìm kiếm theo tên, email..."
+            th:value="${search}" aria-label="Search">
+
+          <div class="date-group">
+            <label>Từ ngày:</label>
+            <input type="date" name="startDate" class="date-input" th:value="${startDate}" placeholder="Từ ngày">
+            <span>đến</span>
+            <input type="date" name="endDate" class="date-input" th:value="${endDate}" placeholder="Đến ngày">
+          </div>
+        </div>
+
+        <div class="search-buttons">
+          <button type="submit" class="search-btn" title="Tìm kiếm">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <a href="/lichsugiaodich" class="delete-btn" title="Xóa bộ lọc">
+            <i class="fa-solid fa-arrow-rotate-left"></i>
+          </a>
+          <a href="#" class="export-btn" onclick="exportToExcel()" title="Xuất Excel tất cả">
+            <i class="fa-solid fa-file-arrow-down"></i>
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Alert Messages -->
+  <div th:fragment="alert_message">
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert"
+      style="padding-right: 3rem;">
+      <span th:text="${successMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert"
+      style="padding-right: 3rem;">
+      <span th:text="${errorMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+
 </body>
 
 </html>
