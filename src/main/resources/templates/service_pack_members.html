@@ -25,14 +25,14 @@
         </thead>
         <tbody>
           <tr th:each="member, iterStat : ${members}">
-            <td th:text="${iterStat.count}">1</td>
-            <td th:text="${member.user.fullName}">Nguyễn Văn A</td>
-            <td th:text="${member.user.email}">user@example.com</td>
-            <td th:text="${member.user.phone}">0123456789</td>
-            <td>
+            <td th:text="${iterStat.count}" data-label="STT">1</td>
+            <td th:text="${member.user.fullName}" data-label="Họ tên">Nguyễn Văn A</td>
+            <td th:text="${member.user.email}" data-label="Email">user@example.com</td>
+            <td th:text="${member.user.phone}" data-label="Số điẹn thoại">0123456789</td>
+            <td  data-label="Hành động">
               <form th:action="@{'/servicepacks/members/remove/' + ${member.id}}" method="post"
                     onsubmit="return confirm('Bạn chắc chắn muốn xóa thành viên này?')" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                <button type="submit" class="btn btn-danger btn-sm" >Xóa</button>
               </form>
             </td>
           </tr>
@@ -71,12 +71,12 @@
         </thead>
         <tbody>
           <tr th:each="pack, iterStat : ${packs}">
-            <td th:text="${iterStat.count}">1</td>
-            <td th:text="${pack.name}">Tên gói</td>
-            <td th:text="${pack.duration}">30</td>
-            <td th:text="${#numbers.formatDecimal(pack.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">100,000 VND</td>
-            <td th:text="${pack.members != null ? #lists.size(pack.members) : 0}">0</td>
-            <td>
+            <td th:text="${iterStat.count}"  data-label="STT">1</td>
+            <td th:text="${pack.name}"  data-label="Tên gói">Tên gói</td>
+            <td th:text="${pack.duration}" data-label="Thời hạn (ngày)">30</td>
+            <td th:text="${#numbers.formatDecimal(pack.price, 0, 'COMMA', 0, 'POINT')} + ' VND'" data-label="Giá">100,000 VND</td>
+            <td th:text="${pack.members != null ? #lists.size(pack.members) : 0}" data-label="Số thành viên">0</td>
+            <td data-label="Hành động">
               <a th:href="@{/servicepacks/members(servicePackId=${pack.id})}" class="btn btn-primary btn-sm">Xem thành viên</a>
             </td>
           </tr>

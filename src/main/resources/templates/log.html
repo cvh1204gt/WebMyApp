@@ -47,7 +47,9 @@
               <td th:text="${currentPage * size + iterStat.count}" data-label="STT">1</td>
               <td th:text="${log.username}" data-label="Người dùng">admin</td>
               <td th:text="${log.action}" data-label="Hành động">Đăng nhập</td>
+              <div>             
               <td th:text="${log.detail}" class="detail-cell" data-label="Chi tiết">Thành công</td>
+              </div>
               <td th:text="${#temporals.format(log.timestamp, 'dd/MM/yyyy HH:mm:ss')}" data-label="Thời gian">
                 01/01/2024 10:00:00
               </td>

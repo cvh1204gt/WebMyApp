@@ -32,12 +32,12 @@
         </thead>
         <tbody>
           <tr th:each="txn, iterStat : ${transactions}">
-            <td th:text="${currentPage * size + iterStat.count}">1</td>
-            <td th:text="${txn.vnpTxnRef}">TXN001</td>
-            <td th:text="${#numbers.formatDecimal(txn.amount, 0, 'COMMA', 0, 'POINT')}">100,000</td>
-            <td th:text="${txn.orderType}">Nạp</td>
-            <td th:text="${#temporals.format(txn.createdAt, 'dd/MM/yyyy HH:mm')}">01/07/2025</td>
-            <td th:text="${txn.status}">Thành công</td>
+            <td th:text="${currentPage * size + iterStat.count}" data-label="STT">1</td>
+            <td th:text="${txn.vnpTxnRef}" data-label="Mã giao dịch">TXN001</td>
+            <td th:text="${#numbers.formatDecimal(txn.amount, 0, 'COMMA', 0, 'POINT')}" data-label="Số tiền">100,000</td>
+            <td th:text="${txn.orderType}" data-label="Loại">Nạp</td>
+            <td th:text="${#temporals.format(txn.createdAt, 'dd/MM/yyyy HH:mm')}" data-label="Ngày giao dịch">01/07/2025</td>
+            <td th:text="${txn.status}" data-label="Trạng thái">Thành công</td>
           </tr>
           <tr th:if="${#lists.isEmpty(transactions)}">
             <td colspan="6" class="text-center">Không có dữ liệu</td>
