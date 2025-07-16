@@ -157,6 +157,19 @@ public class PaymentController {
             user.setRole("ADMINDICHVU");
             appUserRepository.save(user);
 
+            // Cập nhật lại SecurityContextHolder để session có quyền mới ngay lập tức
+            List<org.springframework.security.core.authority.SimpleGrantedAuthority> updatedAuthorities =
+                java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_ADMINDICHVU"));
+            org.springframework.security.core.userdetails.UserDetails updatedUserDetails = org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .authorities(updatedAuthorities)
+                .build();
+            org.springframework.security.authentication.UsernamePasswordAuthenticationToken newAuth =
+                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                    updatedUserDetails, null, updatedAuthorities);
+            org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(newAuth);
+
             // Thêm vào ServicePackMember nếu chưa có
             ServicePack servicePack = servicePackRepository.findById(serviceId).orElse(null);
             if (servicePack != null && !servicePackMemberRepository.existsByUserAndServicePack(user, servicePack)) {
