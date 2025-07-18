@@ -1,7 +1,7 @@
 services:
   - type: web
     name: myapp
-    env: java
+    env: docker
     plan: free
-    buildCommand: mvn clean package
-    startCommand: java -jar target/MyApp-0.0.1-SNAPSHOT.jar
+    dockerfilePath: Dockerfile
+    autoDeploy: true
