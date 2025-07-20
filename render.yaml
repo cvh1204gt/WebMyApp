@@ -1,7 +1,7 @@
 services:
   - type: web
-    name: myapp
-    env: docker
+    name: springboot-app
+    env: java
+    buildCommand: ./mvnw clean package
+    startCommand: java -jar target/MyApp-0.0.1-SNAPSHOT.jar
     plan: free
-    dockerfilePath: Dockerfile
-    autoDeploy: true
