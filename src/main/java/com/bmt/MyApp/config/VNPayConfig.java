@@ -23,7 +23,7 @@ public class VNPayConfig {
 
   public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
   // Updated return URL to match REST API structure
-  public static String vnp_ReturnUrl = "http://localhost:8080/api/payment/vnpay-return";
+  public static String vnp_ReturnUrl = "https://webmyapp-632e.onrender.com/api/payment/vnpay-return";
   public static String vnp_TmnCode = "C0FCDTWU";
   public static String secretKey = "YUUOURKBY3PES06XV6UUKMS8LJ0P7KGV";
   public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
