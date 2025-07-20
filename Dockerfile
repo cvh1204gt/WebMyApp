@@ -18,3 +18,5 @@ EXPOSE 10000
 
 # Khởi động ứng dụng
 CMD ["java", "-jar", "target/MyApp-0.0.1-SNAPSHOT.jar"]
+
+ENV TZ=Asia/Ho_Chi_Minh
