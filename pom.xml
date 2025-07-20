@@ -54,6 +54,15 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+
+        <!-- Dotenv for loading .env files -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>java-dotenv</artifactId>
+            <version>5.2.2</version>
+        </dependency>
+
+
         <!-- Thymeleaf extras for Spring Security -->
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
