@@ -13,5 +13,8 @@ RUN chmod +x ./mvnw
 # Build ứng dụng (bỏ qua test để nhanh hơn)
 RUN ./mvnw clean package -DskipTests
 
-# Câu lệnh khởi động ứng dụng
+# Expose cổng để Render biết app đang lắng nghe ở đâu
+EXPOSE 10000
+
+# Khởi động ứng dụng
 CMD ["java", "-jar", "target/MyApp-0.0.1-SNAPSHOT.jar"]
