@@ -114,36 +114,29 @@ public class PaymentController {
             System.out.println("Current Vietnam Time: " + new Date());
             System.out.println("Timeout: 30 minutes");
 
-            // Build hash data and query string separately
+            // Build hash data (raw, không encode) và query string (có encode)
             List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
             Collections.sort(fieldNames);
 
-            // For hash data - use raw values (no URL encoding)
+            // Build hash data (raw value, không encode)
             StringBuilder hashData = new StringBuilder();
-            boolean first = true;
-            for (String fieldName : fieldNames) {
+            for (int i = 0; i < fieldNames.size(); i++) {
+                String fieldName = fieldNames.get(i);
                 String fieldValue = vnp_Params.get(fieldName);
                 if (fieldValue != null && !fieldValue.isEmpty()) {
-                    if (!first) {
-                        hashData.append("&");
-                    }
+                    if (hashData.length() > 0) hashData.append("&");
                     hashData.append(fieldName).append("=").append(fieldValue);
-                    first = false;
                 }
             }
-
-            // Log chi tiết dữ liệu hash khi tạo thanh toán
             System.out.println("[VNPay CREATE] Hash data: " + hashData.toString());
 
-            // For query string - use URL encoded values
+            // Build query string (có encode)
             StringBuilder query = new StringBuilder();
             for (int i = 0; i < fieldNames.size(); i++) {
                 String fieldName = fieldNames.get(i);
                 String fieldValue = vnp_Params.get(fieldName);
                 if (fieldValue != null && !fieldValue.isEmpty()) {
-                    if (i > 0) {
-                        query.append("&");
-                    }
+                    if (query.length() > 0) query.append("&");
                     query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8))
                          .append("=")
                          .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8));
@@ -194,21 +187,18 @@ public class PaymentController {
             // Verify the signature first
             Map<String, String> fields = new HashMap<>(allParams);
             String vnp_SecureHash = fields.remove("vnp_SecureHash");
-            String vnp_SecureHashType = fields.remove("vnp_SecureHashType");
-            
+            fields.remove("vnp_SecureHashType");
+
             // Log chi tiết dữ liệu hash khi nhận callback
             List<String> fieldNames = new ArrayList<>(fields.keySet());
             Collections.sort(fieldNames);
             StringBuilder hashData = new StringBuilder();
-            boolean first = true;
-            for (String fieldName : fieldNames) {
+            for (int i = 0; i < fieldNames.size(); i++) {
+                String fieldName = fieldNames.get(i);
                 String fieldValue = fields.get(fieldName);
                 if (fieldValue != null && !fieldValue.isEmpty()) {
-                    if (!first) {
-                        hashData.append("&");
-                    }
+                    if (hashData.length() > 0) hashData.append("&");
                     hashData.append(fieldName).append("=").append(fieldValue);
-                    first = false;
                 }
             }
             System.out.println("[VNPay RETURN] Hash data: " + hashData.toString());
