@@ -3,7 +3,7 @@ services:
     name: springboot-app
     env: java
     plan: free
-    buildCommand: |
+    buildCommand: 
       chmod +x mvnw
       ./mvnw clean package -DskipTests
     startCommand: java -jar target/MyApp-0.0.1-SNAPSHOT.jar
