@@ -6,7 +6,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -22,7 +21,6 @@ public class VNPayConfig {
   public static String orderType = "other";
 
   public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-  // Updated return URL to match REST API structure
   public static String vnp_ReturnUrl = "https://webmyapp-632e.onrender.com/api/payment/vnpay-return";
   public static String vnp_TmnCode = "C0FCDTWU";
   public static String secretKey = "YUUOURKBY3PES06XV6UUKMS8LJ0P7KGV";
@@ -64,22 +62,22 @@ public class VNPayConfig {
     return digest;
   }
 
-  // Util for VNPAY
+  // Fixed hashAllFields method - proper parameter ordering and URL encoding
   public static String hashAllFields(Map<String, String> fields) {
     List<String> fieldNames = new ArrayList<>(fields.keySet());
     Collections.sort(fieldNames);
     StringBuilder sb = new StringBuilder();
-    Iterator<String> itr = fieldNames.iterator();
-    while (itr.hasNext()) {
-      String fieldName = itr.next();
+    
+    boolean first = true;
+    for (String fieldName : fieldNames) {
       String fieldValue = fields.get(fieldName);
       if ((fieldValue != null) && (fieldValue.length() > 0)) {
-        sb.append(fieldName);
-        sb.append("=");
-        sb.append(fieldValue);
-      }
-      if (itr.hasNext()) {
-        sb.append("&");
+        if (!first) {
+          sb.append("&");
+        }
+        // Don't URL encode for hash data - VNPay expects raw values
+        sb.append(fieldName).append("=").append(fieldValue);
+        first = false;
       }
     }
     return hmacSHA512(secretKey, sb.toString());
@@ -88,12 +86,12 @@ public class VNPayConfig {
   public static String hmacSHA512(final String key, final String data) {
     try {
       if (key == null || data == null) {
-        throw new NullPointerException();
+        throw new NullPointerException("Key and data must not be null");
       }
       final Mac hmac512 = Mac.getInstance("HmacSHA512");
-      byte[] hmacKeyBytes = key.getBytes();
-      final SecretKeySpec secretKey = new SecretKeySpec(hmacKeyBytes, "HmacSHA512");
-      hmac512.init(secretKey);
+      byte[] hmacKeyBytes = key.getBytes(StandardCharsets.UTF_8);
+      final SecretKeySpec secretKeySpec = new SecretKeySpec(hmacKeyBytes, "HmacSHA512");
+      hmac512.init(secretKeySpec);
       byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
       byte[] result = hmac512.doFinal(dataBytes);
       StringBuilder sb = new StringBuilder(2 * result.length);
@@ -102,7 +100,7 @@ public class VNPayConfig {
       }
       return sb.toString();
     } catch (Exception ex) {
-      return "";
+      throw new RuntimeException("Error generating HMAC-SHA512", ex);
     }
   }
 
@@ -110,11 +108,18 @@ public class VNPayConfig {
     String ipAddress;
     try {
       ipAddress = request.getHeader("X-FORWARDED-FOR");
-      if (ipAddress == null) {
+      if (ipAddress == null || ipAddress.isEmpty()) {
+        ipAddress = request.getHeader("X-Real-IP");
+      }
+      if (ipAddress == null || ipAddress.isEmpty()) {
         ipAddress = request.getRemoteAddr();
       }
+      // Handle multiple IPs in X-FORWARDED-FOR
+      if (ipAddress != null && ipAddress.contains(",")) {
+        ipAddress = ipAddress.split(",")[0].trim();
+      }
     } catch (Exception e) {
-      ipAddress = "Invalid IP:" + e.getMessage();
+      ipAddress = "127.0.0.1"; // Default fallback
     }
     return ipAddress;
   }

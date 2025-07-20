@@ -72,6 +72,7 @@ public class PaymentController {
                 return "redirect:/services";
             }
 
+            // Amount is already in VND, just need to multiply by 100 for VNPay (smallest unit)
             long amountInVND = amount.multiply(BigDecimal.valueOf(100)).longValue();
             String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
             String vnp_IpAddr = VNPayConfig.getIpAddress(request);
@@ -84,12 +85,13 @@ public class PaymentController {
             vnp_Params.put("vnp_CurrCode", "VND");
             vnp_Params.put("vnp_BankCode", "NCB");
             vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-            vnp_Params.put("vnp_OrderInfo", "Thanh toán dịch vụ ID: " + serviceId);
+            vnp_Params.put("vnp_OrderInfo", "Thanh toan dich vu ID: " + serviceId); // Remove special chars
             vnp_Params.put("vnp_OrderType", VNPayConfig.orderType);
             vnp_Params.put("vnp_Locale", "vn");
             vnp_Params.put("vnp_ReturnUrl", VNPayConfig.vnp_ReturnUrl);
             vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
+            // Create date and expire date
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
             Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
             String createDate = formatter.format(cld.getTime());
@@ -99,30 +101,51 @@ public class PaymentController {
             vnp_Params.put("vnp_CreateDate", createDate);
             vnp_Params.put("vnp_ExpireDate", expireDate);
 
+            // Build hash data and query string separately
             List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
             Collections.sort(fieldNames);
 
+            // For hash data - use raw values (no URL encoding)
             StringBuilder hashData = new StringBuilder();
-            StringBuilder query = new StringBuilder();
-
-            for (int i = 0; i < fieldNames.size(); i++) {
-                String name = fieldNames.get(i);
-                String value = URLEncoder.encode(vnp_Params.get(name), StandardCharsets.UTF_8);
-                hashData.append(name).append("=").append(value);
-                query.append(URLEncoder.encode(name, StandardCharsets.UTF_8)).append("=").append(value);
-                if (i < fieldNames.size() - 1) {
-                    hashData.append("&");
-                    query.append("&");
+            boolean first = true;
+            for (String fieldName : fieldNames) {
+                String fieldValue = vnp_Params.get(fieldName);
+                if (fieldValue != null && !fieldValue.isEmpty()) {
+                    if (!first) {
+                        hashData.append("&");
+                    }
+                    hashData.append(fieldName).append("=").append(fieldValue);
+                    first = false;
                 }
             }
 
+            // For query string - use URL encoded values
+            StringBuilder query = new StringBuilder();
+            for (int i = 0; i < fieldNames.size(); i++) {
+                String fieldName = fieldNames.get(i);
+                String fieldValue = vnp_Params.get(fieldName);
+                if (fieldValue != null && !fieldValue.isEmpty()) {
+                    if (i > 0) {
+                        query.append("&");
+                    }
+                    query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8))
+                         .append("=")
+                         .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8));
+                }
+            }
+
+            // Generate secure hash
             String vnp_SecureHash = VNPayConfig.hmacSHA512(VNPayConfig.secretKey, hashData.toString());
             query.append("&vnp_SecureHash=").append(vnp_SecureHash);
 
             String paymentUrl = VNPayConfig.vnp_PayUrl + "?" + query.toString();
+            System.out.println("Payment URL: " + paymentUrl); // For debugging
+            System.out.println("Hash data: " + hashData.toString()); // For debugging
+            
             return "redirect:" + paymentUrl;
 
         } catch (Exception e) {
+            e.printStackTrace(); // Add for debugging
             redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi tạo thanh toán: " + e.getMessage());
             return "redirect:/services";
         }
@@ -133,84 +156,115 @@ public class PaymentController {
                               HttpServletRequest request,
                               Model model) {
 
-        String vnp_ResponseCode = allParams.get("vnp_ResponseCode");
-
-        if ("00".equals(vnp_ResponseCode)) {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String email = auth.getName();
-            AppUser user = appUserRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-            String orderInfo = allParams.get("vnp_OrderInfo");
-            Long serviceId = Long.parseLong(orderInfo.replaceAll("\\D+", ""));
-            Services service = servicesRepository.findById(serviceId)
-                .orElseThrow(() -> new RuntimeException("Service not found"));
-
-            Optional<Transactions> existingTransaction = transactionsRepository
-                .findActiveTransactionByUserAndService(user, serviceId, LocalDateTime.now());
-
-            if (existingTransaction.isPresent()) {
-                model.addAttribute("error", "Bạn đã có gói dịch vụ này đang hoạt động!");
+        try {
+            // Verify the signature first
+            Map<String, String> fields = new HashMap<>(allParams);
+            String vnp_SecureHash = fields.remove("vnp_SecureHash");
+            String vnp_SecureHashType = fields.remove("vnp_SecureHashType");
+            
+            String signValue = VNPayConfig.hashAllFields(fields);
+            
+            if (!signValue.equals(vnp_SecureHash)) {
+                model.addAttribute("error", "Chữ ký không hợp lệ!");
                 return "error";
             }
 
-            user.setRole("ADMINDICHVU");
-            appUserRepository.save(user);
+            String vnp_ResponseCode = allParams.get("vnp_ResponseCode");
 
-            // Cập nhật lại SecurityContextHolder để session có quyền mới ngay lập tức
-            List<org.springframework.security.core.authority.SimpleGrantedAuthority> updatedAuthorities =
-                java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_ADMINDICHVU"));
-            org.springframework.security.core.userdetails.UserDetails updatedUserDetails = org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPassword())
-                .authorities(updatedAuthorities)
-                .build();
-            org.springframework.security.authentication.UsernamePasswordAuthenticationToken newAuth =
-                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                    updatedUserDetails, null, updatedAuthorities);
-            org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(newAuth);
+            if ("00".equals(vnp_ResponseCode)) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                String email = auth.getName();
+                AppUser user = appUserRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Thêm vào ServicePackMember nếu chưa có
-            ServicePack servicePack = servicePackRepository.findById(serviceId).orElse(null);
-            if (servicePack != null && !servicePackMemberRepository.existsByUserAndServicePack(user, servicePack)) {
-                ServicePackMember member = new ServicePackMember(user, servicePack);
-                servicePackMemberRepository.save(member);
+                String orderInfo = allParams.get("vnp_OrderInfo");
+                // Extract service ID from order info
+                String[] parts = orderInfo.split("ID: ");
+                if (parts.length < 2) {
+                    throw new RuntimeException("Invalid order info format");
+                }
+                Long serviceId = Long.parseLong(parts[1].trim());
+                
+                Services service = servicesRepository.findById(serviceId)
+                    .orElseThrow(() -> new RuntimeException("Service not found"));
+
+                // Check for existing active transaction
+                Optional<Transactions> existingTransaction = transactionsRepository
+                    .findActiveTransactionByUserAndService(user, serviceId, LocalDateTime.now());
+
+                if (existingTransaction.isPresent()) {
+                    model.addAttribute("error", "Bạn đã có gói dịch vụ này đang hoạt động!");
+                    return "error";
+                }
+
+                // Update user role
+                user.setRole("ADMINDICHVU");
+                appUserRepository.save(user);
+
+                // Update SecurityContextHolder
+                List<org.springframework.security.core.authority.SimpleGrantedAuthority> updatedAuthorities =
+                    java.util.Collections.singletonList(
+                        new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_ADMINDICHVU"));
+                org.springframework.security.core.userdetails.UserDetails updatedUserDetails = 
+                    org.springframework.security.core.userdetails.User
+                    .withUsername(user.getEmail())
+                    .password(user.getPassword())
+                    .authorities(updatedAuthorities)
+                    .build();
+                org.springframework.security.authentication.UsernamePasswordAuthenticationToken newAuth =
+                    new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                        updatedUserDetails, null, updatedAuthorities);
+                SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+                // Add to ServicePackMember if not exists
+                ServicePack servicePack = servicePackRepository.findById(serviceId).orElse(null);
+                if (servicePack != null && !servicePackMemberRepository.existsByUserAndServicePack(user, servicePack)) {
+                    ServicePackMember member = new ServicePackMember(user, servicePack);
+                    servicePackMemberRepository.save(member);
+                }
+
+                // Create transaction record
+                Transactions transaction = new Transactions();
+                transaction.setUser(user);
+                transaction.setService(service);
+                // Convert amount back from VNPay format (divide by 100)
+                String vnpAmount = allParams.get("vnp_Amount");
+                transaction.setAmount(new BigDecimal(vnpAmount).divide(BigDecimal.valueOf(100)));
+                transaction.setOrderInfo(orderInfo);
+                transaction.setVnpTxnRef(allParams.get("vnp_TxnRef"));
+                transaction.setVnpTransactionNo(allParams.get("vnp_TransactionNo"));
+                transaction.setVnpResponseCode(vnp_ResponseCode);
+                transaction.setVnpPayDate(allParams.get("vnp_PayDate"));
+                transaction.setBankCode(allParams.get("vnp_BankCode"));
+                transaction.setLocale(allParams.get("vnp_Locale"));
+                transaction.setCurrencyCode("VND");
+                transaction.setStatus(TransactionStatus.SUCCESS);
+                transaction.setCreatedAt(LocalDateTime.now());
+                transaction.setExpireDate(LocalDateTime.now().plusDays(service.getDuration()));
+
+                transactionsRepository.save(transaction);
+
+                // Log the purchase
+                String detail = String.format("Mua gói dịch vụ '%s' trị giá %.0f VND, thời hạn %d ngày.",
+                    service.getName(),
+                    transaction.getAmount().doubleValue(),
+                    service.getDuration());
+
+                logService.log(user.getEmail(), "Mua dịch vụ", detail);
+
+                model.addAttribute("amount", transaction.getAmount());
+                model.addAttribute("bankcode", transaction.getBankCode());
+                model.addAttribute("orderinfo", orderInfo);
+                model.addAttribute("expireDate", transaction.getExpireDate());
+                return "receipt";
+
+            } else {
+                model.addAttribute("error", "Thanh toán thất bại. Mã lỗi: " + vnp_ResponseCode);
+                return "error";
             }
-
-            Transactions transaction = new Transactions();
-            transaction.setUser(user);
-            transaction.setService(service);
-            transaction.setAmount(new BigDecimal(allParams.get("vnp_Amount")).divide(BigDecimal.valueOf(100)));
-            transaction.setOrderInfo(orderInfo);
-            transaction.setVnpTxnRef(allParams.get("vnp_TxnRef"));
-            transaction.setVnpTransactionNo(allParams.get("vnp_TransactionNo"));
-            transaction.setVnpResponseCode(vnp_ResponseCode);
-            transaction.setVnpPayDate(allParams.get("vnp_PayDate"));
-            transaction.setBankCode(allParams.get("vnp_BankCode"));
-            transaction.setLocale(allParams.get("vnp_Locale"));
-            transaction.setCurrencyCode("VND");
-            transaction.setStatus(TransactionStatus.SUCCESS);
-            transaction.setCreatedAt(LocalDateTime.now());
-            transaction.setExpireDate(LocalDateTime.now().plusDays(service.getDuration()));
-
-            transactionsRepository.save(transaction);
-
-            // ✅ GHI LOG MUA DỊCH VỤ
-            String detail = String.format("Mua gói dịch vụ '%s' trị giá %.0f VND, thời hạn %d ngày.",
-                service.getName(),
-                transaction.getAmount().doubleValue(),
-                service.getDuration());
-
-            logService.log(user.getEmail(), "Mua dịch vụ", detail);
-
-            model.addAttribute("amount", transaction.getAmount());
-            model.addAttribute("bankcode", transaction.getBankCode());
-            model.addAttribute("orderinfo", orderInfo);
-            model.addAttribute("expireDate", transaction.getExpireDate());
-            return "receipt";
-
-        } else {
-            model.addAttribute("error", "payment_failed");
+        } catch (Exception e) {
+            e.printStackTrace(); // For debugging
+            model.addAttribute("error", "Có lỗi xảy ra khi xử lý kết quả thanh toán: " + e.getMessage());
             return "error";
         }
     }
