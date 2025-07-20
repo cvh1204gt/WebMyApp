@@ -96,6 +96,11 @@ public class PaymentController {
             cld.add(Calendar.MINUTE, 15);
             String expireDate = formatter.format(cld.getTime());
 
+            // Thêm log kiểm tra thời gian thực tế và thời gian gửi lên VNPay
+            System.out.println("System current time: " + new java.util.Date());
+            System.out.println("VNPay createDate: " + createDate);
+            System.out.println("VNPay expireDate: " + expireDate);
+
             vnp_Params.put("vnp_CreateDate", createDate);
             vnp_Params.put("vnp_ExpireDate", expireDate);
 
