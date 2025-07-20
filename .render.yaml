@@ -2,4 +2,4 @@ services:
   - type: web
     name: springboot-app
     env: docker
-    planfreegiiefreegi
+    plan: free
