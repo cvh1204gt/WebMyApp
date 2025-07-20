@@ -132,6 +132,9 @@ public class PaymentController {
                 }
             }
 
+            // Log chi tiết dữ liệu hash khi tạo thanh toán
+            System.out.println("[VNPay CREATE] Hash data: " + hashData.toString());
+
             // For query string - use URL encoded values
             StringBuilder query = new StringBuilder();
             for (int i = 0; i < fieldNames.size(); i++) {
@@ -149,6 +152,7 @@ public class PaymentController {
 
             // Generate secure hash
             String vnp_SecureHash = VNPayConfig.hmacSHA512(VNPayConfig.secretKey, hashData.toString());
+            System.out.println("[VNPay CREATE] Generated hash: " + vnp_SecureHash);
             query.append("&vnp_SecureHash=").append(vnp_SecureHash);
 
             String paymentUrl = VNPayConfig.vnp_PayUrl + "?" + query.toString();
@@ -192,17 +196,26 @@ public class PaymentController {
             String vnp_SecureHash = fields.remove("vnp_SecureHash");
             String vnp_SecureHashType = fields.remove("vnp_SecureHashType");
             
-            if (vnp_SecureHash == null || vnp_SecureHash.isEmpty()) {
-                System.err.println("Missing vnp_SecureHash in response!");
-                model.addAttribute("error", "Thiếu chữ ký bảo mật trong phản hồi!");
-                return "error";
+            // Log chi tiết dữ liệu hash khi nhận callback
+            List<String> fieldNames = new ArrayList<>(fields.keySet());
+            Collections.sort(fieldNames);
+            StringBuilder hashData = new StringBuilder();
+            boolean first = true;
+            for (String fieldName : fieldNames) {
+                String fieldValue = fields.get(fieldName);
+                if (fieldValue != null && !fieldValue.isEmpty()) {
+                    if (!first) {
+                        hashData.append("&");
+                    }
+                    hashData.append(fieldName).append("=").append(fieldValue);
+                    first = false;
+                }
             }
-            
-            String signValue = VNPayConfig.hashAllFields(fields);
-            
-            System.out.println("=== Signature Verification ===");
-            System.out.println("Calculated hash: " + signValue);
-            System.out.println("Received hash: " + vnp_SecureHash);
+            System.out.println("[VNPay RETURN] Hash data: " + hashData.toString());
+
+            String signValue = VNPayConfig.hmacSHA512(VNPayConfig.secretKey, hashData.toString());
+            System.out.println("[VNPay RETURN] Generated hash: " + signValue);
+            System.out.println("[VNPay RETURN] Received hash: " + vnp_SecureHash);
             System.out.println("Hash match: " + signValue.equals(vnp_SecureHash));
             System.out.println("==============================");
             
