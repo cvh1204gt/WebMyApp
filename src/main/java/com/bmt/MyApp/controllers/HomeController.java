@@ -1,6 +1,7 @@
 package com.bmt.MyApp.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -103,6 +104,12 @@ public class HomeController {
   // public String thongkegiaodich() {
   //   return "thongkegiaodich";
   // }
+
+
+    @GetMapping("/healthz")
+  public ResponseEntity<String> healthz() {
+      return ResponseEntity.ok("OK");
+  }
 
 
 }
