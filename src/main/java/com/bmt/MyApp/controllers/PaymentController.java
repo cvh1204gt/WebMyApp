@@ -91,7 +91,7 @@ public class PaymentController {
             vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-            Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+            Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh")); // ĐÚNG MÚI GIỜ VIỆT NAM
             String createDate = formatter.format(cld.getTime());
             cld.add(Calendar.MINUTE, 15);
             String expireDate = formatter.format(cld.getTime());
