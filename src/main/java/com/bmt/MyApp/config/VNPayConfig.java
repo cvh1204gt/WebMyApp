@@ -16,6 +16,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * Utility class for VNPay payment gateway configuration and cryptographic helpers.
+ */
 public class VNPayConfig {
   public static String vnp_Version = "2.1.0";
   public static String vnp_Command = "pay";
@@ -28,6 +31,9 @@ public class VNPayConfig {
   public static String secretKey = "YUUOURKBY3PES06XV6UUKMS8LJ0P7KGV";
   public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
+  /**
+   * Returns the MD5 hash of the given message.
+   */
   public static String md5(String message) {
     String digest = null;
     try {
@@ -46,6 +52,9 @@ public class VNPayConfig {
     return digest;
   }
 
+  /**
+   * Returns the SHA-256 hash of the given message.
+   */
   public static String Sha256(String message) {
     String digest = null;
     try {
@@ -64,7 +73,9 @@ public class VNPayConfig {
     return digest;
   }
 
-  // Util for VNPAY
+  /**
+   * Hashes all fields in the map using HMAC SHA-512 and the secret key.
+   */
   public static String hashAllFields(Map<String, String> fields) {
     List<String> fieldNames = new ArrayList<>(fields.keySet());
     Collections.sort(fieldNames);
@@ -85,6 +96,9 @@ public class VNPayConfig {
     return hmacSHA512(secretKey, sb.toString());
   }
 
+  /**
+   * Returns the HMAC SHA-512 hash of the data using the provided key.
+   */
   public static String hmacSHA512(final String key, final String data) {
     try {
       if (key == null || data == null) {
@@ -106,6 +120,9 @@ public class VNPayConfig {
     }
   }
 
+  /**
+   * Gets the IP address from the HttpServletRequest.
+   */
   public static String getIpAddress(HttpServletRequest request) {
     String ipAddress;
     try {
@@ -119,6 +136,9 @@ public class VNPayConfig {
     return ipAddress;
   }
 
+  /**
+   * Generates a random numeric string of the specified length.
+   */
   public static String getRandomNumber(int len) {
     Random rnd = new Random();
     String chars = "0123456789";

@@ -6,24 +6,24 @@
 <div th:replace="~{layout :: page_navbar}"></div>
 
 <main>
-  <section class="giaodich-section">
-    <h1 class="py-4">Chỉnh Sửa Gói Dịch Vụ</h1>
-
-    <form method="post" th:action="@{'/servicepacks/edit/' + ${pack.id}}" class="search-form">
-      <div class="search-row">
-        <input type="text" name="name" class="search-input" placeholder="Tên gói" th:value="${pack.name}" required>
-        <input type="number" step="0.01" name="price" class="search-input" placeholder="Giá (VNĐ)" th:value="${pack.price}" required>
+  <section class="giaodich-section container-fluid px-2 px-md-4">
+    <h1 class="py-4 text-center">Chỉnh Sửa Gói Dịch Vụ</h1>
+    <form method="post" th:action="@{'/servicepacks/edit/' + ${pack.id}}" class="search-form row g-3">
+      <div class="col-12 col-md-6">
+        <input type="text" name="name" class="search-input form-control" placeholder="Tên gói" th:value="${pack.name}" required>
       </div>
-      <div class="search-row">
-        <input type="number" name="duration" class="search-input" placeholder="Thời lượng (ngày)" th:value="${pack.duration}" required>
+      <div class="col-12 col-md-6">
+        <input type="number" step="0.01" name="price" class="search-input form-control" placeholder="Giá (VNĐ)" th:value="${pack.price}" required>
       </div>
-      <div class="search-row">
-        <textarea name="description" class="search-input" placeholder="Mô tả" rows="4"
-                  th:text="${pack.description}"></textarea>
+      <div class="col-12 col-md-6">
+        <input type="number" name="duration" class="search-input form-control" placeholder="Thời lượng (ngày)" th:value="${pack.duration}" required>
       </div>
-      <div class="search-buttons">
-        <button type="submit" class="search-btn">💾 Cập nhật</button>
-        <a href="/servicepacks" class="delete-btn">↩ Hủy</a>
+      <div class="col-12">
+        <textarea name="description" class="search-input form-control" placeholder="Mô tả" rows="4" th:text="${pack.description}"></textarea>
+      </div>
+      <div class="search-buttons col-12 d-flex gap-2">
+        <button type="submit" class="search-btn btn btn-primary">💾 Cập nhật</button>
+        <a href="/servicepacks" class="delete-btn btn btn-secondary">↩ Hủy</a>
       </div>
     </form>
   </section>

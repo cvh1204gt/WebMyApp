@@ -12,7 +12,7 @@
 
   <!--========== CONTENTS ==========-->
   <main>
-    <section class="giaodich-section">
+    <section class="giaodich-section container py-4">
       <h1 class="py-4">Quản lý Log</h1>
 
       <!--========== THANH CÔNG CỤ ==========-->
@@ -32,8 +32,8 @@
 
       <!-- Bảng logs -->
       <div class="table-responsive">
-        <table class="giaodich-table">
-          <thead>
+        <table class="table table-bordered table-hover align-middle giaodich-table">
+          <thead class="table-light">
             <tr>
               <th>STT</th>
               <th>Người dùng</th>
@@ -47,13 +47,10 @@
               <td th:text="${currentPage * size + iterStat.count}" data-label="STT">1</td>
               <td th:text="${log.username}" data-label="Người dùng">admin</td>
               <td th:text="${log.action}" data-label="Hành động">Đăng nhập</td>
-              <div>             
               <td th:text="${log.detail}" class="detail-cell" data-label="Chi tiết">Thành công</td>
-              </div>
               <td th:text="${#temporals.format(log.timestamp, 'dd/MM/yyyy HH:mm:ss')}" data-label="Thời gian">
                 01/01/2024 10:00:00
               </td>
-
             </tr>
             <tr th:if="${#lists.isEmpty(logs)}">
               <td colspan="5" class="text-center">Không có dữ liệu</td>
@@ -63,51 +60,46 @@
       </div>
 
       <!-- Pagination -->
-      <div class="pagination-container mt-4" th:if="${totalPages > 1}">
-        <div class="pagination-info">
+      <div class="pagination-container mt-4 d-flex flex-column flex-md-row align-items-center justify-content-between" th:if="${totalPages > 1}">
+        <div class="pagination-info mb-2 mb-md-0">
           <span>Trang <strong th:text="${currentPage + 1}">1</strong> / <strong th:text="${totalPages}">1</strong></span>
         </div>
-        
-        <div class="pagination-controls">
+        <div class="pagination-controls btn-group" role="group">
           <!-- First page -->
-          <a th:href="@{/logs(page=0, search=${search}, startDate=${startDate}, endDate=${endDate})}" 
-             class="pagination-btn" 
+          <a th:href="@{/logs(page=0, search=${search}, startDate=${startDate}, endDate=${endDate})}"
+             class="btn btn-outline-primary pagination-btn"
              th:classappend="${currentPage == 0} ? 'disabled' : ''"
              title="Trang đầu">
-            ⇤
+            &#8676;
           </a>
-          
           <!-- Previous page -->
-          <a th:href="@{/logs(page=${currentPage - 1}, search=${search}, startDate=${startDate}, endDate=${endDate})}" 
-             class="pagination-btn" 
+          <a th:href="@{/logs(page=${currentPage - 1}, search=${search}, startDate=${startDate}, endDate=${endDate})}"
+             class="btn btn-outline-primary pagination-btn"
              th:classappend="${!hasPrevious} ? 'disabled' : ''"
              title="Trang trước">
-            ←
+            &larr;
           </a>
-          
           <!-- Page numbers -->
-          <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" 
+          <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
                 th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}">
-            <a th:href="@{/logs(page=${pageNum}, search=${search}, startDate=${startDate}, endDate=${endDate})}" 
-               class="page-btn" 
-               th:classappend="${pageNum == currentPage} ? 'active' : ''"
+            <a th:href="@{/logs(page=${pageNum}, search=${search}, startDate=${startDate}, endDate=${endDate})}"
+               class="btn btn-outline-secondary page-btn mx-1"
+               th:classappend="${pageNum == currentPage} ? 'active btn-primary text-white' : ''"
                th:text="${pageNum + 1}">1</a>
           </span>
-          
           <!-- Next page -->
-          <a th:href="@{/logs(page=${currentPage + 1}, search=${search}, startDate=${startDate}, endDate=${endDate})}" 
-             class="pagination-btn" 
+          <a th:href="@{/logs(page=${currentPage + 1}, search=${search}, startDate=${startDate}, endDate=${endDate})}"
+             class="btn btn-outline-primary pagination-btn"
              th:classappend="${!hasNext} ? 'disabled' : ''"
              title="Trang sau">
-            →
+            &rarr;
           </a>
-          
           <!-- Last page -->
-          <a th:href="@{/logs(page=${totalPages - 1}, search=${search}, startDate=${startDate}, endDate=${endDate})}" 
-             class="pagination-btn" 
+          <a th:href="@{/logs(page=${totalPages - 1}, search=${search}, startDate=${startDate}, endDate=${endDate})}"
+             class="btn btn-outline-primary pagination-btn"
              th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''"
              title="Trang cuối">
-            ⇥
+            &#8677;
           </a>
         </div>
       </div>

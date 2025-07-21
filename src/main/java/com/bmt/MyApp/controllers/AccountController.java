@@ -27,6 +27,9 @@ import com.bmt.MyApp.repositories.AppUserRepository;
 import com.bmt.MyApp.repositories.ServicesRepository;
 import com.bmt.MyApp.services.LogService;
 
+/**
+ * Controller for admin account and service management.
+ */
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMIN')")
@@ -44,6 +47,9 @@ public class AccountController {
     @Autowired
     private ServicesRepository servicesRepository;
 
+    /**
+     * Displays the account management page with search and pagination.
+     */
     @GetMapping("/account_management")
     public String accountManagement(
             @RequestParam(defaultValue = "0") int page,
@@ -71,6 +77,9 @@ public class AccountController {
         return "account_management";
     }
 
+    /**
+     * Displays the add account form.
+     */
     @GetMapping("/add_account")
     public String showAddAccountForm(Model model) {
         model.addAttribute("user", new AppUser());
@@ -78,6 +87,9 @@ public class AccountController {
         return "add_edit_account";
     }
 
+    /**
+     * Handles add account form submission.
+     */
     @PostMapping("/add_account")
     public String addAccount(@ModelAttribute AppUser user, RedirectAttributes redirectAttributes) {
         try {
@@ -114,6 +126,9 @@ public class AccountController {
         }
     }
 
+    /**
+     * Displays the edit account form.
+     */
     @GetMapping("/edit_account")
     public String showEditAccountForm(@RequestParam String email, Model model, RedirectAttributes redirectAttributes) {
         Optional<AppUser> userOptional = appUserRepository.findByEmail(email);
@@ -128,6 +143,9 @@ public class AccountController {
         }
     }
 
+    /**
+     * Handles edit account form submission.
+     */
     @PostMapping("/edit_account")
     public String editAccount(@ModelAttribute AppUser user, RedirectAttributes redirectAttributes) {
         try {
@@ -171,6 +189,9 @@ public class AccountController {
         }
     }
 
+    /**
+     * Handles account deletion.
+     */
     @PostMapping("/delete_account")
     public String deleteAccount(@RequestParam String email, RedirectAttributes redirectAttributes) {
         try {
@@ -209,6 +230,9 @@ public class AccountController {
         return "redirect:/admin/account_management";
     }
 
+    /**
+     * Displays the service management page with search, filter, and pagination.
+     */
     @GetMapping("/service_management")
     public String serviceManagement(
             @RequestParam(defaultValue = "0") int page,
@@ -244,6 +268,9 @@ public class AccountController {
         return "service_management";
     }
 
+    /**
+     * Displays the add service form.
+     */
     @GetMapping("/add_service")
     public String showAddServiceForm(Model model) {
         model.addAttribute("service", new Services());
@@ -251,6 +278,9 @@ public class AccountController {
         return "add_edit_service";
     }
 
+    /**
+     * Handles add service form submission.
+     */
     @PostMapping("/add_service")
     public String addService(@ModelAttribute Services service, RedirectAttributes redirectAttributes) {
         try {
@@ -273,6 +303,9 @@ public class AccountController {
         }
     }
 
+    /**
+     * Displays the edit service form.
+     */
     @GetMapping("/edit_service/{id}")
     public String showEditServiceForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Services> serviceOptional = servicesRepository.findById(id);
@@ -287,6 +320,9 @@ public class AccountController {
         }
     }
 
+    /**
+     * Handles edit service form submission.
+     */
     @PostMapping("/edit_service/{id}")
     public String editService(@PathVariable Long id, @ModelAttribute Services service, RedirectAttributes redirectAttributes) {
         try {
@@ -323,6 +359,9 @@ public class AccountController {
         }
     }
 
+    /**
+     * Handles service deletion.
+     */
     @PostMapping("/delete_service/{id}")
     public String deleteService(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {

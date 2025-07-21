@@ -15,28 +15,32 @@ import com.bmt.MyApp.models.Services;
 import com.bmt.MyApp.repositories.AppUserRepository;
 import com.bmt.MyApp.repositories.ServicesRepository;
 
+/**
+ * Controller for displaying available services to the user.
+ */
 @Controller
 @RequestMapping("/services")
 public class ServiceController {
-  
+
     @Autowired
     private ServicesRepository servicesRepository;
-    
+
     @Autowired
     private AppUserRepository appUserRepository;
 
+    /**
+     * Displays the list of services available for the current user to purchase.
+     * @param model the Spring MVC model
+     * @return the services view template
+     */
     @GetMapping
     public String getAllServices(Model model) {
-        // Lấy thông tin user hiện tại
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         AppUser currentUser = appUserRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        // Lấy danh sách services mà user có thể mua (chưa mua hoặc đã hết hạn)
         List<Services> availableServices = servicesRepository.findAvailableServicesForUser(
                 currentUser, LocalDateTime.now());
-        
         model.addAttribute("services", availableServices);
-        return "services"; // trỏ đến file: templates/services.html
+        return "services";
     }
 }

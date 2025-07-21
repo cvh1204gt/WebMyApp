@@ -18,49 +18,58 @@
   <link rel="stylesheet" href="/css/styles.purged.css">
 
   <title>Xác thực OTP - IMT</title>
+  <style>
+    .verify-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f8f9fa; }
+    .verify-card { background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); padding: 2rem 2.5rem; max-width: 400px; width: 100%; text-align: center; }
+    .verify-logo { font-size: 3rem; color: #007bff; margin-bottom: 1rem; }
+    .verify-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .verify-subtitle { color: #666; margin-bottom: 1.5rem; }
+    .email-display { background: #f1f3f4; border-radius: 6px; padding: 0.5rem 1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; justify-content: center; }
+    .otp-input-group { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem; }
+    .otp-input { width: 2.5rem; height: 2.5rem; text-align: center; font-size: 1.25rem; border-radius: 6px; border: 1px solid #ced4da; transition: border-color 0.2s; }
+    .otp-input:focus { border-color: #007bff; outline: none; }
+    .otp-input.filled { background: #e9f7fe; border-color: #007bff; }
+    .verify-btn { width: 100%; margin-top: 1rem; }
+    .resend-section { margin-top: 1.5rem; }
+    .resend-btn { background: none; border: none; color: #007bff; text-decoration: underline; cursor: pointer; }
+    .back-to-login { margin-top: 1.5rem; }
+    .back-to-login a { color: #6c757d; text-decoration: none; }
+    .back-to-login a:hover { text-decoration: underline; }
+    @media (max-width: 576px) { .verify-card { padding: 1rem; } }
+  </style>
 </head>
 
 <body>
-
   <!--========== HEADER ==========-->
   <header th:replace="~{layout :: page_header}"></header>
-
 
   <div class="verify-container">
     <div class="verify-card">
       <div class="verify-logo">
         <i class='bx bx-shield-check'></i>
       </div>
-
       <h1 class="verify-title">Xác thực OTP</h1>
       <p class="verify-subtitle">
         Chúng tôi đã gửi mã xác thực 6 chữ số đến email của bạn.<br>
         Vui lòng nhập mã để hoàn tất việc đăng ký.
       </p>
-
       <!-- Hiển thị email -->
       <div class="email-display" th:if="${otpVerificationDto.email}">
         <i class='bx bx-envelope'></i> <span th:text="${otpVerificationDto.email}"></span>
       </div>
-
       <!-- Hiển thị thông báo -->
-      <div th:if="${message}" class="alert alert-success">
-        <i class='bx bx-check-circle'></i> <span th:text="${message}"></span>
+      <div th:if="${message}" class="alert alert-success d-flex align-items-center justify-content-center">
+        <i class='bx bx-check-circle me-2'></i> <span th:text="${message}"></span>
       </div>
-
-      <div th:if="${error}" class="alert alert-danger">
-        <i class='bx bx-error-circle'></i> <span th:text="${error}"></span>
+      <div th:if="${error}" class="alert alert-danger d-flex align-items-center justify-content-center">
+        <i class='bx bx-error-circle me-2'></i> <span th:text="${error}"></span>
       </div>
-
       <!-- Form xác thực OTP -->
       <form th:action="@{/verify-otp}" method="post" th:object="${otpVerificationDto}" id="otpForm">
         <input type="hidden" th:field="*{email}">
-        
-        <!-- Input ẩn cho OTP hoàn chỉnh -->
         <input type="hidden" th:field="*{otp}" id="completeOtp">
-
         <!-- Các ô nhập OTP -->
-        <div class="otp-input-group">
+        <div class="otp-input-group mb-2">
           <input type="text" class="otp-input" maxlength="1" data-index="0">
           <input type="text" class="otp-input" maxlength="1" data-index="1">
           <input type="text" class="otp-input" maxlength="1" data-index="2">
@@ -68,20 +77,17 @@
           <input type="text" class="otp-input" maxlength="1" data-index="4">
           <input type="text" class="otp-input" maxlength="1" data-index="5">
         </div>
-
         <!-- Hiển thị lỗi validation -->
-        <div th:if="${#fields.hasErrors('otp')}" class="alert alert-danger">
+        <div th:if="${#fields.hasErrors('otp')}" class="alert alert-danger py-1">
           <span th:errors="*{otp}"></span>
         </div>
-
-        <button type="submit" class="verify-btn" id="verifyBtn" disabled>
+        <button type="submit" class="btn btn-primary verify-btn" id="verifyBtn" disabled>
           <i class='bx bx-check'></i> Xác thực OTP
         </button>
       </form>
-
       <!-- Phần gửi lại OTP -->
       <div class="resend-section">
-        <p class="resend-text">Không nhận được mã?</p>
+        <p class="resend-text mb-1">Không nhận được mã?</p>
         <form th:action="@{/resend-otp}" method="post" style="display: inline;">
           <input type="hidden" name="email" th:value="${otpVerificationDto.email}">
           <button type="submit" class="resend-btn">
@@ -89,7 +95,6 @@
           </button>
         </form>
       </div>
-
       <div class="back-to-login">
         <a href="/login">
           <i class='bx bx-arrow-back'></i> Quay lại đăng nhập
@@ -97,24 +102,20 @@
       </div>
     </div>
   </div>
-
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const otpInputs = document.querySelectorAll('.otp-input');
       const verifyBtn = document.getElementById('verifyBtn');
       const completeOtpInput = document.getElementById('completeOtp');
-
       // Xử lý nhập OTP
       otpInputs.forEach((input, index) => {
         input.addEventListener('input', function(e) {
           const value = e.target.value;
-          
           // Chỉ cho phép số
           if (!/^\d$/.test(value) && value !== '') {
             e.target.value = '';
             return;
           }
-
           if (value) {
             e.target.classList.add('filled');
             // Chuyển đến ô tiếp theo
@@ -124,11 +125,9 @@
           } else {
             e.target.classList.remove('filled');
           }
-
           updateOtpValue();
           updateVerifyButton();
         });
-
         // Xử lý phím Backspace
         input.addEventListener('keydown', function(e) {
           if (e.key === 'Backspace' && !e.target.value && index > 0) {
@@ -139,35 +138,29 @@
             updateVerifyButton();
           }
         });
-
         // Xử lý paste
         input.addEventListener('paste', function(e) {
           e.preventDefault();
           const pasteData = e.clipboardData.getData('text');
           const digits = pasteData.replace(/\D/g, '').slice(0, 6);
-          
           digits.split('').forEach((digit, i) => {
             if (i < otpInputs.length) {
               otpInputs[i].value = digit;
               otpInputs[i].classList.add('filled');
             }
           });
-          
           updateOtpValue();
           updateVerifyButton();
         });
       });
-
       function updateOtpValue() {
         const otpValue = Array.from(otpInputs).map(input => input.value).join('');
         completeOtpInput.value = otpValue;
       }
-
       function updateVerifyButton() {
         const allFilled = Array.from(otpInputs).every(input => input.value !== '');
         verifyBtn.disabled = !allFilled;
       }
-
       // Focus vào ô đầu tiên
       otpInputs[0].focus();
     });

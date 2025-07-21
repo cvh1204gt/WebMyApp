@@ -5,23 +5,25 @@
 <header th:replace="~{layout :: page_header}"></header>
 <div th:replace="~{layout :: page_navbar}"></div>
 <main>
-  <section class="giaodich-section">
-    <h1 class="py-4">Thêm Gói Dịch Vụ</h1>
+  <section class="giaodich-section container-fluid px-2 px-md-4">
+    <h1 class="py-4 text-center">Thêm Gói Dịch Vụ</h1>
     <div class="content-header mb-4">
-      <form method="post" th:action="@{/servicepacks/add}" class="search-form">
-        <div class="search-row">
-          <input type="text" name="name" class="search-input" placeholder="Tên gói dịch vụ" required>
-          <input type="number" name="price" step="0.01" class="search-input" placeholder="Giá (VNĐ)" required>
+      <form method="post" th:action="@{/servicepacks/add}" class="search-form row g-3">
+        <div class="col-12 col-md-6">
+          <input type="text" name="name" class="search-input form-control" placeholder="Tên gói dịch vụ" required>
         </div>
-        <div class="search-row">
-          <input type="number" name="duration" class="search-input" placeholder="Thời lượng (ngày)" required>
+        <div class="col-12 col-md-6">
+          <input type="number" name="price" step="0.01" class="search-input form-control" placeholder="Giá (VNĐ)" required>
         </div>
-        <div class="search-row">
-          <textarea name="description" class="search-input" placeholder="Mô tả" rows="4"></textarea>
+        <div class="col-12 col-md-6">
+          <input type="number" name="duration" class="search-input form-control" placeholder="Thời lượng (ngày)" required>
         </div>
-        <div class="search-buttons">
-          <button type="submit" class="search-btn">💾 Lưu gói dịch vụ</button>
-          <a href="/servicepacks" class="delete-btn">⟲ Quay lại</a>
+        <div class="col-12">
+          <textarea name="description" class="search-input form-control" placeholder="Mô tả" rows="4"></textarea>
+        </div>
+        <div class="search-buttons col-12 d-flex gap-2">
+          <button type="submit" class="search-btn btn btn-primary">💾 Lưu gói dịch vụ</button>
+          <a href="/servicepacks" class="delete-btn btn btn-secondary">⟲ Quay lại</a>
         </div>
       </form>
     </div>

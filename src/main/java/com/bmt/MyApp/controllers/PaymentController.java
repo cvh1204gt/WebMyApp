@@ -40,6 +40,9 @@ import com.bmt.MyApp.services.LogService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * Controller for handling payment creation and VNPay return logic.
+ */
 @Controller
 @RequestMapping("/api/payment")
 public class PaymentController {
@@ -51,6 +54,14 @@ public class PaymentController {
     @Autowired private ServicePackRepository servicePackRepository;
     @Autowired private ServicePackMemberRepository servicePackMemberRepository;
 
+    /**
+     * Initiates a payment for a service using VNPay.
+     * @param serviceId the ID of the service
+     * @param amount the amount to pay
+     * @param request the HTTP request
+     * @param redirectAttributes redirect attributes for error messages
+     * @return redirect to VNPay payment URL or error page
+     */
     @GetMapping("/create_payment_service")
     public String createPaymentForService(
             @RequestParam("id") Integer serviceId,
@@ -133,6 +144,13 @@ public class PaymentController {
         }
     }
 
+    /**
+     * Handles the VNPay return callback and updates user/service/transaction accordingly.
+     * @param allParams all VNPay return parameters
+     * @param request the HTTP request
+     * @param model the Spring MVC model
+     * @return receipt or error view
+     */
     @GetMapping("/vnpay-return")
     public String vnpayReturn(@RequestParam Map<String, String> allParams,
                               HttpServletRequest request,

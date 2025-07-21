@@ -25,6 +25,9 @@ import com.bmt.MyApp.services.OtpService;
 
 import jakarta.validation.Valid;
 
+/**
+ * Controller for authentication, registration, OTP verification, and password reset.
+ */
 @Controller
 public class AuthController {
     
@@ -42,11 +45,17 @@ public class AuthController {
     @Autowired
     private EmailService emailService;
 
+    /**
+     * Displays the login page.
+     */
     @GetMapping("/login")
     public String login() {
         return "login";
     }
 
+    /**
+     * Displays the registration page.
+     */
     @GetMapping("/register")
     public String register(Model model) {
         RegisterDto registerDto = new RegisterDto();
@@ -55,6 +64,9 @@ public class AuthController {
         return "register";
     }
 
+    /**
+     * Handles user registration form submission.
+     */
     @PostMapping("/register")
     public String register(Model model, @Valid @ModelAttribute RegisterDto registerDto, 
                           BindingResult result, RedirectAttributes redirectAttributes) {
@@ -108,6 +120,9 @@ public class AuthController {
         }
     }
 
+    /**
+     * Displays the OTP verification page.
+     */
     @GetMapping("/verify-otp")
     public String showOtpVerification(@RequestParam("email") String email, Model model) {
         OtpVerificationDto otpDto = new OtpVerificationDto();
@@ -116,6 +131,9 @@ public class AuthController {
         return "verify-otp";
     }
 
+    /**
+     * Handles OTP verification form submission.
+     */
     @PostMapping("/verify-otp")
     public String verifyOtp(@Valid @ModelAttribute OtpVerificationDto otpDto, 
                            BindingResult result, Model model, RedirectAttributes redirectAttributes) {
@@ -135,6 +153,9 @@ public class AuthController {
         }
     }
 
+    /**
+     * Handles resending OTP for registration.
+     */
     @PostMapping("/resend-otp")
     public String resendOtp(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
         try {
@@ -148,11 +169,17 @@ public class AuthController {
         return "redirect:/verify-otp";
     }
 
+    /**
+     * Displays the forgot password form.
+     */
     @GetMapping("/forgot-password")
     public String forgotPasswordForm() {
         return "forgot_password";
     }
 
+    /**
+     * Handles forgot password form submission.
+     */
     @PostMapping("/forgot-password")
     public String handleForgotPassword(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
         Optional<AppUser> userOpt = repo.findByEmail(email);
@@ -164,12 +191,18 @@ public class AuthController {
         return "redirect:/reset-password";
     }
 
+    /**
+     * Displays the reset password form.
+     */
     @GetMapping("/reset-password")
     public String showResetPasswordForm(@RequestParam(value = "email", required = false) String email, Model model) {
         model.addAttribute("email", email);
         return "reset_password";
     }
 
+    /**
+     * Handles reset password form submission.
+     */
     @PostMapping("/reset-password")
     public String handleResetPassword(@RequestParam("email") String email,
                                       @RequestParam("otp") String otp,
@@ -199,6 +232,9 @@ public class AuthController {
         return "redirect:/login";
     }
 
+    /**
+     * Handles resending OTP for forgot password.
+     */
     @PostMapping("/resend-otp-forgot")
     public String resendOtpForgot(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
         try {

@@ -12,6 +12,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.bmt.MyApp.handlers.CustomLogoutSuccessHandler;
 
+/**
+ * Spring Security configuration for HTTP security, authentication, and authorization.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
@@ -20,6 +23,12 @@ public class SecurityConfig {
     @Autowired
     private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
+    /**
+     * Configures the security filter chain for HTTP requests.
+     * @param http the HttpSecurity object
+     * @return the configured SecurityFilterChain
+     * @throws Exception if configuration fails
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -47,6 +56,10 @@ public class SecurityConfig {
             .build();
     }
 
+    /**
+     * Provides a BCrypt password encoder bean.
+     * @return the PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

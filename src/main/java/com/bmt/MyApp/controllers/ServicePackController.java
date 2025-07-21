@@ -19,6 +19,9 @@ import com.bmt.MyApp.models.ServicePack;
 import com.bmt.MyApp.repositories.AppUserRepository;
 import com.bmt.MyApp.services.ServicePackService;
 
+/**
+ * Controller for managing service packs and their members.
+ */
 @Controller
 @RequestMapping("/servicepacks")
 public class ServicePackController {
@@ -29,7 +32,9 @@ public class ServicePackController {
     @Autowired
     private AppUserRepository appUserRepository;
 
-    // Danh sách + tìm kiếm + phân trang
+    /**
+     * Displays the paginated list of service packs with search.
+     */
     @GetMapping
     public String listPaged(Model model,
                             @RequestParam(defaultValue = "") String search,
@@ -49,14 +54,18 @@ public class ServicePackController {
         return "servicepack";
     }
 
-    // Hiển thị form thêm
+    /**
+     * Displays the add service pack form.
+     */
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("pack", new ServicePack());
         return "addservicepack";
     }
 
-    // Xử lý thêm mới
+    /**
+     * Handles add service pack form submission.
+     */
     @PostMapping("/add")
     public String add(@ModelAttribute ServicePack pack, Principal principal, RedirectAttributes redirectAttributes) {
         try {
@@ -69,14 +78,18 @@ public class ServicePackController {
         return "redirect:/servicepacks";
     }
 
-    // Hiển thị form sửa
+    /**
+     * Displays the edit service pack form.
+     */
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         model.addAttribute("pack", service.findById(id));
         return "editservicepack";
     }
 
-    // Xử lý cập nhật
+    /**
+     * Handles edit service pack form submission.
+     */
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable Long id, @ModelAttribute ServicePack pack, Principal principal, RedirectAttributes redirectAttributes) {
         try {
@@ -88,7 +101,9 @@ public class ServicePackController {
         return "redirect:/servicepacks";
     }
 
-    // Xử lý xóa
+    /**
+     * Handles service pack deletion.
+     */
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
         try {
@@ -108,7 +123,9 @@ public class ServicePackController {
 
 
 
-    // Trang thêm thành viên (form đơn)
+    /**
+     * Displays the add member page for a service pack.
+     */
     @GetMapping("/add-member-page")
     public String showAddMemberPage(@RequestParam(value = "servicePackId", required = false) Long servicePackId, Model model, Principal principal, RedirectAttributes redirectAttributes) {
         String email = principal.getName();
@@ -122,7 +139,9 @@ public class ServicePackController {
         return "add_member";
     }
 
-    // FIX: Thêm thành viên vào gói dịch vụ - Đảm bảo redirect đúng servicePackId
+    /**
+     * Handles adding a member to a service pack.
+     */
     @PostMapping("/add-member")
     public String addMemberToServicePack(@RequestParam Long servicePackId,
                                          @RequestParam String userEmail,
@@ -164,7 +183,9 @@ public class ServicePackController {
         return "redirect:/servicepacks/members?servicePackId=" + servicePackId;
     }
 
-    // Trang tổng hợp các gói dịch vụ (bảng), hoặc xem thành viên của 1 gói
+    /**
+     * Displays the list of service pack members or all packs for the user.
+     */
     @GetMapping("/members")
     public String showServicePackMembers(@RequestParam(value = "servicePackId", required = false) Long servicePackId,
                                          @RequestParam(defaultValue = "") String search,
@@ -210,7 +231,9 @@ public class ServicePackController {
         return "service_pack_members";
     }
 
-    // FIX: Thêm method xử lý xóa thành viên
+    /**
+     * Handles removing a member from a service pack.
+     */
     @PostMapping("/members/remove/{memberId}")
     public String removeMember(@PathVariable Long memberId, 
                                Principal principal,

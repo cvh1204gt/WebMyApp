@@ -36,6 +36,9 @@ import com.bmt.MyApp.repositories.AppUserRepository;
 import com.bmt.MyApp.services.TransactionExcelService;
 import com.bmt.MyApp.services.TransactionService;
 
+/**
+ * Controller for transaction history, statistics, and Excel export.
+ */
 @Controller
 public class TransactionController {
 
@@ -48,7 +51,11 @@ public class TransactionController {
     @Autowired
     private AppUserRepository appUserRepository;
 
-    // Xuất Excel cho 1 giao dịch đơn lẻ
+    /**
+     * Exports a single transaction to Excel.
+     * @param id the transaction ID
+     * @return the Excel file as a ResponseEntity
+     */
     @GetMapping("/lichsugiaodich/export-single/{id}")
     public ResponseEntity<byte[]> exportSingleTransactionToExcel(@PathVariable Long id) {
         try {
@@ -75,7 +82,9 @@ public class TransactionController {
         }
     }
 
-    // Lịch sử giao dịch (phân trang, tìm kiếm, lọc)
+    /**
+     * Displays the paginated, filterable transaction history.
+     */
     @GetMapping("/lichsugiaodich")
     public String lichSuGiaoDich(@RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "10") int size,
@@ -109,9 +118,11 @@ public class TransactionController {
         return "lichsugiaodich";
     }
 
-    // Lịch sử giao dịch của chính người dùng
-        @GetMapping("/user_transactions")
-        public String lichSuGiaoDichCuaToi(@RequestParam(defaultValue = "0") int page,
+    /**
+     * Displays the transaction history for the current user.
+     */
+    @GetMapping("/user_transactions")
+    public String lichSuGiaoDichCuaToi(@RequestParam(defaultValue = "0") int page,
                                         @RequestParam(defaultValue = "10") int size,
                                         Principal principal,
                                         Model model) {
@@ -136,7 +147,9 @@ public class TransactionController {
             return "user_transactions";
         }
 
-    // Xuất Excel toàn bộ giao dịch theo bộ lọc
+    /**
+     * Exports all filtered transactions to Excel.
+     */
     @GetMapping("/lichsugiaodich/export")
     public ResponseEntity<byte[]> exportToExcel(@RequestParam(required = false) String search,
                                                 @RequestParam(required = false) String startDate,
@@ -161,7 +174,9 @@ public class TransactionController {
         }
     }
 
-    // Trang thống kê giao dịch
+    /**
+     * Displays the transaction statistics page.
+     */
     @GetMapping("/thongkegiaodich")
     public String thongKeGiaoDich(@RequestParam(required = false) String search,
                                   @RequestParam(required = false) String startDate,
@@ -192,7 +207,9 @@ public class TransactionController {
         return "thongkegiaodich";
     }
 
-    // API trả về dữ liệu biểu đồ theo tháng
+    /**
+     * Returns monthly statistics for charting.
+     */
     @GetMapping("/api/thongke-theo-thang")
     @ResponseBody
     public Map<String, Object> thongKeTheoThang(@RequestParam int year) {
@@ -218,7 +235,9 @@ public class TransactionController {
         return response;
     }
 
-    // API trả về dữ liệu biểu đồ theo năm
+    /**
+     * Returns yearly statistics for charting.
+     */
     @GetMapping("/api/thongke-theo-nam")
     @ResponseBody
     public Map<String, Object> thongKeTheoNam() {
@@ -243,7 +262,9 @@ public class TransactionController {
         return response;
     }
 
-    // API thống kê tùy chỉnh (ngày hoặc tuần)
+    /**
+     * Returns custom statistics (daily or weekly) for a date range.
+     */
     @GetMapping("/api/thongke-tuy-chinh")
     @ResponseBody
     public Map<String, Object> thongKeTuyChinhTheoNgay(@RequestParam String startDate,
@@ -294,7 +315,9 @@ public class TransactionController {
         return response;
     }
 
-    // API thống kê tổng hợp
+    /**
+     * Returns summary statistics for a given period.
+     */
     @GetMapping("/api/thongke-tong-hop")
     @ResponseBody
     public Map<String, Object> thongKeTongHop(@RequestParam(required = false) String startDate,

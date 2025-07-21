@@ -12,28 +12,22 @@
 
   <!--========== CONTENTS ==========-->
   <main>
-    <section class="giaodich-section">
-      <h1 class="py-4">Quản lý giao dịch</h1>
-
-      <!--========== THANH CÔNG CỤ ==========-->
+    <section class="giaodich-section container-fluid px-2 px-md-4">
+      <h1 class="py-4 text-center">Quản lý giao dịch</h1>
       <div th:replace="~{layout :: tool_bar_transaction}"></div>
-
-      <!-- Thông tin tổng quan -->
       <div class="results-info mb-3">
         <span th:if="${totalElements > 0}">
-          Hiển thị <strong th:text="${currentPage * size + 1}">1</strong> - 
-          <strong th:text="${(currentPage + 1) * size > totalElements ? totalElements : (currentPage + 1) * size}">10</strong> 
+          Hiển thị <strong th:text="${currentPage * size + 1}">1</strong> -
+          <strong th:text="${(currentPage + 1) * size > totalElements ? totalElements : (currentPage + 1) * size}">10</strong>
           trong tổng số <strong th:text="${totalElements}">0</strong> giao dịch
         </span>
         <span th:if="${totalElements == 0}">
           Không tìm thấy kết quả nào
         </span>
       </div>
-
-      <!-- Bảng giao dịch -->
       <div class="table-responsive">
-        <table class="giaodich-table">
-          <thead>
+        <table class="giaodich-table table table-striped table-hover align-middle">
+          <thead class="table-light">
             <tr>
               <th>STT</th>
               <th>Mã giao dịch</th>
@@ -53,30 +47,30 @@
               <td th:text="${currentPage * size + iterStat.count}" data-label="STT">1</td>
               <td data-label="Mã giao dịch" th:text="${transaction.vnpTxnRef}">-</td>
               <td data-label="Người dùng" th:text="${transaction.user != null ? transaction.user.fullName : 'N/A'}">-</td>
-              <td data-label="Số tiền">     
+              <td data-label="Số tiền">
                 <div>
                   <span th:text="${#numbers.formatDecimal(transaction.service.price, 0, 'COMMA', 0, 'POINT')}">0</span>
                   <span th:text="${transaction.currencyCode}">VND</span>
-                </div>  
+                </div>
               </td>
               <td data-label="Trạng thái">
-                <span th:class="${'status-' + transaction.status.toString().toLowerCase()}" 
-                      th:text="${transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).PENDING ? 'Đang xử lý' : 
-                               transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).SUCCESS ? 'Thành công' : 
-                               transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).FAILED ? 'Thất bại' : 
-                               transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).CANCELLED ? 'Đã hủy' : 
+                <span th:class="${'status-' + transaction.status.toString().toLowerCase()}"
+                      th:text="${transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).PENDING ? 'Đang xử lý' :
+                               transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).SUCCESS ? 'Thành công' :
+                               transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).FAILED ? 'Thất bại' :
+                               transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).CANCELLED ? 'Đã hủy' :
                                transaction.status == T(com.bmt.MyApp.models.Transactions.TransactionStatus).EXPIRED ? 'Hết hạn' : 'Không xác định'}">
                   -
                 </span>
               </td>
-              <td data-label="Ngày giao dịch" 
+              <td data-label="Ngày giao dịch"
                   th:text="${transaction.createdAt != null ? #temporals.format(transaction.createdAt, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
-              <td data-label="Ngày hết hạn" 
+              <td data-label="Ngày hết hạn"
                   th:text="${transaction.expireDate != null ? #temporals.format(transaction.expireDate, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
               <td data-label="Thao tác" class="action-cell">
-                <div class="action-buttons">
-                  <a th:href="@{/lichsugiaodich/export-single/{id}(id=${transaction.id})}" 
-                     class="export-single-btn"
+                <div class="action-buttons d-flex flex-wrap gap-2">
+                  <a th:href="@{/lichsugiaodich/export-single/{id}(id=${transaction.id})}"
+                     class="export-single-btn btn btn-info btn-sm"
                      th:title="'Xuất Excel giao dịch ' + ${transaction.vnpTxnRef}"
                      onclick="showExportLoading(this)">
                     <i class="fas fa-file-excel"></i>
@@ -87,54 +81,35 @@
           </tbody>
         </table>
       </div>
-
       <!-- Pagination -->
-      <div class="pagination-container mt-4" th:if="${totalPages > 1}">
-        <div class="pagination-info">
+      <div class="pagination-container mt-4 d-flex flex-column flex-md-row align-items-center justify-content-between" th:if="${totalPages > 1}">
+        <div class="pagination-info mb-2 mb-md-0">
           <span>Trang <strong th:text="${currentPage + 1}">1</strong> / <strong th:text="${totalPages}">1</strong></span>
         </div>
-        
-        <div class="pagination-controls">
-          <!-- First page -->
-          <a th:href="@{/lichsugiaodich(page=0, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}" 
-             class="pagination-btn" 
+        <div class="pagination-controls d-flex flex-wrap gap-1">
+          <a th:href="@{/lichsugiaodich(page=0, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}"
+             class="pagination-btn btn btn-light btn-sm"
              th:classappend="${currentPage == 0} ? 'disabled' : ''"
-             title="Trang đầu">
-            ⇤
-          </a>
-          
-          <!-- Previous page -->
-          <a th:href="@{/lichsugiaodich(page=${currentPage - 1}, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}" 
-             class="pagination-btn" 
+             title="Trang đầu">⇤</a>
+          <a th:href="@{/lichsugiaodich(page=${currentPage - 1}, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}"
+             class="pagination-btn btn btn-light btn-sm"
              th:classappend="${!hasPrevious} ? 'disabled' : ''"
-             title="Trang trước">
-            ←
-          </a>
-          
-          <!-- Page numbers -->
-          <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" 
+             title="Trang trước">←</a>
+          <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
                 th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}">
-            <a th:href="@{/lichsugiaodich(page=${pageNum}, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}" 
-               class="page-btn" 
+            <a th:href="@{/lichsugiaodich(page=${pageNum}, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}"
+               class="page-btn btn btn-outline-primary btn-sm"
                th:classappend="${pageNum == currentPage} ? 'active' : ''"
                th:text="${pageNum + 1}">1</a>
           </span>
-          
-          <!-- Next page -->
-          <a th:href="@{/lichsugiaodich(page=${currentPage + 1}, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}" 
-             class="pagination-btn" 
+          <a th:href="@{/lichsugiaodich(page=${currentPage + 1}, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}"
+             class="pagination-btn btn btn-light btn-sm"
              th:classappend="${!hasNext} ? 'disabled' : ''"
-             title="Trang sau">
-            →
-          </a>
-          
-          <!-- Last page -->
-          <a th:href="@{/lichsugiaodich(page=${totalPages - 1}, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}" 
-             class="pagination-btn" 
+             title="Trang sau">→</a>
+          <a th:href="@{/lichsugiaodich(page=${totalPages - 1}, search=${search}, startDate=${startDate}, endDate=${endDate}, expireStartDate=${expireStartDate}, expireEndDate=${expireEndDate})}"
+             class="pagination-btn btn btn-light btn-sm"
              th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''"
-             title="Trang cuối">
-            ⇥
-          </a>
+             title="Trang cuối">⇥</a>
         </div>
       </div>
     </section>
@@ -157,37 +132,37 @@
       const endDate = urlParams.get('endDate') || '';
       const expireStartDate = urlParams.get('expireStartDate') || '';
       const expireEndDate = urlParams.get('expireEndDate') || '';
-      
+
       // Tạo URL xuất Excel với các tham số tìm kiếm
       const exportUrl = `/lichsugiaodich/export?search=${encodeURIComponent(search)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&expireStartDate=${encodeURIComponent(expireStartDate)}&expireEndDate=${encodeURIComponent(expireEndDate)}`;
-      
+
       // Hiển thị loading
       showLoadingOverlay();
-      
+
       // Tải file
       window.location.href = exportUrl;
-      
+
       // Ẩn loading sau 3 giây
       setTimeout(hideLoadingOverlay, 3000);
     }
-    
+
     function showExportLoading(element) {
       // Thay đổi nội dung nút khi click
       const originalContent = element.innerHTML;
       element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
       element.style.pointerEvents = 'none';
-      
+
       // Khôi phục nút sau 3 giây
       setTimeout(() => {
         element.innerHTML = originalContent;
         element.style.pointerEvents = 'auto';
       }, 3000);
     }
-    
+
     function showLoadingOverlay() {
       document.getElementById('loading-overlay').style.display = 'flex';
     }
-    
+
     function hideLoadingOverlay() {
       document.getElementById('loading-overlay').style.display = 'none';
     }

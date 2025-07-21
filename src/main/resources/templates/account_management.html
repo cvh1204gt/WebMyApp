@@ -12,8 +12,8 @@
 
   <!--========== CONTENTS ==========-->
   <main>
-    <section class="giaodich-section">
-      <h1 class="py-4">Quản lý tài khoản</h1>
+    <section class="giaodich-section container-fluid px-2 px-md-4">
+      <h1 class="py-4 text-center">Quản lý tài khoản</h1>
 
       <!--========== ALERT MESSAGES ==========-->
       <div th:replace="~{layout :: alert_message}"></div>
@@ -27,8 +27,8 @@
 
       <!-- Bảng tài khoản -->
       <div class="table-responsive">
-        <table class="giaodich-table">
-          <thead>
+        <table class="giaodich-table table table-striped table-hover align-middle">
+          <thead class="table-light">
             <tr>
               <th>ID</th>
               <th>Họ tên</th>
@@ -48,22 +48,20 @@
               <td th:text="${user.role}" data-label="Vai trò"></td>
               <td th:text="${#dates.format(user.createAt, 'dd/MM/yyyy')}" data-label="Ngày tạo"></td>
               <td data-label="Hành động">
-                <div class="action-buttons">
-                  <a th:href="@{/admin/edit_account(email=${user.email})}" class="action-btn edit">Sửa</a>
+                <div class="action-buttons d-flex flex-wrap gap-2">
+                  <a th:href="@{/admin/edit_account(email=${user.email})}" class="action-btn edit btn btn-warning btn-sm">Sửa</a>
                   <!-- Chỉ hiển thị nút xóa nếu không phải tài khoản của chính mình -->
                   <form th:if="${user.email != #authentication.name}" th:action="@{/admin/delete_account}" method="post"
-                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')" style="display:inline;">
+                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')" class="d-inline">
                     <input type="hidden" name="email" th:value="${user.email}">
-                    <button type="submit" class="action-btn delete">Xóa</button>
+                    <button type="submit" class="action-btn delete btn btn-danger btn-sm">Xóa</button>
                   </form>
                   <!-- Hiển thị thông báo nếu là tài khoản của chính mình -->
-                  <span th:if="${user.email == #authentication.name}" class="text-muted"
-                    style="font-size: 12px; color: #6c757d;">
+                  <span th:if="${user.email == #authentication.name}" class="text-muted small d-block mt-1">
                     <i class="fas fa-info-circle"></i> Tài khoản hiện tại
                   </span>
                 </div>
               </td>
-
             </tr>
             <tr th:if="${#lists.isEmpty(users)}">
               <td colspan="7" class="text-center">Không có dữ liệu</td>
@@ -73,29 +71,23 @@
       </div>
 
       <!-- Pagination -->
-      <div class="pagination-container mt-4" th:if="${totalPages > 1}">
-        <div class="pagination-info">
-          <span>Trang <strong th:text="${currentPage + 1}">1</strong> / <strong
-              th:text="${totalPages}">1</strong></span>
+      <div class="pagination-container mt-4 d-flex flex-column flex-md-row align-items-center justify-content-between" th:if="${totalPages > 1}">
+        <div class="pagination-info mb-2 mb-md-0">
+          <span>Trang <strong th:text="${currentPage + 1}">1</strong> / <strong th:text="${totalPages}">1</strong></span>
         </div>
-
-        <div class="pagination-controls">
-          <a th:href="@{/admin/account_management(page=0, search=${search})}" class="pagination-btn"
+        <div class="pagination-controls d-flex flex-wrap gap-1">
+          <a th:href="@{/admin/account_management(page=0, search=${search})}" class="pagination-btn btn btn-light btn-sm"
             th:classappend="${currentPage == 0} ? 'disabled' : ''" title="Trang đầu">⇤</a>
-
-          <a th:href="@{/admin/account_management(page=${currentPage - 1}, search=${search})}" class="pagination-btn"
+          <a th:href="@{/admin/account_management(page=${currentPage - 1}, search=${search})}" class="pagination-btn btn btn-light btn-sm"
             th:classappend="${!hasPrevious} ? 'disabled' : ''" title="Trang trước">←</a>
-
           <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
             th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}">
-            <a th:href="@{/admin/account_management(page=${pageNum}, search=${search})}" class="page-btn"
+            <a th:href="@{/admin/account_management(page=${pageNum}, search=${search})}" class="page-btn btn btn-outline-primary btn-sm"
               th:classappend="${pageNum == currentPage} ? 'active' : ''" th:text="${pageNum + 1}">1</a>
           </span>
-
-          <a th:href="@{/admin/account_management(page=${currentPage + 1}, search=${search})}" class="pagination-btn"
+          <a th:href="@{/admin/account_management(page=${currentPage + 1}, search=${search})}" class="pagination-btn btn btn-light btn-sm"
             th:classappend="${!hasNext} ? 'disabled' : ''" title="Trang sau">→</a>
-
-          <a th:href="@{/admin/account_management(page=${totalPages - 1}, search=${search})}" class="pagination-btn"
+          <a th:href="@{/admin/account_management(page=${totalPages - 1}, search=${search})}" class="pagination-btn btn btn-light btn-sm"
             th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''" title="Trang cuối">⇥</a>
         </div>
       </div>

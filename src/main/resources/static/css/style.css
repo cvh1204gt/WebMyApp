@@ -618,3 +618,68 @@ footer {
         padding: 4px 8px;
     }
 }
+
+/* === Responsive improvements for PC & Mobile === */
+@media (max-width: 576px) {
+  body, html {
+    font-size: 15px;
+  }
+  .container, .main-content-area {
+    padding: 0 5px;
+  }
+  .navbar, .header__container, .nav__container {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .header__search, .header__input {
+    width: 100%;
+    min-width: 0;
+  }
+  .login-form, .form-section, .contact-form {
+    padding: 10px;
+    width: 100%;
+    min-width: 0;
+  }
+  .service-card, .profile-card, .dashboard-card {
+    min-width: 0;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .table-responsive, table {
+    font-size: 13px;
+  }
+  .action-buttons {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .footer-container {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  .btn, .submit-btn, .search-btn, .add-btn, .delete-btn, .export-btn {
+    font-size: 15px;
+    padding: 10px 12px;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  .content-header, .search-form, .search-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .date-group {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+/* Extra: Hide scrollbars on mobile for nav */
+@media (max-width: 576px) {
+  .nav__container {
+    scrollbar-width: none;
+  }
+  .nav__container::-webkit-scrollbar {
+    display: none;
+  }
+}

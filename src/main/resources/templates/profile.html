@@ -12,11 +12,10 @@
 
   <!--========== CONTENTS ==========-->
   <main>
-    <section class="profile-section mt-5">
-      <div class="dashboard-container">
-
+    <section class="profile-section mt-5 container-fluid px-2 px-md-4">
+      <div class="dashboard-container row g-4 justify-content-center">
         <!-- Card thông tin người dùng -->
-        <div class="profile-card left d-flex flex-column align-items-center">
+        <div class="profile-card left d-flex flex-column align-items-center col-12 col-md-4 mb-4 mb-md-0">
           <div class="profile-content d-flex flex-column align-items-center">
             <div class="profile-img">
               <img src="/image/profile.png" alt="Avatar" />
@@ -37,16 +36,16 @@
         </div>
 
         <!-- Form thông tin cá nhân -->
-        <div class="profile-card right">
+        <div class="profile-card right col-12 col-md-8">
           <h3 class="mb-3">Thông tin cá nhân</h3>
           <form th:action="@{/profile/update}" method="post" th:object="${user}">
             <div class="row mb-3">
-              <div class="col-md-6 mb-3">
+              <div class="col-12 col-md-6 mb-3">
                 <label class="form-label">Họ và tên<span class="text-danger">*</span></label>
                 <input type="text" class="form-control" name="fullName" th:value="${user.fullName}" required />
               </div>
 
-              <div class="col-md-6">
+              <div class="col-12 col-md-6">
                 <label class="form-label">Mật khẩu mới<span class="text-danger">*</span></label>
                 <div class="position-relative">
                   <input type="password" class="form-control" name="password" placeholder="Nhập mật khẩu mới..." />
@@ -56,12 +55,12 @@
             </div>
 
             <div class="row mb-3">
-              <div class="col-md-6 mb-3 position-relative">
+              <div class="col-12 col-md-6 mb-3 position-relative">
                 <label class="form-label">Ngày sinh<span class="text-danger">*</span></label>
                 <input class="form-control" type="date" name="birthDate" th:value="${user.birthDate}" required />
               </div>
 
-              <div class="col-md-6">
+              <div class="col-12 col-md-6">
                 <label class="form-label">Xác nhận mật khẩu<span class="text-danger">*</span></label>
                 <div class="position-relative">
                   <input type="password" class="form-control" name="confirmPassword"
@@ -73,25 +72,29 @@
 
 
 
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Email<span class="text-danger">*</span></label>
-              <input class="form-control" type="email" disabled th:value="${user.email}" title="Bạn không thể sửa email"
-                required />
+            <div class="row mb-3">
+              <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Email<span class="text-danger">*</span></label>
+                <input class="form-control" type="email" disabled th:value="${user.email}" title="Bạn không thể sửa email"
+                  required />
+              </div>
+
+              <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Số điện thoại<span class="text-danger">*</span></label>
+                <input class="form-control" type="text" name="phone" th:value="${user.phone}" pattern="[0-9]{10,11}"
+                  title="Số điện thoại phải có 10-11 chữ số" required />
+              </div>
             </div>
 
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Số điện thoại<span class="text-danger">*</span></label>
-              <input class="form-control" type="text" name="phone" th:value="${user.phone}" pattern="[0-9]{10,11}"
-                title="Số điện thoại phải có 10-11 chữ số" required />
+            <div class="row mb-3">
+              <div class="col-12">
+                <label class="form-label">Địa chỉ<span class="text-danger">*</span></label>
+                <input class="form-control" type="text" name="address" placeholder="Nhập địa chỉ..."
+                  th:value="${user.address}" />
+              </div>
             </div>
 
-            <div class="col-md-12 mb-3">
-              <label class="form-label">Địa chỉ<span class="text-danger">*</span></label>
-              <input class="form-control" type="text" name="address" placeholder="Nhập địa chỉ..."
-                th:value="${user.address}" />
-            </div>
-
-            <button type="submit" class="btn update-profile-btn">Cập nhật</button>
+            <button type="submit" class="btn update-profile-btn w-100">Cập nhật</button>
           </form>
         </div>
       </div>

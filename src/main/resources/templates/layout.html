@@ -33,19 +33,19 @@
 <body>
   <!--========== HEADER ==========-->
   <header class="header" th:fragment="page_header">
-    <div class="header__container">
+    <div class="header__container d-flex align-items-center justify-content-between">
       <img src="/image/profile.png" alt="" class="header__img">
 
       <a href="#" class="header__logo">
         <img src="" alt="">
       </a>
 
-      <div class="header__search">
+      <div class="header__search d-none d-md-flex">
         <input type="search" placeholder="Tìm kiếm..." class="header__input">
         <i class='bx bx-search header__icon'></i>
       </div>
 
-      <div class="header__toggle">
+      <div class="header__toggle ms-auto">
         <i class='bx bx-menu' id="header-toggle"></i>
       </div>
     </div>
@@ -79,23 +79,7 @@
           <div class="nav__items">
             <h3 class="nav__subtitle">Quản lý</h3>
 
-            <!-- <div class="nav__dropdown" sec:authorize="hasRole('ADMIN')">
-              <a href="#" class="nav__link">
-                <i class='bx bxs-user-account nav__icon'></i>
-                <span class="nav__name">Quản lý</span>
-                <i class='bx bx-chevron-down nav__icon nav__dropdown-icon'></i>
-              </a>
 
-              <div class="nav__dropdown-collapse">
-                <div class="nav__dropdown-content">
-                  <a href="/admin/account_management" class="nav__dropdown-item">Tài khoản</a>
-                  <a href="/lichsugiaodich" class="nav__dropdown-item">Giao dịch</a>
-                  <a href="/service_management" class="nav__dropdown-item">Gói dịch vụ</a>
-                  <a href="/logs" class="nav__dropdown-item" sec:authorize="hasRole('ADMIN')">Log</a>
-                  <a href="/thongkegiaodich" class="nav__dropdown-item">Thong ke</a>
-                </div>
-              </div>
-            </div> -->
 
             <a href="/admin/account_management" class="nav__link" sec:authorize="hasRole('ADMIN')">
               <i class='bx bx-id-card nav__icon'></i>
@@ -121,11 +105,6 @@
               <i class='bx bx-bar-chart-alt-2 nav__icon'></i>
               <span class="nav__name">Thống kê</span>
             </a>
-
-
-
-
-
 
 
 
@@ -157,10 +136,6 @@
         </div>
       </div>
 
-      <!-- <a href="#" class="nav__link nav__logout">
-        <i class='bx bx-log-out nav__icon'></i>
-        <span class="nav__name">Đăng xuất</span>
-      </a> -->
 
       <form sec:authorize="isAuthenticated()" method="post" action="/logout" style="margin-top: 5rem;">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

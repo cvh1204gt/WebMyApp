@@ -15,22 +15,26 @@ import com.bmt.MyApp.services.AppUserService;
 
 
 @Controller
+/**
+ * Handles home, profile, and admin-related endpoints.
+ */
 public class HomeController {
 
   @Autowired
   private AppUserService appUserService;
 
   @GetMapping({ "", "/" })
+  /**
+   * Displays the index page.
+   */
   public String home() {
     return "index";
   }
 
-  // @GetMapping("/home")
-  // public String dashboard() {
-  //   return "home";
-  // }
-
   @GetMapping("/profile")
+  /**
+   * Displays the profile page for the current user.
+   */
   public String profile(Model model) {
     AppUser currentUser = appUserService.getCurrentUser();
 
@@ -45,6 +49,9 @@ public class HomeController {
 
 
   @PostMapping("/profile/update")
+  /**
+   * Updates the profile information for the current user.
+   */
   public String updateProfile(@ModelAttribute("user") AppUser user, 
                              RedirectAttributes redirectAttributes) {
     try {
@@ -66,12 +73,6 @@ public class HomeController {
     return "redirect:/profile";
   }
 
-  // @PreAuthorize("hasRole('CLIENT')")
-  // @GetMapping("/services")
-  // public String services() {
-  //   return "services";
-  // }
-
   //ADMIN
   @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/account_management")
@@ -79,11 +80,6 @@ public class HomeController {
     return "account_management";
   }
 
-  // @PreAuthorize("hasRole('ADMIN')")
-  // @GetMapping("/lichsugiaodich")
-  // public String lichSuGiaoDich() {
-  //   return "lichsugiaodich";
-  // }
 
   @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/log")
@@ -93,20 +89,19 @@ public class HomeController {
 
 
   @GetMapping("/recharge")
+  /**
+   * Displays the recharge page.
+   */
   public String recharge() {
     return "recharge";
   }
 
 
 
-  // @PreAuthorize("hasRole('ADMIN')")
-  // @GetMapping("/thongkegiaodich")
-  // public String thongkegiaodich() {
-  //   return "thongkegiaodich";
-  // }
-
-
     @GetMapping("/healthz")
+  /**
+   * Health check endpoint.
+   */
   public ResponseEntity<String> healthz() {
       return ResponseEntity.ok("OK");
   }

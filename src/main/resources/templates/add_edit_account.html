@@ -12,8 +12,8 @@
 
   <!--========== CONTENTS ==========-->
   <main>
-    <section class="management-section">
-      <h1 class="py-4" th:text="${isEdit} ? 'Sửa tài khoản' : 'Thêm tài khoản'"></h1>
+    <section class="management-section container-fluid px-2 px-md-4">
+      <h1 class="py-4 text-center" th:text="${isEdit} ? 'Sửa tài khoản' : 'Thêm tài khoản'"></h1>
 
       <!-- Alert Messages -->
       <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
@@ -23,76 +23,49 @@
         <div class="row justify-content-center">
           <div class="col-md-8">
             <form th:action="${isEdit} ? '/admin/edit_account' : '/admin/add_account'" method="post" th:object="${user}">
-              
-              <!-- Email field (readonly khi edit) -->
-              <div class="form-group mb-3">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" class="form-control" 
-                       th:field="*{email}" 
-                       th:readonly="${isEdit}"
-                       required>
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label for="email">Email:</label>
+                  <input type="email" id="email" name="email" class="form-control" th:field="*{email}" th:readonly="${isEdit}" required>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="fullName">Họ tên:</label>
+                  <input type="text" id="fullName" name="fullName" class="form-control" th:field="*{fullName}" required>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="username">Username:</label>
+                  <input type="text" id="username" name="username" class="form-control" th:field="*{username}">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="password" th:text="${isEdit} ? 'Mật khẩu mới (để trống nếu không đổi):' : 'Mật khẩu:'"></label>
+                  <input type="password" id="password" name="password" class="form-control" th:required="${!isEdit}">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="phone">Số điện thoại:</label>
+                  <input type="text" id="phone" name="phone" class="form-control" th:field="*{phone}">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="address">Địa chỉ:</label>
+                  <input type="text" id="address" name="address" class="form-control" th:field="*{address}">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="birthDate">Ngày sinh:</label>
+                  <input type="date" id="birthDate" name="birthDate" class="form-control" th:field="*{birthDate}">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="role">Vai trò:</label>
+                  <select id="role" name="role" class="form-control" th:field="*{role}" required>
+                    <option value="">-- Chọn vai trò --</option>
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="CLIENT">CLIENT</option>
+                    <option value="ADMINDICHVU">ADMINDICHVU</option>
+                  </select>
+                </div>
               </div>
-
-              <!-- Full Name -->
-              <div class="form-group mb-3">
-                <label for="fullName">Họ tên:</label>
-                <input type="text" id="fullName" name="fullName" class="form-control" 
-                       th:field="*{fullName}" required>
-              </div>
-
-              <!-- Username -->
-              <div class="form-group mb-3">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" class="form-control" 
-                       th:field="*{username}">
-              </div>
-
-              <!-- Password -->
-              <div class="form-group mb-3">
-                <label for="password" th:text="${isEdit} ? 'Mật khẩu mới (để trống nếu không đổi):' : 'Mật khẩu:'"></label>
-                <input type="password" id="password" name="password" class="form-control" 
-                       th:required="${!isEdit}">
-              </div>
-
-              <!-- Phone -->
-              <div class="form-group mb-3">
-                <label for="phone">Số điện thoại:</label>
-                <input type="text" id="phone" name="phone" class="form-control" 
-                       th:field="*{phone}">
-              </div>
-
-              <!-- Address -->
-              <div class="form-group mb-3">
-                <label for="address">Địa chỉ:</label>
-                <input type="text" id="address" name="address" class="form-control" 
-                       th:field="*{address}">
-              </div>
-
-              <!-- Birth Date -->
-              <div class="form-group mb-3">
-                <label for="birthDate">Ngày sinh:</label>
-                <input type="date" id="birthDate" name="birthDate" class="form-control" 
-                       th:field="*{birthDate}">
-              </div>
-
-              <!-- Role -->
-              <div class="form-group mb-3">
-                <label for="role">Vai trò:</label>
-                <select id="role" name="role" class="form-control" th:field="*{role}" required>
-                  <option value="">-- Chọn vai trò --</option>
-                  <option value="ADMIN">ADMIN</option>
-                  <option value="CLIENT">CLIENT</option>
-                  <option value="ADMINDICHVU">ADMINDICHVU</option>
-                </select>
-              </div>
-
-              <!-- Buttons -->
-              <div class="form-group text-center">
-                <button type="submit" class="btn btn-primary me-2" 
-                        th:text="${isEdit} ? 'Cập nhật' : 'Thêm mới'"></button>
+              <div class="form-group text-center mt-4">
+                <button type="submit" class="btn btn-primary me-2" th:text="${isEdit} ? 'Cập nhật' : 'Thêm mới'"></button>
                 <a href="/admin/account_management" class="btn btn-secondary">Hủy</a>
               </div>
-
             </form>
           </div>
         </div>
