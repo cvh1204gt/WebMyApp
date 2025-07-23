@@ -141,7 +141,7 @@
             <div class="balance-display">
               <div class="balance-amount">
                 <span class="currency">VNĐ</span>
-                <span class="amount" id="balanceAmount">2,500,000</span>
+                <span class="amount" id="balanceAmount">000000</span>
                 <button class="toggle-btn" id="toggleBalance">
                   <i class="fas fa-eye" id="eyeIcon"></i>
                 </button>
@@ -785,12 +785,12 @@
       const balanceAmount = document.getElementById('balanceAmount');
       const eyeIcon = document.getElementById('eyeIcon');
       
-      if (balanceAmount.textContent === '2,500,000') {
+      if (balanceAmount.textContent === '000000') {
         balanceAmount.textContent = '••••••••';
         eyeIcon.classList.remove('fa-eye');
         eyeIcon.classList.add('fa-eye-slash');
       } else {
-        balanceAmount.textContent = '2,500,000';
+        balanceAmount.textContent = '000000';
         eyeIcon.classList.remove('fa-eye-slash');
         eyeIcon.classList.add('fa-eye');
       }

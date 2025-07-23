@@ -33,7 +33,7 @@
             <td data-label="Hành động">
               <div class="action-buttons d-flex flex-wrap gap-2">
                 <a th:href="@{/api/payment/create_payment_service(id=${service.id}, amount=${#numbers.formatDecimal(service.price, 0, 'NONE', 0, 'NONE')})}"
-                   class="action-btn vnpay btn btn-primary btn-sm">VNPAY</a>
+                   class="action-btn vnpay btn btn-primary btn-sm"><img src="/image/vnpay.png" alt="VNPAY" style="max-width: 22px;"> VNPAY</a>
                 <a th:href="@{/api/payment/balance_payment_service(id=${service.id})}"
                    class="action-btn balance btn btn-success btn-sm">Số dư</a>
               </div>

@@ -22,7 +22,7 @@
             </svg>
           </div>
           <div class="balance-content text-center text-md-start">
-            <h3>Số dư hiện tại: 999.999 VND</h3>
+            <h3>Số dư hiện tại: 000000 VND</h3>
             <p class="balance-amount" th:text="${#numbers.formatDecimal(currentBalance, 0, 'COMMA', 0, 'POINT')}">1,250,000</p>
           </div>
         </div>
@@ -56,115 +56,6 @@
           </div>
         </form>
       </div>
-      <div class="stats-container row g-3 mb-4">
-        <div class="stat-card col-12 col-md-4">
-          <h4>Hôm nay</h4>
-          <p class="stat-value" th:text="${#numbers.formatDecimal(todayAmount, 0, 'COMMA', 0, 'POINT')}">0</p>
-          <span class="stat-label">VND</span>
-        </div>
-        <div class="stat-card col-12 col-md-4">
-          <h4>Tháng này</h4>
-          <p class="stat-value" th:text="${#numbers.formatDecimal(monthAmount, 0, 'COMMA', 0, 'POINT')}">2,500,000</p>
-          <span class="stat-label">VND</span>
-        </div>
-        <div class="stat-card col-12 col-md-4">
-          <h4>Tổng cộng</h4>
-          <p class="stat-value" th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')}">15,750,000</p>
-          <span class="stat-label">VND</span>
-        </div>
-      </div>
-      <div class="history-section mb-4">
-        <h2>Lịch sử nạp tiền</h2>
-        <div class="content-header mb-4">
-          <form class="search-form row g-2" method="get" th:action="@{/recharge}">
-            <div class="col-12 col-md-4 d-flex align-items-center gap-2">
-              <label class="mb-0">Thời gian:</label>
-              <input type="date" name="startDate" class="date-input form-control" th:value="${startDate}" placeholder="Từ ngày">
-              <span>đến</span>
-              <input type="date" name="endDate" class="date-input form-control" th:value="${endDate}" placeholder="Đến ngày">
-            </div>
-            <div class="col-12 col-md-4 d-flex align-items-center gap-2">
-              <label class="mb-0">Trạng thái:</label>
-              <select name="status" class="status-select form-select">
-                <option value="">Tất cả</option>
-                <option value="pending" th:selected="${status == 'pending'}">Đang xử lý</option>
-                <option value="completed" th:selected="${status == 'completed'}">Thành công</option>
-                <option value="failed" th:selected="${status == 'failed'}">Thất bại</option>
-              </select>
-            </div>
-            <div class="col-12 col-md-4 d-flex gap-2 align-items-center">
-              <button type="submit" class="search-btn btn btn-primary">Tìm kiếm</button>
-              <a href="/recharge" class="delete-btn btn btn-secondary">Xóa bộ lọc</a>
-            </div>
-          </form>
-        </div>
-        <div class="results-info mb-3">
-          <span th:if="${totalElements > 0}">
-            Hiển thị <strong th:text="${currentPage * size + 1}">1</strong> -
-            <strong th:text="${(currentPage + 1) * size > totalElements ? totalElements : (currentPage + 1) * size}">10</strong>
-            trong tổng số <strong th:text="${totalElements}">0</strong> giao dịch
-          </span>
-          <span th:if="${totalElements == 0}">
-            Không tìm thấy giao dịch nào
-          </span>
-        </div>
-        <div class="table-responsive">
-          <table class="giaodich-table table table-striped table-hover align-middle">
-            <thead class="table-light">
-              <tr>
-                <th>Mã GD</th>
-                <th>Số tiền</th>
-                <th>Phương thức</th>
-                <th>Trạng thái</th>
-                <th>Thời gian</th>
-                <th>Ghi chú</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr th:each="transaction, iterStat : ${transactions}">
-                <td><span class="transaction-id" th:text="${transaction.transactionId}">RC240712001</span></td>
-                <td><span class="amount-text" th:text="${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 0, 'POINT')} + ' VND'">500,000 VND</span></td>
-                <td><span class="payment-method" th:text="${transaction.paymentMethod}">Chuyển khoản</span></td>
-                <td><span class="status-badge" th:classappend="${transaction.status}" th:text="${transaction.status == 'completed' ? 'Thành công' : transaction.status == 'pending' ? 'Đang xử lý' : 'Thất bại'}">Thành công</span></td>
-                <td th:text="${#temporals.format(transaction.createdAt, 'dd/MM/yyyy HH:mm')}">12/07/2024 10:30</td>
-                <td><span class="note-text" th:text="${transaction.note ?: 'Không có'}">Nạp tiền định kỳ</span></td>
-              </tr>
-              <tr th:if="${#lists.isEmpty(transactions)}">
-                <td colspan="6" class="text-center">Không có giao dịch nào</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="pagination-container mt-4 d-flex flex-column flex-md-row align-items-center justify-content-between" th:if="${totalPages > 1}">
-          <div class="pagination-info mb-2 mb-md-0">
-            <span>Trang <strong th:text="${currentPage + 1}">1</strong> / <strong th:text="${totalPages}">1</strong></span>
-          </div>
-          <div class="pagination-controls d-flex flex-wrap gap-1">
-            <a th:href="@{/recharge(page=0, startDate=${startDate}, endDate=${endDate}, status=${status})}"
-               class="pagination-btn btn btn-light btn-sm"
-               th:classappend="${currentPage == 0} ? 'disabled' : ''"
-               title="Trang đầu">⇤</a>
-            <a th:href="@{/recharge(page=${currentPage - 1}, startDate=${startDate}, endDate=${endDate}, status=${status})}"
-               class="pagination-btn btn btn-light btn-sm"
-               th:classappend="${!hasPrevious} ? 'disabled' : ''"
-               title="Trang trước">←</a>
-            <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                  th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}">
-              <a th:href="@{/recharge(page=${pageNum}, startDate=${startDate}, endDate=${endDate}, status=${status})}"
-                 class="page-btn btn btn-outline-primary btn-sm"
-                 th:classappend="${pageNum == currentPage} ? 'active' : ''"
-                 th:text="${pageNum + 1}">1</a>
-            </span>
-            <a th:href="@{/recharge(page=${currentPage + 1}, startDate=${startDate}, endDate=${endDate}, status=${status})}"
-               class="pagination-btn btn btn-light btn-sm"
-               th:classappend="${!hasNext} ? 'disabled' : ''"
-               title="Trang sau">→</a>
-            <a th:href="@{/recharge(page=${totalPages - 1}, startDate=${startDate}, endDate=${endDate}, status=${status})}"
-               class="pagination-btn btn btn-light btn-sm"
-               th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''"
-               title="Trang cuối">⇥</a>
-          </div>
-        </div>
       </div>
     </section>
   </main>
