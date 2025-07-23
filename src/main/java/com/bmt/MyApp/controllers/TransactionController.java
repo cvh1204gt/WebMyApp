@@ -34,12 +34,17 @@ import com.bmt.MyApp.models.Transactions.TransactionStatus;
 import com.bmt.MyApp.repositories.AppUserRepository;
 import com.bmt.MyApp.services.TransactionExcelService;
 import com.bmt.MyApp.services.TransactionService;
+import com.bmt.MyApp.services.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Controller for transaction history, statistics, and Excel export.
  */
 @Controller
 public class TransactionController {
+
+    private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
     @Autowired
     private TransactionService transactionService;
@@ -50,32 +55,43 @@ public class TransactionController {
     @Autowired
     private AppUserRepository appUserRepository;
 
+    @Autowired
+    private LogService logService;
+
     /**
      * Exports a single transaction to Excel.
      * @param id the transaction ID
      * @return the Excel file as a ResponseEntity
      */
     @GetMapping("/lichsugiaodich/export-single/{id}")
-    public ResponseEntity<byte[]> exportSingleTransactionToExcel(@PathVariable Long id) {
+    public ResponseEntity<byte[]> exportSingleTransactionToExcel(@PathVariable Long id, Principal principal) {
+        logger.info("Bắt đầu xuất Excel cho giao dịch ID: {}", id);
         try {
             Optional<Transactions> optionalTransaction = transactionService.getTransactionById(id);
             if (optionalTransaction.isEmpty()) {
+                logger.warn("Không tìm thấy giao dịch với ID: {}", id);
                 return ResponseEntity.notFound().build();
             }
-
             Transactions transaction = optionalTransaction.get();
+            logger.info("Tìm thấy giao dịch - VnpTxnRef: {}, User: {}, Amount: {}",
+                       transaction.getVnpTxnRef(),
+                       transaction.getUser().getEmail(),
+                       transaction.getAmount());
             byte[] excelData = excelService.exportSingleTransactionToExcel(transaction);
-
+            logger.info("Tạo file Excel thành công - Kích thước: {} bytes", excelData.length);
             String filename = "GiaoDich_" + transaction.getVnpTxnRef() + "_" +
                     LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx";
-
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
             headers.setContentDispositionFormData("attachment", filename);
             headers.setContentLength(excelData.length);
-
+            logger.info("Xuất Excel đơn lẻ thành công - File: {}", filename);
+            // Ghi log xuất excel
+            String username = principal != null ? principal.getName() : (transaction.getUser() != null ? transaction.getUser().getEmail() : "unknown");
+            logService.log(username, "Xuất Excel", "Xuất Excel giao dịch đơn lẻ: " + transaction.getVnpTxnRef());
             return new ResponseEntity<>(excelData, headers, HttpStatus.OK);
         } catch (Exception e) {
+            logger.error("Lỗi khi xuất Excel cho giao dịch ID {}: {}", id, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(("Lỗi khi tạo file Excel: " + e.getMessage()).getBytes());
         }
@@ -86,30 +102,32 @@ public class TransactionController {
      */
     @GetMapping("/user_transactions/export")
     public ResponseEntity<byte[]> exportUserTransactionsToExcel(Principal principal) {
+        String userEmail = principal.getName();
+        logger.info("Bắt đầu xuất Excel giao dịch cho user: {}", userEmail);
         try {
-            String userEmail = principal.getName();
-            
-            // Lấy user từ database để đảm bảo tồn tại
             AppUser currentUser = appUserRepository.findByEmail(userEmail).orElse(null);
             if (currentUser == null) {
+                logger.warn("User không tồn tại: {}", userEmail);
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("Người dùng không tồn tại".getBytes());
             }
-
-            // Lấy tất cả giao dịch của user (không phân trang)
             List<Transactions> transactions = transactionService.findAllByEmail(userEmail);
+            logger.info("Tìm thấy {} giao dịch cho user: {}", transactions.size(), userEmail);
             byte[] excelData = excelService.exportTransactionsToExcel(transactions);
-
-            String filename = "LichSuGiaoDich_" + currentUser.getFullName().replaceAll("\\s+", "_") + "_" + 
+            logger.info("Tạo file Excel thành công cho user {} - Kích thước: {} bytes",
+                       userEmail, excelData.length);
+            String filename = "LichSuGiaoDich_" + currentUser.getFullName().replaceAll("\\s+", "_") + "_" +
                     LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx";
-
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
             headers.setContentDispositionFormData("attachment", filename);
             headers.setContentLength(excelData.length);
-
+            logger.info("Xuất Excel giao dịch user thành công - File: {}, User: {}", filename, userEmail);
+            // Ghi log xuất excel
+            logService.log(userEmail, "Xuất Excel", "Xuất Excel lịch sử giao dịch cá nhân");
             return new ResponseEntity<>(excelData, headers, HttpStatus.OK);
         } catch (Exception e) {
+            logger.error("Lỗi khi xuất Excel giao dịch cho user {}: {}", userEmail, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(("Lỗi khi tạo file Excel: " + e.getMessage()).getBytes());
         }
@@ -120,34 +138,38 @@ public class TransactionController {
      */
     @GetMapping("/user_transactions/export-single/{id}")
     public ResponseEntity<byte[]> exportSingleUserTransactionToExcel(@PathVariable Long id, Principal principal) {
+        String userEmail = principal.getName();
+        logger.info("Bắt đầu xuất Excel giao dịch đơn lẻ - ID: {}, User: {}", id, userEmail);
         try {
-            String userEmail = principal.getName();
-            
             Optional<Transactions> optionalTransaction = transactionService.getTransactionById(id);
             if (optionalTransaction.isEmpty()) {
+                logger.warn("Không tìm thấy giao dịch với ID: {} cho user: {}", id, userEmail);
                 return ResponseEntity.notFound().build();
             }
-
             Transactions transaction = optionalTransaction.get();
-            
-            // Kiểm tra xem giao dịch có thuộc về user hiện tại không
             if (!transaction.getUser().getEmail().equals(userEmail)) {
+                logger.warn("User {} không có quyền truy cập giao dịch ID: {} (thuộc về user: {})",
+                           userEmail, id, transaction.getUser().getEmail());
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body("Bạn không có quyền truy cập giao dịch này".getBytes());
             }
-
+            logger.info("Xác thực thành công - Giao dịch ID: {} thuộc về user: {}", id, userEmail);
             byte[] excelData = excelService.exportSingleTransactionToExcel(transaction);
-
+            logger.info("Tạo file Excel thành công cho giao dịch ID: {} - Kích thước: {} bytes",
+                       id, excelData.length);
             String filename = "GiaoDich_" + transaction.getVnpTxnRef() + "_" +
                     LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx";
-
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
             headers.setContentDispositionFormData("attachment", filename);
             headers.setContentLength(excelData.length);
-
+            logger.info("Xuất Excel giao dịch đơn lẻ thành công - File: {}, User: {}", filename, userEmail);
+            // Ghi log xuất excel
+            logService.log(userEmail, "Xuất Excel", "Xuất Excel giao dịch đơn lẻ: " + transaction.getVnpTxnRef());
             return new ResponseEntity<>(excelData, headers, HttpStatus.OK);
         } catch (Exception e) {
+            logger.error("Lỗi khi xuất Excel giao dịch đơn lẻ ID {} cho user {}: {}",
+                        id, userEmail, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(("Lỗi khi tạo file Excel: " + e.getMessage()).getBytes());
         }
@@ -226,20 +248,28 @@ public class TransactionController {
                                                 @RequestParam(required = false) String startDate,
                                                 @RequestParam(required = false) String endDate,
                                                 @RequestParam(required = false) String expireStartDate,
-                                                @RequestParam(required = false) String expireEndDate) {
+                                                @RequestParam(required = false) String expireEndDate,
+                                                Principal principal) {
+        logger.info("Bắt đầu xuất Excel tất cả giao dịch với filter - Search: {}, StartDate: {}, EndDate: {}, ExpireStartDate: {}, ExpireEndDate: {}",
+                   search, startDate, endDate, expireStartDate, expireEndDate);
         try {
             List<Transactions> transactions = transactionService.searchTransactionsForExport(search, startDate, endDate, expireStartDate, expireEndDate);
+            logger.info("Tìm thấy {} giao dịch phù hợp với điều kiện filter", transactions.size());
             byte[] excelData = excelService.exportTransactionsToExcel(transactions);
-
+            logger.info("Tạo file Excel thành công cho tất cả giao dịch - Kích thước: {} bytes", excelData.length);
             String filename = "LichSuGiaoDich_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx";
-
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
             headers.setContentDispositionFormData("attachment", filename);
             headers.setContentLength(excelData.length);
-
+            logger.info("Xuất Excel tất cả giao dịch thành công - File: {}, Số giao dịch: {}", filename, transactions.size());
+            // Ghi log xuất excel
+            String username = principal != null ? principal.getName() : "unknown";
+            logService.log(username, "Xuất Excel", "Xuất Excel tất cả giao dịch");
             return new ResponseEntity<>(excelData, headers, HttpStatus.OK);
         } catch (Exception e) {
+            logger.error("Lỗi khi xuất Excel tất cả giao dịch với filter [Search: {}, StartDate: {}, EndDate: {}]: {}",
+                        search, startDate, endDate, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(("Lỗi khi tạo file Excel: " + e.getMessage()).getBytes());
         }

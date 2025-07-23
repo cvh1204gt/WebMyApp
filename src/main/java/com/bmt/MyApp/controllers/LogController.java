@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bmt.MyApp.models.SystemLog;
 import com.bmt.MyApp.repositories.SystemLogRepository;
+import com.bmt.MyApp.services.LogService;
 
 /**
  * Controller for viewing and searching system logs.
@@ -25,6 +26,9 @@ public class LogController {
 
     @Autowired
     private SystemLogRepository logRepository;
+
+    @Autowired
+    private LogService logService;
 
     /**
      * Displays the logs page with optional search and date filters.
