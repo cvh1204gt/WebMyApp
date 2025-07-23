@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<title>Thêm Gói Dịch Vụ</title>
 <head th:replace="~{layout :: page_head}"></head>
 <body>
 <header th:replace="~{layout :: page_header}"></header>
@@ -7,7 +8,7 @@
 <main>
   <section class="giaodich-section container-fluid px-2 px-md-4">
     <h1 class="py-4 text-center">Thêm Gói Dịch Vụ</h1>
-    <div class="content-header mb-4">
+    <div>
       <form method="post" th:action="@{/servicepacks/add}" class="search-form row g-3">
         <div class="col-12 col-md-6">
           <input type="text" name="name" class="search-input form-control" placeholder="Tên gói dịch vụ" required>

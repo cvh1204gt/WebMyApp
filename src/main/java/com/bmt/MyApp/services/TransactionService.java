@@ -128,4 +128,12 @@ public class TransactionService {
     public Page<Transactions> findByEmail(String email, Pageable pageable) {
         return transactionsRepository.findByEmail(email, pageable);
     }
+
+    /**
+     * Lấy tất cả giao dịch của user theo email (không phân trang, dùng cho export Excel)
+     */
+    public List<Transactions> findAllByEmail(String email) {
+        // Sử dụng method findByEmail với Pageable.unpaged() để lấy tất cả
+        return transactionsRepository.findByEmail(email, Pageable.unpaged()).getContent();
+    }
 }

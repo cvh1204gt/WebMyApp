@@ -1,4 +1,3 @@
-// TransactionController.java
 package com.bmt.MyApp.controllers;
 
 import java.math.BigDecimal;
@@ -65,6 +64,78 @@ public class TransactionController {
             }
 
             Transactions transaction = optionalTransaction.get();
+            byte[] excelData = excelService.exportSingleTransactionToExcel(transaction);
+
+            String filename = "GiaoDich_" + transaction.getVnpTxnRef() + "_" +
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.setContentDispositionFormData("attachment", filename);
+            headers.setContentLength(excelData.length);
+
+            return new ResponseEntity<>(excelData, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(("Lỗi khi tạo file Excel: " + e.getMessage()).getBytes());
+        }
+    }
+
+    /**
+     * Exports user's transactions to Excel.
+     */
+    @GetMapping("/user_transactions/export")
+    public ResponseEntity<byte[]> exportUserTransactionsToExcel(Principal principal) {
+        try {
+            String userEmail = principal.getName();
+            
+            // Lấy user từ database để đảm bảo tồn tại
+            AppUser currentUser = appUserRepository.findByEmail(userEmail).orElse(null);
+            if (currentUser == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Người dùng không tồn tại".getBytes());
+            }
+
+            // Lấy tất cả giao dịch của user (không phân trang)
+            List<Transactions> transactions = transactionService.findAllByEmail(userEmail);
+            byte[] excelData = excelService.exportTransactionsToExcel(transactions);
+
+            String filename = "LichSuGiaoDich_" + currentUser.getFullName().replaceAll("\\s+", "_") + "_" + 
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.setContentDispositionFormData("attachment", filename);
+            headers.setContentLength(excelData.length);
+
+            return new ResponseEntity<>(excelData, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(("Lỗi khi tạo file Excel: " + e.getMessage()).getBytes());
+        }
+    }
+
+    /**
+     * Exports a single user transaction to Excel.
+     */
+    @GetMapping("/user_transactions/export-single/{id}")
+    public ResponseEntity<byte[]> exportSingleUserTransactionToExcel(@PathVariable Long id, Principal principal) {
+        try {
+            String userEmail = principal.getName();
+            
+            Optional<Transactions> optionalTransaction = transactionService.getTransactionById(id);
+            if (optionalTransaction.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Transactions transaction = optionalTransaction.get();
+            
+            // Kiểm tra xem giao dịch có thuộc về user hiện tại không
+            if (!transaction.getUser().getEmail().equals(userEmail)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Bạn không có quyền truy cập giao dịch này".getBytes());
+            }
+
             byte[] excelData = excelService.exportSingleTransactionToExcel(transaction);
 
             String filename = "GiaoDich_" + transaction.getVnpTxnRef() + "_" +

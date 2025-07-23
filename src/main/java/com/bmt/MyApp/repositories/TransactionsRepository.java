@@ -100,5 +100,9 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Long
     @Query("SELECT t FROM Transactions t WHERE t.user.email = :email ORDER BY t.createdAt DESC")
     Page<Transactions> findByEmail(@Param("email") String email, Pageable pageable);
 
+    // === Lấy tất cả giao dịch của user theo email (không phân trang) ===
+    @Query("SELECT t FROM Transactions t WHERE t.user.email = :email ORDER BY t.createdAt DESC")
+    List<Transactions> findByUserEmailOrderByCreatedAtDesc(@Param("email") String email);
+
     List<Transactions> findByUserAndStatus(AppUser user, Transactions.TransactionStatus status);
 }

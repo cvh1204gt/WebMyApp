@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<title>Lịch sử giao dịch</title>
 <head th:replace="~{layout :: page_head}"></head>
 <body>
 <header th:replace="~{layout :: page_header}"></header>
@@ -28,6 +29,7 @@
             <th>Loại</th>
             <th>Ngày giao dịch</th>
             <th>Trạng thái</th>
+            <th>Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -38,9 +40,16 @@
             <td th:text="${txn.orderType}" data-label="Loại">Nạp</td>
             <td th:text="${#temporals.format(txn.createdAt, 'dd/MM/yyyy HH:mm')}" data-label="Ngày giao dịch">01/07/2025</td>
             <td th:text="${txn.status}" data-label="Trạng thái">Thành công</td>
+            <td data-label="Thao tác">
+              <a th:href="@{/user_transactions/export-single/{id}(id=${txn.id})}" 
+                 class="btn btn-sm btn-outline-success" 
+                 title="Xuất giao dịch này ra Excel">
+                <i class="fas fa-file-excel"></i> Excel
+              </a>
+            </td>
           </tr>
           <tr th:if="${#lists.isEmpty(transactions)}">
-            <td colspan="6" class="text-center">Không có dữ liệu</td>
+            <td colspan="7" class="text-center">Không có dữ liệu</td>
           </tr>
         </tbody>
       </table>
@@ -64,6 +73,109 @@
     </div>
   </section>
 </main>
+
+<style>
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  margin: 2px;
+  background-color: #28a745;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #218838;
+  color: white;
+  text-decoration: none;
+}
+
+.btn-success {
+  background-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.btn-outline-success {
+  background-color: transparent;
+  color: #28a745;
+  border: 1px solid #28a745;
+}
+
+.btn-outline-success:hover {
+  background-color: #28a745;
+  color: white;
+}
+
+.giaodich-table th:last-child,
+.giaodich-table td:last-child {
+  text-align: center;
+  min-width: 100px;
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+  .giaodich-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .giaodich-table thead {
+    display: none;
+  }
+  
+  .giaodich-table tbody,
+  .giaodich-table tr,
+  .giaodich-table td {
+    display: block;
+    width: 100%;
+  }
+  
+  .giaodich-table tr {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  
+  .giaodich-table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    border: none;
+  }
+  
+  .giaodich-table td:before {
+    content: attr(data-label) ": ";
+    position: absolute;
+    left: 6px;
+    width: 45%;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  .giaodich-table td[data-label="Thao tác"] {
+    text-align: center;
+    padding-left: 0;
+  }
+  
+  .giaodich-table td[data-label="Thao tác"]:before {
+    display: none;
+  }
+}
+</style>
 
 </body>
 </html>
