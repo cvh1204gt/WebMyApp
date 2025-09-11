@@ -1,4 +1,4 @@
-Video : [https://drive.google.com/drive/u/0/folders/15k7qFY0U9PfqdHs_cKPQLNqPZvoE3jWp]
+Video demo : [https://drive.google.com/drive/u/0/folders/15k7qFY0U9PfqdHs_cKPQLNqPZvoE3jWp]
 ## 1. ĐĂNG KÝ TÀI KHOẢN
 
 ### 1.1. Các bước đăng ký
