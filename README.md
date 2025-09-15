@@ -1,9 +1,11 @@
 Video demo : [https://drive.google.com/drive/u/0/folders/15k7qFY0U9PfqdHs_cKPQLNqPZvoE3jWp]
+
+HƯỚNG DẪN SỬ DỤNG
 ## 1. ĐĂNG KÝ TÀI KHOẢN
 
 ### 1.1. Các bước đăng ký
 
-1. Truy cập trang chủ, nhấn nút **"Đăng ký"** hoặc truy cập trực tiếp đường dẫn `/register`.
+1. Truy cập trang chủ, nhấn nút **"Đăng ký"**.
 2. Nhập đầy đủ thông tin:
    - Họ tên
    - Email (bắt buộc, duy nhất)
@@ -14,7 +16,7 @@ Video demo : [https://drive.google.com/drive/u/0/folders/15k7qFY0U9PfqdHs_cKPQLN
 ### 1.2. Xác thực tài khoản qua OTP
 
 1. Sau khi đăng ký, hệ thống sẽ gửi mã OTP (6 số) về email bạn vừa đăng ký.
-2. Truy cập trang `/verify-otp` (hệ thống tự chuyển hướng hoặc bạn vào link trong email).
+2. Truy cập trang xác thực otp (hệ thống tự chuyển otp trong email).
 3. Nhập mã OTP vào ô xác thực, nhấn **"Xác nhận"**.
 4. Nếu OTP hợp lệ, tài khoản sẽ được kích hoạt. Nếu chưa nhận được OTP, nhấn **"Gửi lại mã OTP"**.
 
@@ -26,14 +28,14 @@ Video demo : [https://drive.google.com/drive/u/0/folders/15k7qFY0U9PfqdHs_cKPQLN
 
 ### 2.1. Đăng nhập
 
-1. Truy cập `/login`.
+1. Truy cập đăng nhập.
 2. Nhập email và mật khẩu đã đăng ký.
 3. Nhấn **"Đăng nhập"**.
 4. Nếu thông tin đúng và tài khoản đã xác thực, bạn sẽ được chuyển đến trang chủ.
 
 ### 2.2. Quên mật khẩu
 
-1. Tại trang đăng nhập, nhấn **"Quên mật khẩu?"** hoặc truy cập `/forgot-password`.
+1. Tại trang đăng nhập, nhấn **"Quên mật khẩu?"** hoặc truy cập quên mật khẩu.
 2. Nhập email đã đăng ký, nhấn **"Gửi mã  OTP"**.
 3. Kiểm tra email, nhập OTP đặt lại mật khẩu.
 4. Nhập mật khẩu mới và xác nhận.
@@ -42,7 +44,7 @@ Video demo : [https://drive.google.com/drive/u/0/folders/15k7qFY0U9PfqdHs_cKPQLN
 
 ### 3.1. Xem thông tin cá nhân
 
-- Truy cập `/profile` hoặc chọn **"Thông tin"** trên thanh điều hướng.
+- Truy cập **"Thông tin"** trên thanh điều hướng.
 - Xem các thông tin: Họ tên, email, số điện thoại, địa chỉ, ngày sinh.
 
 ### 3.2. Cập nhật thông tin
@@ -64,7 +66,7 @@ Video demo : [https://drive.google.com/drive/u/0/folders/15k7qFY0U9PfqdHs_cKPQLN
 
 ### 4.1. Xem các gói dịch vụ
 
-- Truy cập `/services` hoặc chọn **"Gói dịch vụ"** trên menu.
+- Truy cập chọn **"Gói dịch vụ"** trên menu.
 - Hệ thống hiển thị các gói: **Cơ bản**, **Mở rộng**, **Nâng cao**.
 - Mỗi gói có mô tả, tính năng, giá, thời hạn sử dụng.
 
@@ -80,11 +82,11 @@ Video demo : [https://drive.google.com/drive/u/0/folders/15k7qFY0U9PfqdHs_cKPQLN
 ## 5. XEM LỊCH SỬ GIAO DỊCH 
 
 ### Bước 1: Đăng nhập vào hệ thống
-- Truy cập trang `/login`.
+- Truy cập trang Đăng nhập.
 - Nhập email và mật khẩu, nhấn **"Đăng nhập"**.
 
 ### Bước 2: Truy cập chức năng lịch sử giao dịch
-- Sau khi đăng nhập, trên thanh menu chọn **"Giao dịch"** hoặc truy cập trực tiếp đường dẫn `/user_transactions`.
+- Sau khi đăng nhập, trên thanh menu chọn **"Giao dịch"** hoặc truy cập trực tiếp đường dẫn lịch sử giao dịch`.
 
 ### Bước 3: Xem danh sách giao dịch
 - Hệ thống sẽ hiển thị danh sách các giao dịch của bạn, bao gồm:
@@ -106,7 +108,7 @@ Video demo : [https://drive.google.com/drive/u/0/folders/15k7qFY0U9PfqdHs_cKPQLN
 
 ### 6.1. Quản lý tài khoản người dùng
 
-1. Truy cập `/admin/account_management`.
+1. Truy cập Quản lý tài khoản người dùng.
 2. Xem danh sách tài khoản, tìm kiếm theo tên/email.
 3. Thêm mới tài khoản: Nhấn **"Thêm tài khoản"**, nhập thông tin, lưu lại.
 4. Sửa thông tin: Nhấn **"Chỉnh sửa"** tại tài khoản cần sửa.
@@ -114,16 +116,16 @@ Video demo : [https://drive.google.com/drive/u/0/folders/15k7qFY0U9PfqdHs_cKPQLN
 
 ### 6.2. Quản lý gói dịch vụ
 
-- Truy cập `/servicepacks` để thêm, sửa, xóa các gói dịch vụ.
-- Thêm thành viên vào gói tại `/servicepacks/add-member`.
+- Truy cập Quản lý gói dịch vụ để thêm, sửa, xóa các gói dịch vụ.
+- Thêm thành viên vào gói .
 
 ### 6.3. Quản lý nhật ký hệ thống
 
-- Truy cập `/log` để xem lịch sử thao tác, hoạt động của người dùng.
+- Truy cập Log để xem lịch sử thao tác, hoạt động của người dùng.
 
 ### 6.4. Thống kê giao dịch
 
-- Truy cập `/thongkegiaodich` để xem biểu đồ, thống kê tổng quan về giao dịch.
+- Truy cập Thống kê giao dịch để xem biểu đồ, thống kê tổng quan về giao dịch.
 
 ### 6.5. Xuất báo cáo
 
